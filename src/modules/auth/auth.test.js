@@ -2,13 +2,12 @@ const expect = require('expect')
 const { request } = require('../../utils/test')
 
 const testUser = {
-  email: 'test-user@gmail.com',
-  password: 'test1234',
-  firstName: 'test',
-  lastName: 'user'
+  fullName: 'John Doe',
+  email: 'john@doe.com',
+  password: 'test1234'
 }
 
-const signup = ({ email, password, firstName, lastName }, returnValues = `{
+const signup = ({ fullName, email, password }, returnValues = `{
   id
   email
 }`) => {
@@ -16,10 +15,9 @@ const signup = ({ email, password, firstName, lastName }, returnValues = `{
     query: `
       mutation {
         signup(
+          fullName: "${fullName}",
           email: "${email}",
-          password: "${password}",
-          firstName: "${firstName}",
-          lastName: "${lastName}"
+          password: "${password}"
         ) ${returnValues}
       }
     `
@@ -115,8 +113,7 @@ describe('auth', () => {
             me {
               id
               email
-              firstName
-              lastName
+              fullName
             }
           }
         `
@@ -136,9 +133,8 @@ describe('auth', () => {
           query me {
             me {
               id
+              fullName
               email
-              firstName
-              lastName
             }
           }
         `
@@ -147,8 +143,7 @@ describe('auth', () => {
         .expect(res => {
           expect(res.body).toHaveProperty('data.me.id')
           expect(res.body).toHaveProperty('data.me.email', testUser.email)
-          expect(res.body).toHaveProperty('data.me.firstName', testUser.firstName)
-          expect(res.body).toHaveProperty('data.me.lastName', testUser.lastName)
+          expect(res.body).toHaveProperty('data.me.fullName', testUser.fullName)
         })
         .expect(200)
     })

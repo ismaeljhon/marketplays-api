@@ -5,10 +5,9 @@ const bcrypt = require('bcrypt')
 const SALT_ROUNDS = 12
 
 const signup = async (_, {
+  fullName,
   email,
-  password,
-  firstName,
-  lastName
+  password
 }) => {
   try {
     const existingUser = await User.findOne({
@@ -22,10 +21,9 @@ const signup = async (_, {
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
 
     const user = await User.create({
+      fullName,
       email,
-      hashedPassword,
-      firstName,
-      lastName
+      hashedPassword
     })
 
     return {
