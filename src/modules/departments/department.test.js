@@ -56,3 +56,16 @@ describe('department', () => {
     })
   })
 })
+
+describe('department', () => {
+  describe('create', () => {
+    it('should not create a deparment if code is not unique', () => {
+      // attempt to create a department of the same data
+      return createDepartment(testDepartment)
+        .expect(res => {
+          expect(res.body).toHaveProperty('errors')
+          expect(Array.isArray(res.body.errors)).toBe(true)
+        })
+    })
+  })
+})
