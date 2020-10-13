@@ -2,7 +2,7 @@ const { gql } = require('apollo-server-express')
 
 const typeDefs = gql`
   extend type Query {
-    departments: Department @isAuthenticated
+    departments: [Department] @isAuthenticated
   }
 
   extend type Mutation {
@@ -15,7 +15,7 @@ const typeDefs = gql`
       seoTitle: String!
       seoKeywords: String!
       seoDescription: String!
-    ) : Department
+    ) : Department @isAuthenticated
   }
 
   type Department {
