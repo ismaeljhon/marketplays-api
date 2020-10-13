@@ -16,7 +16,7 @@ const createDepartment = async (_, {
     code: code
   })
   if (existingDepartment) {
-    throw new UserInputError(`Department of code '${code}' aleady exists!`)
+    throw new UserInputError(`Department of code '${code}' already exists!`)
   }
 
   const department = await Department.create({
