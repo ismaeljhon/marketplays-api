@@ -29,12 +29,13 @@ generateToken()
       })
 
       // create with a valid token
+      const departmentName = faker.lorem.words(3)
       const testDepartment = {
-        name: faker.commerce.department(),
-        code: faker.random.alphaNumeric(4),
+        name: departmentName,
+        code: faker.random.alpha(4).toUpperCase(),
         description: faker.lorem.sentence(),
-        slug: faker.commerce.slug,
-        pricing: faker.random.float(),
+        slug: faker.helpers.slugify(departmentName),
+        pricing: faker.commerce.price(5, 300),
         seoTitle: faker.lorem.sentence(5),
         seoKeywords: faker.lorem.words(5),
         seoDescription: faker.lorem.paragraph(5)
