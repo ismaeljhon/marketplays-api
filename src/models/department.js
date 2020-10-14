@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+var uniqueValidator = require('mongoose-unique-validator')
 
 const departmentSchema = new mongoose.Schema({
   name: {
@@ -32,6 +33,8 @@ const departmentSchema = new mongoose.Schema({
     type: String
   }
 })
+
+departmentSchema.plugin(uniqueValidator)
 
 const Department = mongoose.model('Department', departmentSchema)
 

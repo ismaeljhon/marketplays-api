@@ -3,7 +3,6 @@ const faker = require('faker')
 const { request } = require('../../utils/test')
 const { AuthenticationError } = require('apollo-server-express')
 const { generateToken } = require('../../utils/generate-token')
-const Department = require('../../models/department')
 
 generateToken()
   .then(response => {
@@ -108,19 +107,16 @@ generateToken()
       }
 
       describe('retrieve', () => {
+        let departmentId = null
         it('should retrieve all departments', () => {
           return retrieveDepartments()
             .expect(res => {
               expect(res.body).toHaveProperty('data.departments')
               expect(res.body.data.departments).toHaveLength(1)
+              departmentId = res.body.data.departments[0].id
             })
         })
-        let departmentId = null
-        before(async () => {
-          let department = await Department.findOne()
-          departmentId = department._id
-        })
-        it(`should retrieve a single department`, () => {
+        it('should retrieve a single department', () => {
           return request({
             query: `
               query {
@@ -133,6 +129,90 @@ generateToken()
           }).set('x-token', token)
             .expect(res => {
               expect(res.body).toHaveProperty('data.department.name')
+            })
+        })
+        const updateDepartment = ({
+          id,
+          name,
+          code,
+          description,
+          slug,
+          pricing,
+          seoTitle,
+          seoKeywords,
+          seoDescription
+        }, returnValues = `{
+          id
+          name
+          code
+        }`) => {
+          return request({
+            query: `
+              mutation{
+                updateDepartment(
+                  id: "${id}",
+                  name: "${name}",
+                  code: "${code}",
+                  description: "${description}",
+                  slug: "${slug}",
+                  pricing: ${pricing},
+                  seoTitle: "${seoTitle}",
+                  seoKeywords: "${seoKeywords}",
+                  seoDescription: "${seoDescription}"
+                ) ${returnValues}
+              }
+            `
+          }).set('x-token', token)
+        }
+        it('should update an existing department', () => {
+          const updatedDepartment = {
+            id: departmentId,
+            name: faker.commerce.department(),
+            code: faker.random.alphaNumeric(4),
+            description: faker.lorem.sentence(),
+            slug: faker.commerce.slug,
+            pricing: faker.random.float(),
+            seoTitle: faker.lorem.sentence(5),
+            seoKeywords: faker.lorem.words(5),
+            seoDescription: faker.lorem.paragraph(5)
+          }
+          return updateDepartment(updatedDepartment)
+            .expect(res => {
+              expect(res.body).toHaveProperty('data.updateDepartment.name')
+              expect(res.body.data.updateDepartment.name).toStrictEqual(updatedDepartment.name)
+            })
+        })
+        it('should update select fields of an existing department', () => {
+          const updatedDepartment = {
+            id: departmentId,
+            name: faker.commerce.department(),
+            code: faker.random.alphaNumeric(4),
+            description: faker.lorem.sentence(),
+            pricing: faker.random.float()
+          }
+          return updateDepartment(updatedDepartment)
+            .expect(res => {
+              expect(res.body).toHaveProperty('data.updateDepartment.name')
+              expect(res.body.data.updateDepartment.name).toStrictEqual(updatedDepartment.name)
+            })
+        })
+        it('should not update an non-existent department', () => {
+          const updatedDepartment = {
+            id: faker.random.alphaNumeric(20),
+            name: faker.commerce.department(),
+            code: faker.random.alphaNumeric(4),
+            description: faker.lorem.sentence(),
+            slug: faker.commerce.slug,
+            pricing: faker.random.float(),
+            seoTitle: faker.lorem.sentence(5),
+            seoKeywords: faker.lorem.words(5),
+            seoDescription: faker.lorem.paragraph(5)
+          }
+          return updateDepartment(updatedDepartment)
+            .expect(res => {
+              expect(res.body).toHaveProperty('errors')
+              expect(res.body.data.updateDepartment).toEqual(null)
+              expect(Array.isArray(res.body.errors)).toBe(true)
             })
         })
       })

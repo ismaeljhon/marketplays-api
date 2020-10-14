@@ -10,24 +10,24 @@ const typeDefs = gql`
     createDepartment(
       name: String!
       code: String!
-      description: String!
-      slug: String!
+      description: String
+      slug: String
       pricing: Float!
-      seoTitle: String!
-      seoKeywords: String!
-      seoDescription: String!
+      seoTitle: String
+      seoKeywords: String
+      seoDescription: String
     ) : Department @isAuthenticated
 
     updateDepartment(
       id: ID!
       name: String!
       code: String!
-      description: String!
-      slug: String!
+      description: String
+      slug: String
       pricing: Float!
-      seoTitle: String!
-      seoKeywords: String!
-      seoDescription: String!
+      seoTitle: String
+      seoKeywords: String
+      seoDescription: String
     ) : Department @isAuthenticated
   }
 
