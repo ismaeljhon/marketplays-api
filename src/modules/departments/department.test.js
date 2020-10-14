@@ -3,6 +3,7 @@ const faker = require('faker')
 const { request } = require('../../utils/test')
 const { AuthenticationError } = require('apollo-server-express')
 const { generateToken } = require('../../utils/generate-token')
+const Department = require('../../models/department')
 
 generateToken()
   .then(response => {
@@ -106,12 +107,32 @@ generateToken()
         }).set('x-token', token)
       }
 
-      describe('retrieve all', () => {
+      describe('retrieve', () => {
         it('should retrieve all departments', () => {
           return retrieveDepartments()
             .expect(res => {
               expect(res.body).toHaveProperty('data.departments')
               expect(res.body.data.departments).toHaveLength(1)
+            })
+        })
+        let departmentId = null
+        before(async () => {
+          let department = await Department.findOne()
+          departmentId = department._id
+        })
+        it(`should retrieve a single department`, () => {
+          return request({
+            query: `
+              query {
+                department(id: "${departmentId}") {
+                  id
+                  name
+                }
+              }
+            `
+          }).set('x-token', token)
+            .expect(res => {
+              expect(res.body).toHaveProperty('data.department.name')
             })
         })
       })
