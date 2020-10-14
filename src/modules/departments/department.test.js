@@ -3,6 +3,7 @@ const faker = require('faker')
 const { request } = require('../../utils/test')
 const { AuthenticationError } = require('apollo-server-express')
 const { generateToken } = require('../../utils/generate-token')
+const Department = require('../../models/department')
 
 generateToken()
   .then(response => {
@@ -82,6 +83,21 @@ generateToken()
         })
       })
 
+      describe('create without required fields', () => {
+        it('should not create a new department when required fields are not set', () => {
+          return createDepartment({
+            ...testDepartment,
+            name: null
+          })
+            .expect(res => {
+              expect(res.body).toHaveProperty('errors')
+              expect(res.body.data.createDepartment).toEqual(null)
+              expect(Array.isArray(res.body.errors)).toBe(true)
+            })
+            .expect(200)
+        })
+      })
+
       describe('create with non-unique code', () => {
         it('should not create a deparment if code is not unique', () => {
           // attempt to create a department of the same data
@@ -130,6 +146,13 @@ generateToken()
             .expect(res => {
               expect(res.body).toHaveProperty('data.department.name')
             })
+        })
+      })
+      describe('update', () => {
+        let departmentId = null
+        before(async () => {
+          const department = await Department.findOne()
+          departmentId = department._id
         })
         const updateDepartment = ({
           id,
@@ -213,6 +236,35 @@ generateToken()
               expect(res.body).toHaveProperty('errors')
               expect(res.body.data.updateDepartment).toEqual(null)
               expect(Array.isArray(res.body.errors)).toBe(true)
+            })
+        })
+      })
+
+      describe('delete', () => {
+        let departmentId = null
+        before(async () => {
+          const department = await Department.findOne()
+          departmentId = department._id
+        })
+        const deleteDepartment = ({
+          id
+        }, returnValues = `{
+          id
+        }`) => {
+          return request({
+            query: `
+              mutation{
+                deleteDepartment(
+                  id: "${id}",
+                ) ${returnValues}
+              }
+            `
+          }).set('x-token', token)
+        }
+        it('should delete a department', () => {
+          return deleteDepartment({ id: departmentId })
+            .expect(res => {
+              expect(res.body).toHaveProperty('data.deleteDepartment.id')
             })
         })
       })

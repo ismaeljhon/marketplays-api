@@ -29,18 +29,22 @@ const typeDefs = gql`
       seoKeywords: String
       seoDescription: String
     ) : Department @isAuthenticated
+
+    deleteDepartment(
+      id: ID!
+    ) : Department @isAuthenticated    
   }
 
   type Department {
     id: ID!
     name: String!
     code: String!
-    description: String!
-    slug: String!
+    description: String
+    slug: String
     pricing: Float!
-    seoTitle: String!
-    seoKeywords: String!
-    seoDescription: String!      
+    seoTitle: String
+    seoKeywords: String
+    seoDescription: String
   }
 `
 
