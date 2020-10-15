@@ -1,10 +1,13 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
+const faker = require('faker')
 
+const firstName = faker.name.firstName()
+const lastName = faker.name.lastName()
 const testUser = {
-  fullName: 'John Doe',
-  email: 'john@doe.com',
-  password: 'test1234'
+  fullName: firstName + ' ' + lastName,
+  email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
+  password: faker.internet.password(20)
 }
 
 const signup = ({ fullName, email, password }, returnValues = `{
