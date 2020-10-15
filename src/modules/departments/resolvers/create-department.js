@@ -11,28 +11,24 @@ const createDepartment = async (_, {
   seoKeywords,
   seoDescription
 }) => {
-  // code should be unique
-  const existingDepartment = await Department.findOne({
-    code: code
-  })
-  if (existingDepartment) {
-    throw new UserInputError(`Department of code '${code}' aleady exists!`)
-  }
+  try {
+    const department = await Department.create({
+      name,
+      code,
+      description,
+      slug,
+      pricing,
+      seoTitle,
+      seoKeywords,
+      seoDescription
+    })
 
-  const department = await Department.create({
-    name,
-    code,
-    description,
-    slug,
-    pricing,
-    seoTitle,
-    seoKeywords,
-    seoDescription
-  })
-
-  return {
-    ...department._doc,
-    id: department._id
+    return {
+      ...department._doc,
+      id: department._id
+    }
+  } catch (error) {
+    throw new UserInputError(error)
   }
 }
 
