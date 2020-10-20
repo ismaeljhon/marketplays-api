@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-var uniqueValidator = require('mongoose-unique-validator')
+const uniqueValidator = require('mongoose-unique-validator')
+const autopopulate = require('mongoose-autopopulate')
 
 const departmentSchema = new mongoose.Schema({
   name: {
@@ -31,10 +32,14 @@ const departmentSchema = new mongoose.Schema({
   },
   seoDescription: {
     type: String
+  },
+  teamLead: {
+    type: String
   }
 })
 
 departmentSchema.plugin(uniqueValidator)
+departmentSchema.plugin(autopopulate)
 
 const Department = mongoose.model('Department', departmentSchema)
 

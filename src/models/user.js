@@ -23,6 +23,9 @@ const userSchema = new mongoose.Schema({
   },
   lastActive: {
     type: Date
+  },
+  teamLeadOf: {
+    type: [String]
   }
 })
 
