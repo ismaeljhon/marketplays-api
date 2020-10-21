@@ -16,7 +16,7 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  items: {
+  orderlines: {
     type: [String] // @TODO - this will be an array of products or services
   }
 })
