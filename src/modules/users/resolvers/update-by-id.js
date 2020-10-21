@@ -22,7 +22,9 @@ UserTC.addResolver({
   args: oldUpdateById.args,
   description: oldUpdateById.description,
   resolve: async ({ source, args }) => {
-    args.record.hashedPassword = await bcrypt.hash(args.record.password, SALT_ROUNDS)
+    if (args.record.password) {
+      args.record.hashedPassword = await bcrypt.hash(args.record.password, SALT_ROUNDS)
+    }
     return oldUpdateById.resolve(source, args)
   }
 })
