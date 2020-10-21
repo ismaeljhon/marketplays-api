@@ -142,6 +142,7 @@ describe('department', () => {
       record {
         name
         code
+        seoDescription
       }
     }`) => {
       return request({
@@ -194,6 +195,7 @@ describe('department', () => {
         .expect(res => {
           expect(res.body).toHaveProperty('data.DepartmentUpdateById.record.name')
           expect(res.body.data.DepartmentUpdateById.record.name).toStrictEqual(updatedDepartment.name)
+          expect(res.body.data.DepartmentUpdateById.record.seoDescription).not.toBeNull()
         })
     })
     it('should not update an non-existent department', () => {
