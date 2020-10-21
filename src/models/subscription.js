@@ -8,7 +8,7 @@ const subscriptionSchema = new mongoose.Schema({
     type: String // @TODO - reference to subscription type
   },
   jobs: {
-    type: [String] // @TODO - represents an array or jobs
+    type: [String] // @TODO - represents an array of jobs
   }
 })
 
