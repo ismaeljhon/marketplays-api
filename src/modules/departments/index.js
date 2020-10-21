@@ -32,6 +32,11 @@ const typeDefs = gql`
 
     deleteDepartment(
       id: ID!
+    ) : Department @isAuthenticated
+
+    assignTeamLeadToDepartment(
+      userId: ID!
+      departmentId: ID!
     ) : Department @isAuthenticated    
   }
 
@@ -45,6 +50,7 @@ const typeDefs = gql`
     seoTitle: String
     seoKeywords: String
     seoDescription: String
+    teamLead: User
   }
 `
 
