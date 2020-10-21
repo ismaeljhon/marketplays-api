@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
-var uniqueValidator = require('mongoose-unique-validator')
+const uniqueValidator = require('mongoose-unique-validator')
+const autopopulate = require('mongoose-autopopulate')
 
 const departmentSchema = new mongoose.Schema({
   name: {
@@ -34,12 +34,12 @@ const departmentSchema = new mongoose.Schema({
     type: String
   },
   teamLead: {
-    type: Schema.Types.ObjectId,
-    ref: 'User'
+    type: String
   }
 })
 
 departmentSchema.plugin(uniqueValidator)
+departmentSchema.plugin(autopopulate)
 
 const Department = mongoose.model('Department', departmentSchema)
 

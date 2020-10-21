@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
 const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
@@ -7,7 +6,8 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   hashedPassword: {
     type: String,
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
     type: Date
   },
   teamLeadOf: {
-    type: [{ type: Schema.Types.ObjectId, ref: 'Department' }]
+    type: [String]
   }
 })
 
