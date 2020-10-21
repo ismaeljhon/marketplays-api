@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const Schema = mongoose.Schema
 const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
@@ -23,6 +23,9 @@ const userSchema = new mongoose.Schema({
   },
   lastActive: {
     type: Date
+  },
+  teamLeadOf: {
+    type: [{ type: Schema.Types.ObjectId, ref: 'Department' }]
   }
 })
 

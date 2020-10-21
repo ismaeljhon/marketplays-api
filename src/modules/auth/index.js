@@ -29,6 +29,7 @@ const typeDefs = gql`
     fullName: String!
     email: String!
     password: String!
+    teamLeadOf: [ Department ]
   }
 `
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 var uniqueValidator = require('mongoose-unique-validator')
 
 const departmentSchema = new mongoose.Schema({
@@ -31,6 +32,10 @@ const departmentSchema = new mongoose.Schema({
   },
   seoDescription: {
     type: String
+  },
+  teamLead: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }
 })
 

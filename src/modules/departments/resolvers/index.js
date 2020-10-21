@@ -3,6 +3,7 @@ const department = require('./department')
 const createDepartment = require('./create-department')
 const updateDepartment = require('./update-department')
 const deleteDepartment = require('./delete-department')
+const assignTeamLeadToDepartment = require('./assign-team-lead-to-department')
 
 const resolvers = {
   Query: {
@@ -12,7 +13,8 @@ const resolvers = {
   Mutation: {
     createDepartment,
     updateDepartment,
-    deleteDepartment
+    deleteDepartment,
+    assignTeamLeadToDepartment
   }
 }
 

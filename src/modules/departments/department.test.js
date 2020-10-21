@@ -4,6 +4,7 @@ const { request } = require('../../utils/test')
 const { AuthenticationError } = require('apollo-server-express')
 const { generateToken } = require('../../utils/generate-token')
 const Department = require('../../models/department')
+const User = require('../../models/user')
 
 generateToken()
   .then(response => {
@@ -236,6 +237,46 @@ generateToken()
               expect(res.body).toHaveProperty('errors')
               expect(res.body.data.updateDepartment).toEqual(null)
               expect(Array.isArray(res.body.errors)).toBe(true)
+            })
+        })
+      })
+
+      describe('team lead', () => {
+        let userId = null
+        let departmentId = null
+        before(async () => {
+          const user = await User.findOne()
+          userId = user._id
+          const department = await Department.findOne()
+          departmentId = department._id
+        })
+        const assignTeamLeadToDepartment = ({
+          userId,
+          departmentId
+        }, returnValues = `{
+          id,
+          teamLead {
+            id
+          }
+        }`) => {
+          return request({
+            query: `
+              mutation{
+                assignTeamLeadToDepartment(
+                  userId: "${userId}"
+                  departmentId: "${departmentId}"
+                ) ${returnValues}
+              }
+            `
+          }).set('x-token', token)
+        }
+        it('should add a team lead to the department', () => {
+          return assignTeamLeadToDepartment({
+            userId: userId,
+            departmentId: departmentId
+          })
+            .expect(res => {
+              expect(res.body).toHaveProperty('data.assignTeamLeadToDepartment.teamLead')
             })
         })
       })

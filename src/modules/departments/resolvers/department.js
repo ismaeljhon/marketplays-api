@@ -5,6 +5,7 @@ const department = async (_, args) => {
   const { id } = args
   const department = await Department
     .findById(id)
+    .populate('teamLead')
 
   if (!department) {
     throw new ApolloError('Not found')
