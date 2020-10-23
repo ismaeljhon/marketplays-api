@@ -13,11 +13,11 @@ schemaComposer.getITC('UpdateByIdUserInput')
   })
 
 // update 'updateById' to apply hash
-const oldUpdateById = schemaComposer.Mutation.getField('UserUpdateById')
-schemaComposer.Mutation.removeField('UserUpdateById')
+const oldUpdateById = schemaComposer.Mutation.getField('updateUserById')
+schemaComposer.Mutation.removeField('updateUserById')
 
 UserTC.addResolver({
-  name: 'UserUpdateById',
+  name: 'updateUserById',
   type: 'UpdateByIdUserPayload',
   args: oldUpdateById.args,
   description: oldUpdateById.description,
@@ -30,5 +30,5 @@ UserTC.addResolver({
 })
 
 schemaComposer.Mutation.addFields({
-  UserUpdateById: UserTC.getResolver('UserUpdateById')
+  updateUserById: UserTC.getResolver('updateUserById')
 })
