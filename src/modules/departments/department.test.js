@@ -67,10 +67,10 @@ describe('department', () => {
       return createDepartment(newDepartment)
         .expect(res => {
           expect(res.body).toHaveProperty('errors')
-          expect(res.body.data.DepartmentCreateOne).toEqual(null)
+          expect(res.body.data).toEqual(undefined)
           expect(Array.isArray(res.body.errors)).toBe(true)
         })
-        .expect(200)
+        .expect(400)
     })
     it('should not create a deparment if code is not unique', () => {
       // attempt to create a department of the same data
