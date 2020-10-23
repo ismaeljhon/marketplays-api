@@ -8,7 +8,7 @@ const serviceSchema = new mongoose.Schema({
   description: {
     type: String
   },
-  short_description: {
+  shortDescription: {
     type: String
   },
   pricing: {
@@ -18,7 +18,7 @@ const serviceSchema = new mongoose.Schema({
   slug: {
     type: String
   },
-  workforce_threshold: {
+  workforceThreshold: {
     type: Number
   },
   tags: {
