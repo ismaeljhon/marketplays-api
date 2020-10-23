@@ -61,10 +61,10 @@ describe('department', () => {
         .expect(200)
     })
     it('should not create a new department when required fields are not set', () => {
-      return createDepartment({
-        ...testDepartment,
-        name: null
-      })
+      let newDepartment = {
+        code: faker.random.alpha(4).toUpperCase()
+      }
+      return createDepartment(newDepartment)
         .expect(res => {
           expect(res.body).toHaveProperty('errors')
           expect(res.body.data.DepartmentCreateOne).toEqual(null)
