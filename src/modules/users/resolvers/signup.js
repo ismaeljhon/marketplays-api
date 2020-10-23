@@ -6,29 +6,11 @@ const SALT_ROUNDS = 12
 
 const UserTC = schemaComposer.getOTC('User')
 
-// add types for signup
-schemaComposer.createInputTC({
-  name: 'SignupUserInput',
-  fields: {
-    fullName: 'String!',
-    email: 'String!',
-    password: 'String!'
-  }
-})
-const UserSignupPayload = schemaComposer.createObjectTC({
-  name: 'UserSignupPayload',
-  fields: {
-    recordId: 'MongoID',
-    record: 'User',
-    error: 'ErrorInterface'
-  }
-})
-
 // remove create user and replace with signup
 schemaComposer.Mutation.removeField('UserCreateOne')
 UserTC.addResolver({
   name: 'UserSignup',
-  type: UserSignupPayload,
+  type: 'UserSignupPayload',
   args: {
     record: 'SignupUserInput!'
   },

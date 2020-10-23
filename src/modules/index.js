@@ -28,12 +28,16 @@ models.forEach(model => {
   addToSchema(model, {})
 })
 
+// check for any custom relationships, types and resolvers
+let customDefinitions = [ 'types', 'relations', 'resolvers' ]
 models.forEach(model => {
-  // check for custom options
   let directory = pluralize(model.collection.collectionName)
-  glob.sync(`./src/modules/${directory}/resolvers/!(index).js`).forEach(file => {
-    models.push(require(path.resolve(file)))
+  customDefinitions.forEach(definition => {
+    glob.sync(`./src/modules/${directory}/${definition}/!(index).js`).forEach(file => {
+      models.push(require(path.resolve(file)))
+    })
   })
 })
+
 const graphqlSchema = schemaComposer.buildSchema()
 module.exports = graphqlSchema
