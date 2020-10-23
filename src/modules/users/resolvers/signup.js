@@ -11,6 +11,7 @@ UserTC.addResolver({
   args: {
     record: 'SignupUserInput!'
   },
+  description: 'Registers a user',
   resolve: async ({ source, args }) => {
     const user = await User.signup(args.record)
     return {
