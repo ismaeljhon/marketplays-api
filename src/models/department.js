@@ -2,8 +2,7 @@ const mongoose = require('mongoose')
 const Schema = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 const autopopulate = require('mongoose-autopopulate')
-
-const User = require('./user')
+const generateModel = require('../utils/generate-model')
 
 const departmentSchema = new mongoose.Schema({
   name: {
@@ -39,20 +38,9 @@ const departmentSchema = new mongoose.Schema({
   }
 })
 
-// apply pre, post hooks
-departmentSchema.post('save', async (department, next) => {
-  // add department to user teamLead of
-  // @TODO - add check if adding a department to a user fails
-  await User.updateOne(
-    { _id: department.teamLead },
-    { $push: { teamLeadOf: department._id } }
-  )
-  next()
-})
-
 departmentSchema.plugin(uniqueValidator)
 departmentSchema.plugin(autopopulate)
 
-const Department = mongoose.model('Department', departmentSchema)
+const Department = generateModel('Department', departmentSchema)
 
 module.exports = Department

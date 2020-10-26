@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const generateModel = require('../utils/generate-model')
 
 const orderlineSchema = new mongoose.Schema({
   name: {
@@ -24,6 +25,6 @@ const orderlineSchema = new mongoose.Schema({
   }
 })
 
-const Orderline = mongoose.model('Orderline', orderlineSchema)
+const Orderline = generateModel('Orderline', orderlineSchema)
 
 module.exports = Orderline

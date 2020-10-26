@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const generateModel = require('../utils/generate-model')
 
 const jobCategorySchema = new mongoose.Schema({
   name: {
@@ -19,6 +20,6 @@ const jobCategorySchema = new mongoose.Schema({
   }
 })
 
-const JobCategory = mongoose.model('JobCategory', jobCategorySchema)
+const JobCategory = generateModel('JobCategory', jobCategorySchema)
 
 module.exports = JobCategory
