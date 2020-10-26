@@ -3,6 +3,8 @@ const Schema = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 const autopopulate = require('mongoose-autopopulate')
 
+const User = require('./user')
+
 const departmentSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -35,6 +37,17 @@ const departmentSchema = new mongoose.Schema({
   teamLead: {
     type: Schema.Types.ObjectId
   }
+})
+
+// apply pre, post hooks
+departmentSchema.post('save', async (department, next) => {
+  // add department to user teamLead of
+  // @TODO - add check if adding a department to a user fails
+  await User.updateOne(
+    { _id: department.teamLead },
+    { $push: { teamLeadOf: department._id } }
+  )
+  next()
 })
 
 departmentSchema.plugin(uniqueValidator)
