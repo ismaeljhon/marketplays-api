@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
-const { UserInputError } = require('apollo-server-express')
+const Schema = require('mongoose')
 const bcrypt = require('bcrypt')
+const { UserInputError } = require('apollo-server-express')
 const uniqueValidator = require('mongoose-unique-validator')
 const SALT_ROUNDS = 12
 
@@ -30,7 +31,7 @@ const userSchema = new mongoose.Schema({
     type: Date
   },
   teamLeadOf: {
-    type: [String]
+    type: [Schema.Types.ObjectId]
   }
 })
 

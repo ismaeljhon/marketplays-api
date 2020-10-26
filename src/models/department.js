@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 const autopopulate = require('mongoose-autopopulate')
 
@@ -13,12 +14,10 @@ const departmentSchema = new mongoose.Schema({
     unique: true
   },
   description: {
-    type: String,
-    required: true
+    type: String
   },
   slug: {
-    type: String,
-    required: true
+    type: String
   },
   pricing: {
     type: Number,
@@ -34,7 +33,7 @@ const departmentSchema = new mongoose.Schema({
     type: String
   },
   teamLead: {
-    type: String
+    type: Schema.Types.ObjectId
   }
 })
 
