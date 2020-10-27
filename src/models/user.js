@@ -1,7 +1,10 @@
 const mongoose = require('mongoose')
-const { UserInputError } = require('apollo-server-express')
+const Schema = require('mongoose')
 const bcrypt = require('bcrypt')
+const { UserInputError } = require('apollo-server-express')
 const uniqueValidator = require('mongoose-unique-validator')
+const generateModel = require('../utils/generate-model')
+
 const SALT_ROUNDS = 12
 
 const userSchema = new mongoose.Schema({
@@ -30,7 +33,7 @@ const userSchema = new mongoose.Schema({
     type: Date
   },
   teamLeadOf: {
-    type: [String]
+    type: [Schema.Types.ObjectId]
   }
 })
 
@@ -77,6 +80,6 @@ userSchema.statics.signup = async ({
 // plugins
 userSchema.plugin(uniqueValidator)
 
-const User = mongoose.model('User', userSchema)
+const User = generateModel('User', userSchema)
 
 module.exports = User

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const generateModel = require('../utils/generate-model')
 
 const subscriptionSchema = new mongoose.Schema({
   orderline: {
@@ -12,6 +13,6 @@ const subscriptionSchema = new mongoose.Schema({
   }
 })
 
-const Subscription = mongoose.model('Subscription', subscriptionSchema)
+const Subscription = generateModel('Subscription', subscriptionSchema)
 
 module.exports = Subscription

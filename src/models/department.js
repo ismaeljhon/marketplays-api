@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 const autopopulate = require('mongoose-autopopulate')
+const generateModel = require('../utils/generate-model')
 
 const departmentSchema = new mongoose.Schema({
   name: {
@@ -13,12 +15,10 @@ const departmentSchema = new mongoose.Schema({
     unique: true
   },
   description: {
-    type: String,
-    required: true
+    type: String
   },
   slug: {
-    type: String,
-    required: true
+    type: String
   },
   pricing: {
     type: Number,
@@ -34,13 +34,13 @@ const departmentSchema = new mongoose.Schema({
     type: String
   },
   teamLead: {
-    type: String
+    type: Schema.Types.ObjectId
   }
 })
 
 departmentSchema.plugin(uniqueValidator)
 departmentSchema.plugin(autopopulate)
 
-const Department = mongoose.model('Department', departmentSchema)
+const Department = generateModel('Department', departmentSchema)
 
 module.exports = Department

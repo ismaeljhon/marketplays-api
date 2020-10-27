@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const generateModel = require('../utils/generate-model')
 
 const customerSchema = new mongoose.Schema({
   name: {
@@ -13,6 +14,6 @@ const customerSchema = new mongoose.Schema({
   }
 })
 
-const Customer = mongoose.model('Customer', customerSchema)
+const Customer = generateModel('Customer', customerSchema)
 
 module.exports = Customer

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const generateModel = require('../utils/generate-model')
 
 const subscriptionTypeSchema = new mongoose.Schema({
   name: {
@@ -16,6 +17,6 @@ const subscriptionTypeSchema = new mongoose.Schema({
   }
 })
 
-const SubscriptionType = mongoose.model('SubscriptionType', subscriptionTypeSchema)
+const SubscriptionType = generateModel('SubscriptionType', subscriptionTypeSchema)
 
 module.exports = SubscriptionType

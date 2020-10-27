@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const generateModel = require('../utils/generate-model')
 
 const jobSchema = new mongoose.Schema({
   title: {
@@ -48,6 +49,6 @@ const jobSchema = new mongoose.Schema({
   }
 })
 
-const Job = mongoose.model('Job', jobSchema)
+const Job = generateModel('Job', jobSchema)
 
 module.exports = Job
