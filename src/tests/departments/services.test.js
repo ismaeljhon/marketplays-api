@@ -1,8 +1,7 @@
 const expect = require('expect')
-const { request } = require('../../utils/test')
 const faker = require('faker')
+const { request } = require('../../utils/test')
 const Service = require('../../models/service')
-const { it } = require('faker/lib/locales')
 
 const fakeDepartment = {
   name: faker.lorem.words(3),
