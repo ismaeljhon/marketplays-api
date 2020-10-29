@@ -13,18 +13,20 @@ const generateModel = (name, schema) => {
   try {
     let directory = pluralize(name.charAt(0).toLowerCase() + name.slice(1))
     const hooks = require(`../modules/${directory}/hooks/index.js`)
-    const ons = ['init', 'validate', 'save', 'remove']
     if (hooks) {
-      ons.forEach(on => {
-        const pre = hooks.pre
-        const post = hooks.post
-        if (pre && pre[on]) {
-          schema.pre(on, pre[on])
-        }
-        if (post && post[on]) {
-          schema.post(on, post[on])
-        }
-      })
+      const pre = hooks.pre
+      const post = hooks.post
+      if (pre) {
+        Object.keys(pre).forEach(key => {
+          schema.pre(key, pre[key])
+        })
+      }
+
+      if (post) {
+        Object.keys(post).forEach(key => {
+          schema.post(key, post[key])
+        })
+      }
     }
   } catch (error) {
     // no hooks found for the current model

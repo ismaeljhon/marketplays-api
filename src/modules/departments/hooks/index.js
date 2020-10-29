@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const User = require('../../../models/user')
 
 const hooks = {
@@ -10,6 +11,21 @@ const hooks = {
         { $push: { teamLeadOf: department._id } }
       )
       next()
+    }
+  },
+  pre: {
+    save: function (next) {
+      // delete department under old teamLead
+      // if trying to update team lead
+      return this.constructor.findById(this._id).exec()
+        .then(department => {
+          if (department && department.teamLead) {
+            mongoose.models['User'].updateOne(
+              { _id: department.teamLead._id },
+              { $pull: { teamLeadOf: department._id } }
+            ).exec()
+          }
+        })
     }
   }
 }
