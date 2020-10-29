@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
 
 const serviceSchema = new mongoose.Schema({
   name: {
@@ -41,6 +42,10 @@ const serviceSchema = new mongoose.Schema({
   },
   image: {
     type: String
+  },
+  department: {
+    type: Schema.Types.ObjectId,
+    default: null
   }
 })
 
