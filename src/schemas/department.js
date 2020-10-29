@@ -34,6 +34,10 @@ const departmentSchema = new mongoose.Schema({
   teamLead: {
     type: Schema.Types.ObjectId,
     default: null
+  },
+  services: {
+    type: [Schema.Types.ObjectId],
+    default: []
   }
 })
 
