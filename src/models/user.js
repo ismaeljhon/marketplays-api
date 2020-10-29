@@ -1,44 +1,11 @@
-const mongoose = require('mongoose')
-const Schema = require('mongoose')
+const userSchema = require('../schemas/user')
 const bcrypt = require('bcrypt')
 const { UserInputError } = require('apollo-server-express')
-const uniqueValidator = require('mongoose-unique-validator')
 const generateModel = require('../utils/generate-model')
 
 const SALT_ROUNDS = 12
 
-const userSchema = new mongoose.Schema({
-  fullName: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  hashedPassword: {
-    type: String,
-    required: true
-  },
-  created: {
-    type: Date,
-    default: Date.now
-  },
-  changed: {
-    type: Date,
-    default: Date.now
-  },
-  lastActive: {
-    type: Date
-  },
-  teamLeadOf: {
-    type: [Schema.Types.ObjectId]
-  }
-})
-
 // statics
-
 /**
  * Registers a user
  * Also applies hash to the password automatically
@@ -76,9 +43,6 @@ userSchema.statics.signup = async ({
     throw error
   }
 }
-
-// plugins
-userSchema.plugin(uniqueValidator)
 
 const User = generateModel('User', userSchema)
 
