@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
 const userSchema = new mongoose.Schema({
@@ -27,7 +28,7 @@ const userSchema = new mongoose.Schema({
     type: Date
   },
   teamLeadOf: {
-    type: ['Department'], // for some reason, using departmentSchema throws unique errors
+    type: [Schema.Types.ObjectId],
     default: []
   }
 })

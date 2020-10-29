@@ -33,9 +33,7 @@ describe('department team lead', () => {
             name: "${fakeDepartment.name}",
             code: "${fakeDepartment.code}",
             pricing: ${fakeDepartment.pricing},
-            teamLead: {
-              _id: "${users[0]._id}"
-            }
+            teamLead: "${users[0]._id}"
           }) {
             record {
               _id
@@ -91,9 +89,7 @@ describe('department team lead', () => {
           updateDepartmentById(
             _id: "${departmentId}",
             record: {
-              teamLead: {
-                _id: "${users[1]._id}"
-              }
+              teamLead: "${users[1]._id}"
             }
           ) {
             record {
