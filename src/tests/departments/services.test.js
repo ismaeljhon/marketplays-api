@@ -22,7 +22,7 @@ describe('department services', () => {
     }
   })
 
-  let departmentId = null
+  let department = null
   it('should create a department with a service', () => {
     return request({
       query: `
@@ -34,6 +34,7 @@ describe('department services', () => {
             services: ["${services[0]._id}"]
           }) {
             record {
+              _id
               name
               services {
                 name
@@ -52,7 +53,7 @@ describe('department services', () => {
             })
           ])
         )
-        departmentId = res.body.data.createOneDepartment._id
+        department = res.body.data.createOneDepartment.record
       })
   })
 
@@ -72,7 +73,62 @@ describe('department services', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.service.department')
-        expect(res.body.data.service._id).toStrictEqual(departmentId)
+        expect(res.body.data.service.department._id).toStrictEqual(department._id)
+      })
+  })
+
+  it('should update the department\'s services', () => {
+    return request({
+      query: `
+        mutation {
+          updateDepartmentById(
+            _id: "${department._id}"
+            record: {
+              services: ["${services[1]._id}"]
+            }
+          ) {
+            record {
+              _id
+              name
+              services {
+                _id
+                name
+              }
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.updateDepartmentById.record')
+        expect(res.body.data.updateDepartmentById.record.services).toHaveLength(1)
+        expect(res.body.data.updateDepartmentById.record.services).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              name: services[1].name
+            })
+          ])
+        )
+      })
+  })
+
+  it('should also delete the old department in the service', () => {
+    return request({
+      query: `
+        query {
+          service(_id: "${services[0]._id}") {
+            _id
+            name
+            department {
+              name
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.service.department')
+        expect(res.body.data.service.department).toBeNull()
       })
   })
 })
