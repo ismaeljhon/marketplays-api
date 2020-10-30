@@ -8,12 +8,10 @@ const jobSchema = new mongoose.Schema({
     type: String
   },
   description: {
-    type: String,
-    required: true
+    type: String
   },
   instructions: {
-    type: String,
-    required: true
+    type: String
   },
   biddable: {
     type: Boolean
