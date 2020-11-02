@@ -12,12 +12,10 @@ const orderlineSchema = new mongoose.Schema({
     type: String
   },
   item: {
-    type: {
-      type: String
-    },
-    price: {
-      type: Number
-    }
+    type: String
+  },
+  price: {
+    type: Number
   },
   quantity: {
     type: Number

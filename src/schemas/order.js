@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
 
 const orderSchema = new mongoose.Schema({
   name: {
@@ -17,7 +18,8 @@ const orderSchema = new mongoose.Schema({
     default: Date.now
   },
   orderlines: {
-    type: [String] // @TODO - this will be an array of products or services
+    type: [Schema.Types.ObjectId],
+    default: []
   }
 })
 
