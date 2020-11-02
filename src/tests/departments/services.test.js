@@ -1,13 +1,10 @@
 const expect = require('expect')
-const faker = require('faker')
 const { request } = require('../../utils/test')
 const Service = require('../../models/service')
+const DepartmentFactory = require('../../utils/factories/department-factory')
+const ServiceFactory = require('../../utils/factories/service-factory')
 
-const fakeDepartment = {
-  name: faker.lorem.words(3),
-  code: faker.random.alphaNumeric(4).toUpperCase(),
-  pricing: faker.commerce.price(5, 300)
-}
+const fakeDepartment = DepartmentFactory.generate()
 
 describe('department services', () => {
   let services = []
@@ -15,10 +12,8 @@ describe('department services', () => {
   // create dummy services
   before(async () => {
     for (let x = 0; x <= 1; x++) {
-      services.push(await Service.create({
-        name: faker.lorem.words(4),
-        pricing: faker.commerce.price(10)
-      }))
+      const service = ServiceFactory.generate()
+      services.push(await Service.create(service))
     }
   })
 
