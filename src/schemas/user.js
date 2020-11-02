@@ -28,7 +28,11 @@ const userSchema = new mongoose.Schema({
     type: Date
   },
   teamLeadOf: {
-    type: [Schema.Types.ObjectId],
+    type: [Schema.Types.ObjectId], // department
+    default: []
+  },
+  projectManagerOf: {
+    type: [Schema.Types.ObjectId], // service
     default: []
   }
 })
