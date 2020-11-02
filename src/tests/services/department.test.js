@@ -1,6 +1,7 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
 const faker = require('faker')
+const DepartmentFactory = require('../../utils/factories/department-factory')
 const Department = require('../../models/department')
 
 describe('service department', () => {
@@ -8,11 +9,8 @@ describe('service department', () => {
   let departments = []
   before(async () => {
     for (let x = 0; x <= 1; x++) {
-      departments.push(await Department.create({
-        name: faker.lorem.words(3),
-        code: faker.random.alphaNumeric(4).toUpperCase(),
-        pricing: faker.commerce.price(5, 300)
-      }))
+      const department = DepartmentFactory.generate()
+      departments.push(await Department.create(department))
     }
   })
 
@@ -89,7 +87,7 @@ describe('service department', () => {
               department {
                 _id
                 name
-              }              
+              }
             }
           }
         }

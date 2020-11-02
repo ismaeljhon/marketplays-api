@@ -1,15 +1,9 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
-const faker = require('faker')
+const UserFactory = require('../../utils/factories/user-factory')
 
 describe('signup', () => {
-  const firstName = faker.name.firstName()
-  const lastName = faker.name.lastName()
-  const fakeUser = {
-    fullName: `${firstName} ${lastName}`,
-    email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
-    password: faker.internet.password(20)
-  }
+  const fakeUser = UserFactory.generate()
 
   it('should create a new user', () => {
     return request({

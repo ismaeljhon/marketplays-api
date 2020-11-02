@@ -1,26 +1,18 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
-const faker = require('faker')
 const User = require('../../models/user')
+const DepartmentFactory = require('../../utils/factories/department-factory')
+const UserFactory = require('../../utils/factories/user-factory')
 
-const fakeDepartment = {
-  name: faker.lorem.words(3),
-  code: faker.random.alphaNumeric(4).toUpperCase(),
-  pricing: faker.commerce.price(5, 300)
-}
+const fakeDepartment = DepartmentFactory.generate()
 
 describe('department team lead', () => {
   // create dummy users that will be team leads
   let users = []
   before(async () => {
     for (let x = 0; x <= 1; x++) {
-      const firstName = faker.name.firstName()
-      const lastName = faker.name.lastName()
-      users.push(await User.signup({
-        fullName: `${firstName} ${lastName}`,
-        email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
-        password: faker.internet.password(20)
-      }))
+      const user = UserFactory.generate()
+      users.push(await User.signup(user))
     }
   })
 
