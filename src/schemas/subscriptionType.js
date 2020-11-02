@@ -8,7 +8,7 @@ const subscriptionTypeSchema = new mongoose.Schema({
   description: {
     type: String
   },
-  short_description: {
+  shortDescription: {
     type: String
   },
   policy: {
