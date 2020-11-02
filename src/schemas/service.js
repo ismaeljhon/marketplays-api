@@ -35,7 +35,8 @@ const serviceSchema = new mongoose.Schema({
     type: String
   },
   projectManager: {
-    type: String
+    type: Schema.Types.ObjectId,
+    default: null
   },
   currency: {
     type: String
