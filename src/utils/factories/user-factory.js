@@ -12,4 +12,6 @@ const UserFactory = {
   }
 }
 
-module.exports = UserFactory
+module.exports = {
+  UserFactory: UserFactory
+}

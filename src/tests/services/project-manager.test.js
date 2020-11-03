@@ -1,8 +1,6 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
-const UserFactory = require('../../utils/factories/user-factory')
-const ServiceFactory = require('../../utils/factories/service-factory')
-const DepartmentFactory = require('../../utils/factories/department-factory')
+const { UserFactory, ServiceFactory, DepartmentFactory } = require('../../utils/factories/')
 const User = require('../../models/user')
 const Department = require('../../models/department')
 

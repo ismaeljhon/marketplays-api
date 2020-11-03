@@ -1,7 +1,7 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
 const faker = require('faker')
-const DepartmentFactory = require('../../utils/factories/department-factory')
+const { DepartmentFactory } = require('../../utils/factories/')
 const Department = require('../../models/department')
 
 describe('service department', () => {

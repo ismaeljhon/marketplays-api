@@ -1,6 +1,6 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
-const UserFactory = require('../../utils/factories/user-factory')
+const { UserFactory } = require('../../utils/factories/')
 
 describe('signup', () => {
   const fakeUser = UserFactory.generate()
