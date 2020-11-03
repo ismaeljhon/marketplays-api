@@ -16,4 +16,6 @@ const DepartmentFactory = {
   }
 }
 
-module.exports = DepartmentFactory
+module.exports = {
+  DepartmentFactory: DepartmentFactory
+}

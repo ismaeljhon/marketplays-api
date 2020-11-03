@@ -1,8 +1,7 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
 const User = require('../../models/user')
-const DepartmentFactory = require('../../utils/factories/department-factory')
-const UserFactory = require('../../utils/factories/user-factory')
+const { DepartmentFactory, UserFactory } = require('../../utils/factories/')
 
 const fakeDepartment = DepartmentFactory.generate()
 

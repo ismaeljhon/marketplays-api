@@ -20,4 +20,6 @@ const ServiceFactory = {
   }
 }
 
-module.exports = ServiceFactory
+module.exports = {
+  ServiceFactory: ServiceFactory
+}
