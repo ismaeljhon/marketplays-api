@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const Schema = require('mongoose')
 
 const orderSchema = new mongoose.Schema({
-  name: {
-    type: String,
+  customer: {
+    type: Schema.Types.ObjectId,
     required: true
   },
   orderNumber: {

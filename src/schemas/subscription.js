@@ -1,14 +1,18 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
 
 const subscriptionSchema = new mongoose.Schema({
-  orderline: {
-    type: String // @TODO - reference to orderline
+  orderline: { // @TODO - required?
+    type: Schema.Types.ObjectId
   },
   subscriptionType: {
-    type: String // @TODO - reference to subscription type
+    type: Schema.Types.ObjectId
   },
-  jobs: {
-    type: [String] // @TODO - represents an array of jobs
+  services: {
+    type: [Schema.Types.ObjectId]
+  },
+  totalPrice: {
+    type: Number
   }
 })
 
