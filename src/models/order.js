@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const { uniq, keyBy, map } = require('lodash')
+const { union, uniq, keyBy, map } = require('lodash')
 const { UserInputError } = require('apollo-server-express')
 const orderSchema = require('../schemas/order')
 const generateModel = require('../utils/generate-model')
@@ -13,6 +13,10 @@ orderSchema.statics.createNew = async ({
     // make sure order is for a valid customer
     const Customer = mongoose.models['Customer']
     const Product = mongoose.models['Product']
+    const Service = mongoose.models['Service']
+    const SubscriptionType = mongoose.models['SubscriptionType']
+    const Subscription = mongoose.models['Subscription']
+    const Order = mongoose.models['Order']
     const Orderline = mongoose.models['Orderline']
     const existingCustomer = await Customer.findById(customer)
     if (!existingCustomer) {
@@ -34,24 +38,85 @@ orderSchema.statics.createNew = async ({
       throw new UserInputError('Items contain invalid product(s)')
     }
 
+    let serviceIds = []
+    let subscriptionTypeIds = []
+    subscriptions.forEach(subscription => {
+      if (subscription.services.length <= 0) {
+        throw new UserInputError('A subscription contains no service(s)')
+      }
+
+      if (!subscription.type) {
+        throw new UserInputError('A subscription has no type')
+      }
+      serviceIds = union(subscription.services, serviceIds)
+      subscriptionTypeIds.push(subscription.type)
+    })
+    subscriptionTypeIds = uniq(subscriptionTypeIds)
+    const services = await Service.find({
+      '_id': { $in: serviceIds }
+    })
+    if (serviceIds.length !== services.length) {
+      throw new UserInputError('Items contain invalid service(s)')
+    }
+
     // create the order
     let order = await Order.create({
       customer: customer
     })
 
-    // create the orderlines
-    const keyedProducts = keyBy(productModels, 'sku')
+    // create the subscriptions first
+    const keyedSubscriptionTypes = keyBy(await SubscriptionType.find({
+      '_id': { $in: subscriptionTypeIds }
+    }), '_id')
+
+    const keyedServices = keyBy(services, '_id')
+    let subscriptionData = []
+    subscriptions.forEach(subscription => {
+      let type = keyedSubscriptionTypes[subscription.type]
+      if (!type.policyCompliant(subscription.services)) {
+        throw new UserInputError('Subscriptions contain services not compliant with subscription type policy')
+      }
+
+      // assuming a service can only be added once per subscription,
+      // get the total cost of the subscription
+      let totalPrice = 0
+      subscription.services.forEach(service => {
+        totalPrice += keyedServices[service].pricing
+      })
+      subscriptionData.push({
+        subscriptionType: subscription.type,
+        services: subscription.services,
+        totalPrice: totalPrice
+      })
+    })
+    const createdSubscriptions = await Subscription.insertMany(subscriptionData)
+
+    /// prepare orderlines to be created
     let orderlineData = []
+    createdSubscriptions.forEach(createdSubscription => {
+      orderlineData.push({
+        subscription: createdSubscription._id,
+        unitPrice: createdSubscription.totalPrice,
+        quantity: 1,
+        totalPrice: createdSubscription.totalPrice
+      })
+    })
+    const keyedProducts = keyBy(productModels, 'sku')
     products.forEach(product => {
       orderlineData.push({
         order: order._id,
-        item: keyedProducts[product.sku]._id,
+        product: keyedProducts[product.sku]._id,
         unitPrice: keyedProducts[product.sku].price,
         quantity: product.quantity,
         totalPrice: keyedProducts[product.sku].price * product.quantity
       })
     })
+
+    // create the orderlines
     const orderlines = await Orderline.insertMany(orderlineData)
+
+    // @TODO - add orderline to subscription
+
     order.set('orderlines', orderlines)
     order.save()
     return order

@@ -8,7 +8,10 @@ const orderlineSchema = new mongoose.Schema({
   orderlineNumber: {
     type: String
   },
-  item: {
+  product: {
+    type: Schema.Types.ObjectId
+  },
+  subscription: {
     type: Schema.Types.ObjectId
   },
   unitPrice: {
