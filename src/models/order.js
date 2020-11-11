@@ -92,18 +92,32 @@ orderSchema.statics.createNew = async ({
     const createdSubscriptions = await Subscription.insertMany(subscriptionData)
 
     /// prepare orderlines to be created
-    let orderlineData = []
+    let subscriptionOrderlineData = []
     createdSubscriptions.forEach(createdSubscription => {
-      orderlineData.push({
+      subscriptionOrderlineData.push({
+        order: order._id,
         subscription: createdSubscription._id,
         unitPrice: createdSubscription.totalPrice,
         quantity: 1,
         totalPrice: createdSubscription.totalPrice
       })
     })
+
+    // create the orderlines for the subscriptions
+    const subscriptionOrderlines = await Orderline.insertMany(subscriptionOrderlineData)
+
+    // update subscriptions to set the orderline reference
+    subscriptionOrderlines.forEach(async subscriptionOrderline => {
+      await Subscription.updateOne(
+        { _id: subscriptionOrderline.subscription },
+        { $set: { orderline: subscriptionOrderline._id } }
+      )
+    })
+
+    let productOrderlineData = []
     const keyedProducts = keyBy(productModels, 'sku')
     products.forEach(product => {
-      orderlineData.push({
+      productOrderlineData.push({
         order: order._id,
         product: keyedProducts[product.sku]._id,
         unitPrice: keyedProducts[product.sku].price,
@@ -112,12 +126,14 @@ orderSchema.statics.createNew = async ({
       })
     })
 
-    // create the orderlines
-    const orderlines = await Orderline.insertMany(orderlineData)
+    // create the orderlines for the products
+    const productOrderlines = await Orderline.insertMany(productOrderlineData)
 
     // @TODO - add orderline to subscription
-
-    order.set('orderlines', orderlines)
+    order.set('orderlines', [
+      ...subscriptionOrderlines,
+      ...productOrderlines
+    ])
     order.save()
     return order
   } catch (error) {
