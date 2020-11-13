@@ -14,6 +14,10 @@ const subscriptionSchema = new mongoose.Schema({
   },
   totalPrice: {
     type: Number
+  },
+  serviceRequests: {
+    type: [Schema.Types.ObjectId],
+    default: []
   }
 })
 

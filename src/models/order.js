@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const { union, uniq, keyBy, map, sum } = require('lodash')
+const { union, uniq, keyBy, map, sum, groupBy, keys } = require('lodash')
 const { UserInputError } = require('apollo-server-express')
 const orderSchema = require('../schemas/order')
 const generateModel = require('../utils/generate-model')
@@ -18,6 +18,7 @@ orderSchema.statics.createNew = async ({
     const Subscription = mongoose.models['Subscription']
     const Order = mongoose.models['Order']
     const Orderline = mongoose.models['Orderline']
+    const ServiceRequest = mongoose.models['ServiceRequest']
     const existingCustomer = await Customer.findById(customer)
     if (!existingCustomer) {
       throw new UserInputError('Customer does not exist')
@@ -91,9 +92,18 @@ orderSchema.statics.createNew = async ({
     })
     const createdSubscriptions = await Subscription.insertMany(subscriptionData)
 
-    /// prepare orderlines to be created
+    /// prepare orderlines, service requests to be created
+    let serviceRequestData = []
     let subscriptionOrderlineData = []
+
     createdSubscriptions.forEach(createdSubscription => {
+      createdSubscription.services.forEach(service => {
+        serviceRequestData.push({
+          subscription: createdSubscription._id,
+          service: service
+        })
+      })
+
       subscriptionOrderlineData.push({
         order: order._id,
         subscription: createdSubscription._id,
@@ -101,6 +111,16 @@ orderSchema.statics.createNew = async ({
         quantity: 1,
         totalPrice: createdSubscription.totalPrice
       })
+    })
+
+    // @TODO - move to subscription post-save hook?
+    const createdServiceRequests = await ServiceRequest.insertMany(serviceRequestData)
+    const groupedServiceRequests = groupBy(createdServiceRequests, 'subscription')
+    keys(groupedServiceRequests).forEach(async key => {
+      await Subscription.updateOne(
+        { _id: key },
+        { $set: { serviceRequests: groupedServiceRequests[key] } }
+      )
     })
 
     // create the orderlines for the subscriptions
