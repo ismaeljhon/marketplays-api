@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const { union, uniq, keyBy, map } = require('lodash')
+const { union, uniq, keyBy, map, sum } = require('lodash')
 const { UserInputError } = require('apollo-server-express')
 const orderSchema = require('../schemas/order')
 const generateModel = require('../utils/generate-model')
@@ -128,12 +128,17 @@ orderSchema.statics.createNew = async ({
 
     // create the orderlines for the products
     const productOrderlines = await Orderline.insertMany(productOrderlineData)
-
-    // @TODO - add orderline to subscription
     order.set('orderlines', [
       ...subscriptionOrderlines,
       ...productOrderlines
     ])
+
+    // update total price
+    order.totalAmount = sum(map([
+      ...subscriptionOrderlines,
+      ...productOrderlines
+    ], 'totalPrice'))
+
     order.save()
     return order
   } catch (error) {

@@ -54,6 +54,7 @@ describe('create an order', () => {
                 unitPrice
                 totalPrice
               }
+              totalAmount
             }
           }
         }
@@ -72,6 +73,7 @@ describe('create an order', () => {
         )
         expect(res.body.data.createOneOrder.record.orderlines[0].unitPrice).toStrictEqual(data.products[0].price)
         expect(res.body.data.createOneOrder.record.orderlines[0].totalPrice).toStrictEqual(data.products[0].price * 4)
+        expect(res.body.data.createOneOrder.record.totalAmount).toStrictEqual((data.products[0].price * 4) + (data.products[1].price * 2))
       })
       .expect(200)
   })
@@ -112,6 +114,7 @@ describe('create an order', () => {
                 unitPrice
                 totalPrice
               }
+              totalAmount
             }
           }
         }
@@ -127,6 +130,8 @@ describe('create an order', () => {
           ])
         )
         expect(res.body.data.createOneOrder.record.orderlines[1].totalPrice).toStrictEqual(data.services[1].pricing + data.services[0].pricing)
+
+        expect(res.body.data.createOneOrder.record.totalAmount).toStrictEqual((data.services[1].pricing + data.services[0].pricing) * 2)
       })
   })
 

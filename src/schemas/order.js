@@ -20,6 +20,9 @@ const orderSchema = new mongoose.Schema({
   orderlines: {
     type: [Schema.Types.ObjectId],
     default: []
+  },
+  totalAmount: {
+    type: Number
   }
 })
 
