@@ -3,6 +3,7 @@ const { union, uniq, keyBy, map, sum, groupBy, keys } = require('lodash')
 const { UserInputError } = require('apollo-server-express')
 const orderSchema = require('../schemas/order')
 const generateModel = require('../utils/generate-model')
+const generateId = require('../utils/generate-id')
 
 orderSchema.statics.createNew = async ({
   customer,
@@ -61,8 +62,10 @@ orderSchema.statics.createNew = async ({
     }
 
     // create the order
+    const orderNumber = generateId()
     let order = await Order.create({
-      customer: customer
+      customer: customer,
+      orderNumber: orderNumber
     })
 
     // create the subscriptions first
@@ -95,7 +98,7 @@ orderSchema.statics.createNew = async ({
     /// prepare orderlines, service requests to be created
     let serviceRequestData = []
     let subscriptionOrderlineData = []
-
+    let orderlineIndex = 1
     createdSubscriptions.forEach(createdSubscription => {
       createdSubscription.services.forEach(service => {
         serviceRequestData.push({
@@ -106,11 +109,13 @@ orderSchema.statics.createNew = async ({
 
       subscriptionOrderlineData.push({
         order: order._id,
+        orderlineNumber: `${orderNumber}-${orderlineIndex}`,
         subscription: createdSubscription._id,
         unitPrice: createdSubscription.totalPrice,
         quantity: 1,
         totalPrice: createdSubscription.totalPrice
       })
+      orderlineIndex++
     })
 
     // @TODO - move to subscription post-save hook?
@@ -139,11 +144,13 @@ orderSchema.statics.createNew = async ({
     products.forEach(product => {
       productOrderlineData.push({
         order: order._id,
+        orderlineNumber: `${orderNumber}-${orderlineIndex}`,
         product: keyedProducts[product.sku]._id,
         unitPrice: keyedProducts[product.sku].price,
         quantity: product.quantity,
         totalPrice: keyedProducts[product.sku].price * product.quantity
       })
+      orderlineIndex++
     })
 
     // create the orderlines for the products
