@@ -48,6 +48,7 @@ describe('create an order', () => {
               orderNumber
               created
               orderlines {
+                orderlineNumber
                 product {
                   sku
                 }
@@ -62,12 +63,20 @@ describe('create an order', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.createOneOrder.record.orderlines')
+        expect(res.body).toHaveProperty('data.createOneOrder.record.orderNumber')
         expect(res.body.data.createOneOrder.record.orderlines).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
               product: {
                 sku: data.products[0].sku
               }
+            })
+          ])
+        )
+        expect(res.body.data.createOneOrder.record.orderlines).toStrictEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              orderlineNumber: `${res.body.data.createOneOrder.record.orderNumber}-1`
             })
           ])
         )
@@ -130,7 +139,6 @@ describe('create an order', () => {
           ])
         )
         expect(res.body.data.createOneOrder.record.orderlines[1].totalPrice).toStrictEqual(data.services[1].pricing + data.services[0].pricing)
-
         expect(res.body.data.createOneOrder.record.totalAmount).toStrictEqual((data.services[1].pricing + data.services[0].pricing) * 2)
       })
   })

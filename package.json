@@ -38,6 +38,7 @@
     "mongoose": "^5.10.9",
     "mongoose-autopopulate": "^0.12.2",
     "mongoose-unique-validator": "^2.0.3",
+    "nanoid": "^3.1.16",
     "pluralize": "^8.0.0",
     "throng": "^4.0.0"
   },
