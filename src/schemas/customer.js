@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
+
 const customerSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -9,6 +11,10 @@ const customerSchema = new mongoose.Schema({
   },
   email: {
     type: String
+  },
+  orders: {
+    type: [Schema.Types.ObjectId],
+    default: []
   }
 })
 
