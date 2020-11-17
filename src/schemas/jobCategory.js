@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
 
 const jobCategorySchema = new mongoose.Schema({
   name: {
@@ -16,6 +17,10 @@ const jobCategorySchema = new mongoose.Schema({
   },
   seoDescription: {
     type: String
+  },
+  jobs: {
+    type: [Schema.Types.ObjectId],
+    default: []
   }
 })
 
