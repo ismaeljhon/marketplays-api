@@ -5,7 +5,8 @@ const {
   CustomerFactory,
   ServiceFactory,
   SubscriptionTypeFactory,
-  JobFactory
+  JobFactory,
+  JobCategoryFactory
 } = require('../../utils/factories')
 
 const Customer = require('../../models/customer')
@@ -14,6 +15,7 @@ const SubscriptionType = require('../../models/subscriptionType')
 const Order = require('../../models/order')
 const Orderline = require('../../models/orderline')
 const Subscription = require('../../models/subscription')
+const JobCategory = require('../../models/jobCategory')
 
 let data = {}
 let job = JobFactory.generate()
@@ -45,6 +47,7 @@ describe('create jobs', () => {
       _id: { $in: data.order.orderlines }
     })
     data.subscription = await Subscription.findById(data.orderlines[0].subscription)
+    data.jobCategory = await JobCategory.create(JobCategoryFactory.generate())
   })
 
   let createdJob = null
@@ -65,6 +68,7 @@ describe('create jobs', () => {
             seoKeywords: "${job.seoKeywords}"
             seoDescription: "${job.seoDescription}"
             currency: "${job.currency}"
+            category: "${data.jobCategory._id}"
             serviceRequest: "${data.subscription.serviceRequests[0]}"
           }) {
             record {
@@ -107,6 +111,31 @@ describe('create jobs', () => {
       .expect(res => {
         expect(res.body).toHaveProperty('data.serviceRequest')
         expect(res.body.data.serviceRequest.jobs).toStrictEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              _id: createdJob._id
+            })
+          ])
+        )
+      })
+  })
+
+  it('should add the job under the job category', () => {
+    return request({
+      query: `
+        query {
+          jobCategory(_id: "${data.jobCategory._id}") {
+            name
+            jobs {
+              _id
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.jobCategory')
+        expect(res.body.data.jobCategory.jobs).toStrictEqual(
           expect.arrayContaining([
             expect.objectContaining({
               _id: createdJob._id
