@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
+
 const jobSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -41,7 +43,10 @@ const jobSchema = new mongoose.Schema({
     type: [String] // @TODO - array of certificates
   },
   category: {
-    type: String // @TODO -reference to job categories
+    type: Schema.Types.ObjectId // job categories
+  },
+  serviceRequest: {
+    type: Schema.Types.ObjectId
   }
 })
 
