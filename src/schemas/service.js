@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = require('mongoose')
+const slugify = require('slugify')
 
 const serviceSchema = new mongoose.Schema({
   name: {
@@ -17,7 +18,10 @@ const serviceSchema = new mongoose.Schema({
     required: true
   },
   slug: {
-    type: String
+    type: String,
+    default: function () { // enables access to 'this'
+      return slugify(this.name)
+    }
   },
   workforceThreshold: {
     type: Number

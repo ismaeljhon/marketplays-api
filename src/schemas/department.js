@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
+const slugify = require('slugify')
 
 const departmentSchema = new mongoose.Schema({
   name: {
@@ -16,7 +17,10 @@ const departmentSchema = new mongoose.Schema({
     type: String
   },
   slug: {
-    type: String
+    type: String,
+    default: function () { // enables access to 'this'
+      return slugify(this.name)
+    }
   },
   pricing: {
     type: Number,

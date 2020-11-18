@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = require('mongoose')
+const slugify = require('slugify')
 
 const jobCategorySchema = new mongoose.Schema({
   name: {
@@ -7,7 +8,10 @@ const jobCategorySchema = new mongoose.Schema({
     required: true
   },
   slug: {
-    type: String
+    type: String,
+    default: function () { // enables access to 'this'
+      return slugify(this.name)
+    }
   },
   seoTitle: {
     type: String
