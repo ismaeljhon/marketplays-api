@@ -12,6 +12,7 @@ const { request } = require('../../utils/test')
 const generateFakeDocument = require('../../utils/generate-fake-document')
 const Test = require('../../models/test')
 const faker = require('faker')
+const slugify = require('slugify')
 
 describe('Core mutations', () => {
   const fakeDocument = generateFakeDocument()
@@ -37,6 +38,7 @@ describe('Core mutations', () => {
                 _id
                 name
                 email
+                slug
               }
             }
           }
@@ -45,6 +47,9 @@ describe('Core mutations', () => {
         .expect(res => {
           expect(res.body).toHaveProperty('data.createOneTest')
           expect(res.body).toHaveProperty('data.createOneTest.record.name')
+
+          // check if slug was auto-generated
+          expect(res.body.data.createOneTest.record.slug).toStrictEqual(slugify(fakeDocument.name))
           email = res.body.data.createOneTest.record.email
         })
         .expect(200)
