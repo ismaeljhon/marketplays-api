@@ -17,6 +17,15 @@ const hooks = {
         { _id: service.projectManager },
         { $push: { projectManagerOf: service._id } }
       )
+
+      // add service under itemAttribute, if applicable
+      if (service.attributes) {
+        const ItemAttribute = mongoose.models['ItemAttribute']
+        await ItemAttribute.updateMany(
+          { _id: { $in: service.attributes } },
+          { $set: { service: service._id } }
+        )
+      }
       next()
     }
   },

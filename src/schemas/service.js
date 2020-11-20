@@ -51,6 +51,10 @@ const serviceSchema = new mongoose.Schema({
   department: {
     type: Schema.Types.ObjectId,
     default: null
+  },
+  attributes: {
+    type: [Schema.Types.ObjectId],
+    default: []
   }
 })
 
