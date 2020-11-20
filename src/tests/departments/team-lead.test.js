@@ -23,7 +23,6 @@ describe('department team lead', () => {
           createOneDepartment(record: {
             name: "${fakeDepartment.name}",
             code: "${fakeDepartment.code}",
-            pricing: ${fakeDepartment.pricing},
             teamLead: "${users[0]._id}"
           }) {
             record {

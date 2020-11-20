@@ -24,7 +24,6 @@ describe('department services', () => {
           createOneDepartment(record: {
             name: "${fakeDepartment.name}",
             code: "${fakeDepartment.code}",
-            pricing: ${fakeDepartment.pricing},
             services: ["${services[0]._id}"]
           }) {
             record {
