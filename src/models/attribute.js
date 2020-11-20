@@ -13,7 +13,7 @@ attributeSchema.statics.findOrCreate = async (attributeNames) => {
   })
 
   // create the attributes that does not exist yet
-  const toCreate = difference(attributeNames, map(existingAttributes, attributeNames))
+  const toCreate = difference(attributeNames, map(existingAttributes, 'name'))
   const newAttributeData = toCreate.map(name => {
     return {
       name: name

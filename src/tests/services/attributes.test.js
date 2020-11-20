@@ -9,10 +9,11 @@ const {
 let data = {}
 describe('service attributes', () => {
   before(() => {
-    data.service = ServiceFactory.generate()
+    data.services = []
     data.attributes = []
     data.options = []
     for (let x = 0; x <= 3; x++) {
+      data.services.push(ServiceFactory.generate())
       data.attributes.push(AttributeFactory.generate())
       data.options.push(OptionFactory.generate())
     }
@@ -24,18 +25,18 @@ describe('service attributes', () => {
       query: `
         mutation {
           createOneService(record: {
-            name: "${data.service.name}"
-            description: "${data.service.description}"
-            shortDescription: "${data.service.shortDescription}"
-            pricing: ${data.service.pricing}
-            slug: "${data.service.slug}"
-            workforceThreshold: ${data.service.workforceThreshold}
-            tags: "${data.service.tags}"
-            seoTitle: "${data.service.seoTitle}"
-            seoKeywords: "${data.service.seoKeywords}"
-            seoDescription: "${data.service.seoDescription}"
-            currency: "${data.service.currency}"
-            image: "${data.service.image}"
+            name: "${data.services[0].name}"
+            description: "${data.services[0].description}"
+            shortDescription: "${data.services[0].shortDescription}"
+            pricing: ${data.services[0].pricing}
+            slug: "${data.services[0].slug}"
+            workforceThreshold: ${data.services[0].workforceThreshold}
+            tags: "${data.services[0].tags}"
+            seoTitle: "${data.services[0].seoTitle}"
+            seoKeywords: "${data.services[0].seoKeywords}"
+            seoDescription: "${data.services[0].seoDescription}"
+            currency: "${data.services[0].currency}"
+            image: "${data.services[0].image}"
             attributes: [
               {
                 name: "${data.attributes[0].name}"
@@ -53,9 +54,11 @@ describe('service attributes', () => {
               attributes {
                 _id
                 attribute {
+                  _id
                   name
                 }
                 options {
+                  _id
                   name
                 }
               }
@@ -66,15 +69,7 @@ describe('service attributes', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.createOneService.record')
-        expect(res.body.data.createOneService.record.attributes).toStrictEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              attribute: {
-                name: data.attributes[0].name
-              }
-            })
-          ])
-        )
+        expect(res.body.data.createOneService.record.attributes[0].attribute.name).toStrictEqual(data.attributes[0].name)
         expect(res.body.data.createOneService.record.attributes[0].options).toStrictEqual(
           expect.arrayContaining([
             expect.objectContaining({
@@ -101,6 +96,60 @@ describe('service attributes', () => {
       .expect(res => {
         expect(res.body).toHaveProperty('data.itemAttribute')
         expect(res.body.data.itemAttribute.service.name).toStrictEqual(service.name)
+      })
+  })
+
+  it('should not create new attributes, options when using existing ones', () => {
+    return request({
+      query: `
+        mutation {
+          createOneService(record: {
+            name: "${data.services[1].name}"
+            description: "${data.services[1].description}"
+            shortDescription: "${data.services[1].shortDescription}"
+            pricing: ${data.services[1].pricing}
+            slug: "${data.services[1].slug}"
+            workforceThreshold: ${data.services[1].workforceThreshold}
+            tags: "${data.services[1].tags}"
+            seoTitle: "${data.services[1].seoTitle}"
+            seoKeywords: "${data.services[1].seoKeywords}"
+            seoDescription: "${data.services[1].seoDescription}"
+            currency: "${data.services[1].currency}"
+            image: "${data.services[1].image}"
+            attributes: [
+              {
+                name: "${data.attributes[0].name}"
+                options: [
+                  "${data.options[0].name}",
+                  "${data.options[1].name}",
+                  "${data.options[2].name}"
+                ]
+              }
+            ]
+          }) {
+            record {
+              _id
+              name
+              attributes {
+                _id
+                attribute {
+                  _id
+                  name
+                }
+                options {
+                  _id
+                  name
+                }
+              }
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.createOneService.record')
+        expect(res.body.data.createOneService.record.attributes[0].attribute._id).toStrictEqual(service.attributes[0].attribute._id)
+        expect(res.body.data.createOneService.record.attributes[0].options[0]._id).toStrictEqual(service.attributes[0].options[0]._id)
       })
   })
 })
