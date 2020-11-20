@@ -22,10 +22,6 @@ const departmentSchema = new mongoose.Schema({
       return slugify(this.name)
     }
   },
-  pricing: {
-    type: Number,
-    required: true
-  },
   seoTitle: {
     type: String
   },
