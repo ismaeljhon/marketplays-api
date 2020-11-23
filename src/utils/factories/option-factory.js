@@ -3,7 +3,7 @@ const faker = require('faker')
 const OptionFactory = {
   generate: () => {
     return {
-      name: faker.lorem.words(3)
+      name: faker.random.word()
     }
   }
 }
