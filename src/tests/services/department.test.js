@@ -1,10 +1,15 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
-const faker = require('faker')
-const { DepartmentFactory } = require('../../utils/factories/')
+const {
+  DepartmentFactory,
+  ServiceFactory
+} = require('../../utils/factories/')
 const Department = require('../../models/department')
 
 describe('service department', () => {
+  // create dummy service
+  let fakeService = ServiceFactory.generate()
+
   // create dummy departments
   let departments = []
   before(async () => {
@@ -20,8 +25,9 @@ describe('service department', () => {
       query: `
         mutation {
           createOneService(record: {
-            name: "${faker.lorem.words(3)}",
-            pricing: ${faker.commerce.price(5, 300)},
+            name: "${fakeService.name}"
+            code: "${fakeService.code}"
+            pricing: ${fakeService.pricing}
             department: "${departments[0]._id}"
           }) {
             record {

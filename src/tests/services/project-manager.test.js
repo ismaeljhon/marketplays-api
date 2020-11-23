@@ -30,7 +30,8 @@ describe('service project manager', () => {
       query: `
         mutation {
           createOneService(record: {
-            name: "${fakeService.name}",
+            name: "${fakeService.name}"
+            code: "${fakeService.code}"
             pricing: ${fakeService.pricing}
             department: "${department._id}"
           }) {
@@ -85,7 +86,8 @@ describe('service project manager', () => {
       query: `
         mutation {
           createOneService(record: {
-            name: "${fakeService.name}",
+            name: "${fakeService.name}"
+            code: "${fakeService.code}"
             pricing: ${fakeService.pricing}
             department: "${department._id}"
             projectManager: "${newProjectManager._id}"
