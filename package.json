@@ -29,6 +29,7 @@
     "deepmerge": "^3.3.0",
     "dotenv": "^6.2.0",
     "express": "^4.17.1",
+    "fast-cartesian": "^5.0.0",
     "glob": "^7.1.6",
     "graphql": "^14.7.0",
     "graphql-compose": "^7.22.1",
