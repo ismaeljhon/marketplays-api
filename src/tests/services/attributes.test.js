@@ -26,7 +26,7 @@ describe('service attributes', () => {
         mutation {
           createOneService(record: {
             name: "${data.services[0].name}"
-            code: "${data.services[1].code}"
+            code: "${data.services[0].code}"
             description: "${data.services[0].description}"
             shortDescription: "${data.services[0].shortDescription}"
             pricing: ${data.services[0].pricing}

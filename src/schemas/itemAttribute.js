@@ -12,12 +12,13 @@ const itemAttributeSchema = new mongoose.Schema({
   },
   attribute: {
     type: Schema.Types.ObjectId,
-    required: true
+    required: true,
+    ref: 'Attribute'
   },
-  options: {
-    type: [Schema.Types.ObjectId],
-    default: []
-  }
+  options: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Option'
+  }]
 })
 
 module.exports = itemAttributeSchema
