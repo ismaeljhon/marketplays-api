@@ -25,6 +25,9 @@ itemAttributeSchema.statics.createManyFromAttributeData = async (attributeInputD
   // honoring how it was sorted in the input data
   const keyedAttributes = keyBy(attributes, 'name')
   const keyedOptions = keyBy(options, 'name')
+
+  // @TODO - itemAttribute should be unique
+  // eg an item cannot have 2 attributes named 'Size'
   const itemAttributeData = attributeInputData.map(attribute => {
     let data = {}
     data.attribute = keyedAttributes[attribute.name]._id

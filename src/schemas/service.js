@@ -59,6 +59,10 @@ const serviceSchema = new mongoose.Schema({
   attributes: {
     type: [Schema.Types.ObjectId],
     default: []
+  },
+  variants: {
+    type: [Schema.Types.ObjectId],
+    default: []
   }
 })
 

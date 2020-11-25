@@ -1,5 +1,6 @@
 const { schemaComposer } = require('graphql-compose')
 const ItemAttribute = require('../../../models/itemAttribute')
+const Variant = require('../../../models/variant')
 
 // reimplement creation of an order
 const ServiceTC = schemaComposer.getOTC('Service')
@@ -12,6 +13,10 @@ ServiceTC.addResolver({
         args.record.attributes.length > 0) {
       // create item attribute documents out of the attribute data
       args.record.attributes = await ItemAttribute.createManyFromAttributeData(args.record.attributes)
+      if (Array.isArray(args.record.variants) &&
+          args.record.variants.length > 0) {
+        args.record.variants = await Variant.validateAndCreateMany(args.record.variants, args.record.attributes)
+      }
     }
     const result = await ServiceTC.getResolver('createOne')
       .resolve({ source, args, context, info })
