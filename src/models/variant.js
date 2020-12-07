@@ -6,7 +6,9 @@ const { UserInputError } = require('apollo-server-express')
 const {
   map,
   keyBy,
-  indexOf
+  indexOf,
+  find,
+  isEqual
 } = require('lodash')
 
 variantSchema.statics.generateMany = async (attributeData) => {
@@ -63,6 +65,13 @@ variantSchema.statics.validateAndCreateMany = async (variantData, itemAttributeI
         option: keyedOptions[data.option]._id
       })
     })
+
+    // make sure no variants of duplicate attributeData will be created
+    if (find(validated, (variant) => {
+      return isEqual(variant.attributeData, validatedAttributeData)
+    })) {
+      throw new UserInputError(`Variants of duplicate attribute data exists.`)
+    }
     validated.push({
       ...variant,
       attributeData: validatedAttributeData
