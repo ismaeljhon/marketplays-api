@@ -23,8 +23,16 @@ itemAttributeSchema.statics.createManyFromAttributeData = async (attributeInputD
   }
   const attributes = await Attribute.findOrCreate(attributeNames)
 
+  // make sure options names are unique per attribute
+  let optionNames = map(attributeInputData, 'options')
+  optionNames.forEach((names, index) => {
+    if (uniq(names).length < names.length) {
+      throw new UserInputError(`Duplicate options exist on attribute ${attributeInputData[index].name}`)
+    }
+  })
+
   // generate the options
-  const optionNames = uniq(flatten(map(attributeInputData, 'options')))
+  optionNames = uniq(flatten(optionNames))
   const options = await Option.findOrCreate(optionNames)
 
   // build item attribute data (along with the corresponding options)
