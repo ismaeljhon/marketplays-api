@@ -69,4 +69,97 @@ describe('generate variants', () => {
         expect(res.body.data.generateVariants.record.variants[3].name).toStrictEqual(`${attributeData[0].options[1].name}, ${attributeData[1].options[0].name}`)
       })
   })
+
+  it('should not generate if attribute name is not unique to the current data', () => {
+    return request({
+      query: `
+        mutation {
+          generateVariants(record: {
+            attributeData: [
+              {
+                attribute: "${attributeData[0].attribute.name}",
+                options: [
+                  "${attributeData[0].options[0].name}",
+                  "${attributeData[0].options[1].name}",
+                  "${attributeData[0].options[2].name}"
+                ]
+              },
+              {
+                attribute: "${attributeData[0].attribute.name}",
+                options: [
+                  "${attributeData[0].options[0].name}",
+                  "${attributeData[0].options[1].name}",
+                  "${attributeData[0].options[2].name}"
+                ]
+              }
+            ]
+          }) {
+            record {
+              variants {
+                name
+                attributeData {
+                  attribute {
+                    name
+                  }
+                  option {
+                    name
+                  }
+                }
+              }
+            }
+
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body.data.generateVariants).toBeNull()
+      })
+  })
+
+  it('should not generate if option name is not unique to the attribute data', () => {
+    return request({
+      query: `
+        mutation {
+          generateVariants(record: {
+            attributeData: [
+              {
+                attribute: "${attributeData[0].attribute.name}",
+                options: [
+                  "${attributeData[0].options[0].name}",
+                  "${attributeData[0].options[1].name}",
+                  "${attributeData[0].options[2].name}"
+                ]
+              },
+              {
+                attribute: "${attributeData[1].attribute.name}",
+                options: [
+                  "${attributeData[1].options[0].name}",
+                  "${attributeData[1].options[0].name}",
+                  "${attributeData[1].options[2].name}"
+                ]
+              }
+            ]
+          }) {
+            record {
+              variants {
+                name
+                attributeData {
+                  attribute {
+                    name
+                  }
+                  option {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body.data.generateVariants).toBeNull()
+      })
+  })
 })
