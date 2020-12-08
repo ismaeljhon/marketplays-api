@@ -208,5 +208,157 @@ describe('add variants', () => {
         expect(res.body.data.createOneService).toBeNull()
       })
   })
+
+  it('should not create a service if attributes are not unique', () => {
+    return request({
+      query: `
+        mutation {
+          createOneService(record: {
+            name: "${data.service.name}"
+            code: "${data.service.code}"
+            description: "${data.service.description}"
+            shortDescription: "${data.service.shortDescription}"
+            pricing: ${data.service.pricing}
+            slug: "${data.service.slug}"
+            workforceThreshold: ${data.service.workforceThreshold}
+            tags: "${data.service.tags}"
+            seoTitle: "${data.service.seoTitle}"
+            seoKeywords: "${data.service.seoKeywords}"
+            seoDescription: "${data.service.seoDescription}"
+            currency: "${data.service.currency}"
+            image: "${data.service.image}"
+            attributes: [
+              {
+                name: "${data.attributes[0].attribute}",
+                options: [
+                  "${data.attributes[0].options[0]}",
+                  "${data.attributes[0].options[1]}",
+                  "${data.attributes[0].options[2]}"
+                ]
+              },
+              {
+                name: "${data.attributes[0].attribute}",
+                options: [
+                  "${data.attributes[0].options[0]}",
+                  "${data.attributes[0].options[1]}",
+                  "${data.attributes[0].options[2]}"
+                ]
+              },
+            ],
+            variants: [
+              {
+                name: "${data.variants[0].name}",
+                pricing: ${faker.commerce.price()},
+                attributeData: [
+                  {
+                    attribute: "${data.variants[0].attributeData[0].attribute.name}",
+                    option: "${data.variants[0].attributeData[0].option.name}"
+                  },
+                  {
+                    attribute: "${data.variants[0].attributeData[0].attribute.name}",
+                    option: "${data.variants[0].attributeData[0].option.name}"
+                  }
+                ]
+              }
+            ]
+          }) {
+            record {
+              name
+              variants {
+                name
+                attributeData {
+                  attribute {
+                    name
+                  }
+                  option {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body.data.createOneService).toBeNull()
+      })
+  })
+
+  it('should not create a service if options for an attribute are not unique', () => {
+    return request({
+      query: `
+        mutation {
+          createOneService(record: {
+            name: "${data.service.name}"
+            code: "${data.service.code}"
+            description: "${data.service.description}"
+            shortDescription: "${data.service.shortDescription}"
+            pricing: ${data.service.pricing}
+            slug: "${data.service.slug}"
+            workforceThreshold: ${data.service.workforceThreshold}
+            tags: "${data.service.tags}"
+            seoTitle: "${data.service.seoTitle}"
+            seoKeywords: "${data.service.seoKeywords}"
+            seoDescription: "${data.service.seoDescription}"
+            currency: "${data.service.currency}"
+            image: "${data.service.image}"
+            attributes: [
+              {
+                name: "${data.attributes[0].attribute}",
+                options: [
+                  "${data.attributes[0].options[0]}",
+                  "${data.attributes[0].options[1]}",
+                  "${data.attributes[0].options[2]}"
+                ]
+              },
+              {
+                name: "${data.attributes[1].attribute}",
+                options: [
+                  "${data.attributes[1].options[0]}",
+                  "${data.attributes[1].options[0]}",
+                  "${data.attributes[1].options[0]}"
+                ]
+              }
+            ],
+            variants: [
+              {
+                name: "${data.variants[0].name}",
+                pricing: ${faker.commerce.price()},
+                attributeData: [
+                  {
+                    attribute: "${data.variants[0].attributeData[0].attribute.name}",
+                    option: "${data.variants[0].attributeData[0].option.name}"
+                  },
+                  {
+                    attribute: "${data.variants[0].attributeData[1].attribute.name}",
+                    option: "${data.attributes[1].options[0]}"
+                  }
+                ]
+              },
+            ]
+          }) {
+            record {
+              name
+              variants {
+                name
+                attributeData {
+                  attribute {
+                    name
+                  }
+                  option {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body.data.createOneService).toBeNull()
+      })
+  })
   // @TODO - check if variant is related to the service
 })

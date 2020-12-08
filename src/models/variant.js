@@ -15,7 +15,7 @@ const {
 variantSchema.statics.generateMany = async (attributeData) => {
   // make sure there are no duplicate attributes
   if (uniq(map(attributeData, 'attribute')).length < attributeData.length) {
-    throw new UserInputError(`Duplicate variants exist.`)
+    throw new UserInputError(`Duplicate attribute names exist.`)
   }
 
   // get all the options
@@ -24,7 +24,7 @@ variantSchema.statics.generateMany = async (attributeData) => {
   // make sure options are unique per attribute data
   options.forEach((optionList, index) => {
     if (uniq(optionList).length < optionList.length) {
-      throw new UserInputError(`Duplicate options exist on attriute ${attributeData[index].attribute}`)
+      throw new UserInputError(`Duplicate options exist on attribute ${attributeData[index].attribute}`)
     }
   })
 
