@@ -26,6 +26,15 @@ const hooks = {
           { $set: { service: service._id } }
         )
       }
+
+      // add variants under the service
+      if (service.variants) {
+        const Variant = mongoose.models['Variant']
+        await Variant.updateMany(
+          { _id: { $in: service.variants } },
+          { $set: { service: service._id } }
+        )
+      }
       next()
     }
   },
