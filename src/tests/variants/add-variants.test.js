@@ -8,7 +8,7 @@ const {
 } = require('../../utils/factories')
 const Variant = require('../../models/variant')
 
-describe('add variants', () => {
+describe('add/edit variants', () => {
   let data = {}
   before(async () => {
     data.service = ServiceFactory.generate()
@@ -28,6 +28,7 @@ describe('add variants', () => {
     data.variants = await Variant.generateMany(data.attributes)
   })
 
+  let service = null
   it('should add variants against the service', () => {
     return request({
       query: `
@@ -98,6 +99,7 @@ describe('add variants', () => {
             record {
               name
               variants {
+                _id
                 name
                 attributeData {
                   attribute {
@@ -117,6 +119,7 @@ describe('add variants', () => {
         expect(res.body).toHaveProperty('data.createOneService.record.variants')
         expect(res.body.data.createOneService.record.variants[0].name).toStrictEqual(data.variants[0].name)
         expect(res.body.data.createOneService.record.variants[0].attributeData[0].attribute.name).toStrictEqual(data.variants[0].attributeData[0].attribute.name)
+        service = res.body.data.createOneService.record
       })
   })
   it('should not create the service if duplicate variants exist', () => {
@@ -360,5 +363,23 @@ describe('add variants', () => {
         expect(res.body.data.createOneService).toBeNull()
       })
   })
-  // @TODO - check if variant is related to the service
+
+  it('should the service to the variant', () => {
+    return request({
+      query: `
+        query {
+          variant(_id: "${service.variants[0]._id}") {
+            name
+            service {
+              name
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.variant')
+        expect(res.body.data.variant.service.name).toStrictEqual(service.name)
+      })
+  })
 })
