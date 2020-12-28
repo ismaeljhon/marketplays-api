@@ -102,6 +102,7 @@ describe('add/edit variants', () => {
             ]
           }) {
             record {
+              _id
               name
               variants {
                 _id
@@ -369,7 +370,7 @@ describe('add/edit variants', () => {
       })
   })
 
-  it('should the service to the variant', () => {
+  it('should relate the service to the variant', () => {
     return request({
       query: `
         query {
@@ -385,6 +386,86 @@ describe('add/edit variants', () => {
       .expect(res => {
         expect(res.body).toHaveProperty('data.variant')
         expect(res.body.data.variant.service.name).toStrictEqual(service.name)
+      })
+  })
+
+  it('should edit service attributes and options', () => {
+    return request({
+      query: `
+        mutation {
+          updateServiceById(_id: "${service._id}", record: {
+            attributes: [
+              {
+                name: "${fakeData[1].attributes[0].attribute}",
+                options: [
+                  "${fakeData[1].attributes[0].options[0]}",
+                  "${fakeData[1].attributes[0].options[1]}",
+                  "${fakeData[1].attributes[0].options[2]}"
+                ]
+              },
+              {
+                name: "${fakeData[1].attributes[1].attribute}",
+                options: [
+                  "${fakeData[1].attributes[1].options[0]}",
+                  "${fakeData[1].attributes[1].options[1]}",
+                  "${fakeData[1].attributes[1].options[2]}"
+                ]
+              }
+            ],
+            variants: [
+              {
+                name: "${fakeData[1].variants[0].name}",
+                pricing: ${faker.commerce.price()},
+                attributeData: [
+                  {
+                    attribute: "${fakeData[1].variants[0].attributeData[0].attribute.name}",
+                    option: "${fakeData[1].variants[0].attributeData[0].option.name}"
+                  },
+                  {
+                    attribute: "${fakeData[1].variants[0].attributeData[1].attribute.name}",
+                    option: "${fakeData[1].variants[0].attributeData[1].option.name}"
+                  }
+                ]
+              },
+              {
+                name: "${fakeData[1].variants[1].name}",
+                pricing: ${faker.commerce.price()},
+                attributeData: [
+                  {
+                    attribute: "${fakeData[1].variants[1].attributeData[0].attribute.name}",
+                    option: "${fakeData[1].variants[1].attributeData[0].option.name}"
+                  },
+                  {
+                    attribute: "${fakeData[1].variants[1].attributeData[1].attribute.name}",
+                    option: "${fakeData[1].variants[1].attributeData[1].option.name}"
+                  }
+                ]
+              }
+            ]
+          }) {
+            record {
+              name
+              variants {
+                _id
+                name
+                attributeData {
+                  attribute {
+                    name
+                  }
+                  option {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.updateServiceById.record.variants')
+        expect(res.body.data.updateServiceById.record.variants[0].name).toStrictEqual(fakeData[1].variants[0].name)
+        expect(res.body.data.updateServiceById.record.variants[0].attributeData[0].attribute.name).toStrictEqual(fakeData[1].variants[0].attributeData[0].attribute.name)
       })
   })
 })
