@@ -13,37 +13,56 @@ const {
 } = require('lodash')
 
 variantSchema.statics.generateMany = async (attributeData) => {
-  // make sure there are no duplicate attributes
-  if (uniq(map(attributeData, 'attribute')).length < attributeData.length) {
-    throw new UserInputError(`Duplicate attribute names exist.`)
+  let attributes = keyBy(map(attributeData, 'attribute'), 'code')
+
+  // make sure no duplicate attribute exists
+  if (Object.keys(attributes) < attributeData.length) {
+    throw new UserInputError(`Attribute codes must be unique.`)
   }
 
-  // get all the options
-  let options = map(attributeData, 'options')
-
-  // make sure options are unique per attribute data
-  options.forEach((optionList, index) => {
-    if (uniq(optionList).length < optionList.length) {
-      throw new UserInputError(`Duplicate options exist on attribute ${attributeData[index].attribute}`)
+  // make sure no duplicate option per attribute exists
+  let rawOptions = map(attributeData, 'options')
+  let options = {}
+  rawOptions.forEach((list, index) => {
+    if (uniq(map(list, 'code')).length < list.length) {
+      throw new UserInputError(`Duplicate options exist on attribute code: ${attributeData[index].attribute.code}`)
     }
+
+    // map the option names to its respective code
+    // note that since a code is only unique per attribute,
+    // it's name should be the same if it will be used under a different attribute
+    list.forEach(option => {
+      if (options[option.code] && options[option.code].name !== option.name) {
+        throw new UserInputError(`Option code ${option.code} already exists with a name ${options[option.code].name}.`) // @TODO - update message
+      }
+      options[option.code] = option
+    })
   })
 
-  // generate all the combinations
-  let combinations = fastCartesian(options)
+  // retrieve option codes per attribute
+  let optionCodes = rawOptions.map(option => {
+    return map(option, 'code')
+  })
+  let combinations = fastCartesian(optionCodes)
 
   // build variant data
   let variants = []
-  combinations.forEach(combination => {
-    variants.push({
-      name: combination.join(', '),
-      attributeData: combination.map((option, index) => {
+  combinations.forEach((combination) => {
+    let names = []
+    let lineAttributeData = []
+    combination.forEach((optionCode, index) => {
+      names.push(options[optionCode].name)
+      lineAttributeData.push({
         // since this honors how attribute data has been sorted,
         // we'll map the combination index to its corresponding attribute (parent)
-        return {
-          attribute: { name: attributeData[index].attribute },
-          option: { name: option }
-        }
+        attribute: attributeData[index].attribute,
+        option: options[optionCode]
       })
+    })
+    variants.push({
+      name: names.join(', '),
+      code: combination.join('-'),
+      attributeData: lineAttributeData
     })
   })
   return variants
