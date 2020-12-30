@@ -16,7 +16,6 @@ itemAttributeSchema.statics.createManyFromAttributeData = async (attributeInputD
 
   // create the attributes
   const attributeNames = uniq(map(attributeInputData, 'name'))
-
   // make sure attribute names are unique
   if (attributeNames.length < attributeInputData.length) {
     throw new UserInputError(`Duplicate attribute names exist.`)

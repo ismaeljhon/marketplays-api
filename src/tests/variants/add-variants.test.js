@@ -9,23 +9,28 @@ const {
 const Variant = require('../../models/variant')
 
 describe('add/edit variants', () => {
-  let data = {}
+  // generate fake data needed for testing
+  let fakeData = []
   before(async () => {
-    data.service = ServiceFactory.generate()
-    data.attributes = []
     for (let x = 0; x <= 1; x++) {
-      let attribute = {
-        attribute: AttributeFactory.generate().name
+      let data = {}
+      data.service = ServiceFactory.generate()
+      data.attributes = []
+      for (let y = 0; y <= 1; y++) {
+        let attribute = {
+          attribute: AttributeFactory.generate().name
+        }
+        attribute.options = []
+        for (let z = 0; z <= 2; z++) {
+          attribute.options.push(OptionFactory.generate().name)
+        }
+        data.attributes.push(attribute)
       }
-      attribute.options = []
-      for (let y = 0; y <= 2; y++) {
-        attribute.options.push(OptionFactory.generate().name)
-      }
-      data.attributes.push(attribute)
-    }
 
-    // generate variants
-    data.variants = await Variant.generateMany(data.attributes)
+      // generate variants
+      data.variants = await Variant.generateMany(data.attributes)
+      fakeData.push(data)
+    }
   })
 
   let service = null
@@ -34,69 +39,70 @@ describe('add/edit variants', () => {
       query: `
         mutation {
           createOneService(record: {
-            name: "${data.service.name}"
-            code: "${data.service.code}"
-            description: "${data.service.description}"
-            shortDescription: "${data.service.shortDescription}"
-            pricing: ${data.service.pricing}
-            slug: "${data.service.slug}"
-            workforceThreshold: ${data.service.workforceThreshold}
-            tags: "${data.service.tags}"
-            seoTitle: "${data.service.seoTitle}"
-            seoKeywords: "${data.service.seoKeywords}"
-            seoDescription: "${data.service.seoDescription}"
-            currency: "${data.service.currency}"
-            image: "${data.service.image}"
+            name: "${fakeData[0].service.name}"
+            code: "${fakeData[0].service.code}"
+            description: "${fakeData[0].service.description}"
+            shortDescription: "${fakeData[0].service.shortDescription}"
+            pricing: ${fakeData[0].service.pricing}
+            slug: "${fakeData[0].service.slug}"
+            workforceThreshold: ${fakeData[0].service.workforceThreshold}
+            tags: "${fakeData[0].service.tags}"
+            seoTitle: "${fakeData[0].service.seoTitle}"
+            seoKeywords: "${fakeData[0].service.seoKeywords}"
+            seoDescription: "${fakeData[0].service.seoDescription}"
+            currency: "${fakeData[0].service.currency}"
+            image: "${fakeData[0].service.image}"
             attributes: [
               {
-                name: "${data.attributes[0].attribute}",
+                name: "${fakeData[0].attributes[0].attribute}",
                 options: [
-                  "${data.attributes[0].options[0]}",
-                  "${data.attributes[0].options[1]}",
-                  "${data.attributes[0].options[2]}"
+                  "${fakeData[0].attributes[0].options[0]}",
+                  "${fakeData[0].attributes[0].options[1]}",
+                  "${fakeData[0].attributes[0].options[2]}"
                 ]
               },
               {
-                name: "${data.attributes[1].attribute}",
+                name: "${fakeData[0].attributes[1].attribute}",
                 options: [
-                  "${data.attributes[1].options[0]}",
-                  "${data.attributes[1].options[1]}",
-                  "${data.attributes[1].options[2]}"
+                  "${fakeData[0].attributes[1].options[0]}",
+                  "${fakeData[0].attributes[1].options[1]}",
+                  "${fakeData[0].attributes[1].options[2]}"
                 ]
               }              
             ],
             variants: [
               {
-                name: "${data.variants[0].name}",
+                name: "${fakeData[0].variants[0].name}",
                 pricing: ${faker.commerce.price()},
                 attributeData: [
                   {
-                    attribute: "${data.variants[0].attributeData[0].attribute.name}",
-                    option: "${data.variants[0].attributeData[0].option.name}"
+                    attribute: "${fakeData[0].variants[0].attributeData[0].attribute.name}",
+                    option: "${fakeData[0].variants[0].attributeData[0].option.name}"
                   },
                   {
-                    attribute: "${data.variants[0].attributeData[1].attribute.name}",
-                    option: "${data.variants[0].attributeData[1].option.name}"
+                    attribute: "${fakeData[0].variants[0].attributeData[1].attribute.name}",
+                    option: "${fakeData[0].variants[0].attributeData[1].option.name}"
                   }
                 ]
               },
               {
-                name: "${data.variants[1].name}",
+                name: "${fakeData[0].variants[1].name}",
                 pricing: ${faker.commerce.price()},
                 attributeData: [
                   {
-                    attribute: "${data.variants[1].attributeData[0].attribute.name}",
-                    option: "${data.variants[1].attributeData[0].option.name}"
+                    attribute: "${fakeData[0].variants[1].attributeData[0].attribute.name}",
+                    option: "${fakeData[0].variants[1].attributeData[0].option.name}"
                   },
                   {
-                    attribute: "${data.variants[1].attributeData[1].attribute.name}",
-                    option: "${data.variants[1].attributeData[1].option.name}"
+                    attribute: "${fakeData[0].variants[1].attributeData[1].attribute.name}",
+                    option: "${fakeData[0].variants[1].attributeData[1].option.name}"
                   }
                 ]
               }
             ]
           }) {
             record {
+              _id
               name
               variants {
                 _id
@@ -117,8 +123,8 @@ describe('add/edit variants', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.createOneService.record.variants')
-        expect(res.body.data.createOneService.record.variants[0].name).toStrictEqual(data.variants[0].name)
-        expect(res.body.data.createOneService.record.variants[0].attributeData[0].attribute.name).toStrictEqual(data.variants[0].attributeData[0].attribute.name)
+        expect(res.body.data.createOneService.record.variants[0].name).toStrictEqual(fakeData[0].variants[0].name)
+        expect(res.body.data.createOneService.record.variants[0].attributeData[0].attribute.name).toStrictEqual(fakeData[0].variants[0].attributeData[0].attribute.name)
         service = res.body.data.createOneService.record
       })
   })
@@ -127,63 +133,63 @@ describe('add/edit variants', () => {
       query: `
         mutation {
           createOneService(record: {
-            name: "${data.service.name}"
-            code: "${data.service.code}"
-            description: "${data.service.description}"
-            shortDescription: "${data.service.shortDescription}"
-            pricing: ${data.service.pricing}
-            slug: "${data.service.slug}"
-            workforceThreshold: ${data.service.workforceThreshold}
-            tags: "${data.service.tags}"
-            seoTitle: "${data.service.seoTitle}"
-            seoKeywords: "${data.service.seoKeywords}"
-            seoDescription: "${data.service.seoDescription}"
-            currency: "${data.service.currency}"
-            image: "${data.service.image}"
+            name: "${fakeData[0].service.name}"
+            code: "${fakeData[0].service.code}"
+            description: "${fakeData[0].service.description}"
+            shortDescription: "${fakeData[0].service.shortDescription}"
+            pricing: ${fakeData[0].service.pricing}
+            slug: "${fakeData[0].service.slug}"
+            workforceThreshold: ${fakeData[0].service.workforceThreshold}
+            tags: "${fakeData[0].service.tags}"
+            seoTitle: "${fakeData[0].service.seoTitle}"
+            seoKeywords: "${fakeData[0].service.seoKeywords}"
+            seoDescription: "${fakeData[0].service.seoDescription}"
+            currency: "${fakeData[0].service.currency}"
+            image: "${fakeData[0].service.image}"
             attributes: [
               {
-                name: "${data.attributes[0].attribute}",
+                name: "${fakeData[0].attributes[0].attribute}",
                 options: [
-                  "${data.attributes[0].options[0]}",
-                  "${data.attributes[0].options[1]}",
-                  "${data.attributes[0].options[2]}"
+                  "${fakeData[0].attributes[0].options[0]}",
+                  "${fakeData[0].attributes[0].options[1]}",
+                  "${fakeData[0].attributes[0].options[2]}"
                 ]
               },
               {
-                name: "${data.attributes[1].attribute}",
+                name: "${fakeData[0].attributes[1].attribute}",
                 options: [
-                  "${data.attributes[1].options[0]}",
-                  "${data.attributes[1].options[1]}",
-                  "${data.attributes[1].options[2]}"
+                  "${fakeData[0].attributes[1].options[0]}",
+                  "${fakeData[0].attributes[1].options[1]}",
+                  "${fakeData[0].attributes[1].options[2]}"
                 ]
               }
             ],
             variants: [
               {
-                name: "${data.variants[0].name}",
+                name: "${fakeData[0].variants[0].name}",
                 pricing: ${faker.commerce.price()},
                 attributeData: [
                   {
-                    attribute: "${data.variants[0].attributeData[0].attribute.name}",
-                    option: "${data.variants[0].attributeData[0].option.name}"
+                    attribute: "${fakeData[0].variants[0].attributeData[0].attribute.name}",
+                    option: "${fakeData[0].variants[0].attributeData[0].option.name}"
                   },
                   {
-                    attribute: "${data.variants[0].attributeData[1].attribute.name}",
-                    option: "${data.variants[0].attributeData[1].option.name}"
+                    attribute: "${fakeData[0].variants[0].attributeData[1].attribute.name}",
+                    option: "${fakeData[0].variants[0].attributeData[1].option.name}"
                   }
                 ]
               },
               {
-                name: "${data.variants[0].name}",
+                name: "${fakeData[0].variants[0].name}",
                 pricing: ${faker.commerce.price()},
                 attributeData: [
                   {
-                    attribute: "${data.variants[0].attributeData[0].attribute.name}",
-                    option: "${data.variants[0].attributeData[0].option.name}"
+                    attribute: "${fakeData[0].variants[0].attributeData[0].attribute.name}",
+                    option: "${fakeData[0].variants[0].attributeData[0].option.name}"
                   },
                   {
-                    attribute: "${data.variants[0].attributeData[1].attribute.name}",
-                    option: "${data.variants[0].attributeData[1].option.name}"
+                    attribute: "${fakeData[0].variants[0].attributeData[1].attribute.name}",
+                    option: "${fakeData[0].variants[0].attributeData[1].option.name}"
                   }
                 ]
               },
@@ -217,49 +223,49 @@ describe('add/edit variants', () => {
       query: `
         mutation {
           createOneService(record: {
-            name: "${data.service.name}"
-            code: "${data.service.code}"
-            description: "${data.service.description}"
-            shortDescription: "${data.service.shortDescription}"
-            pricing: ${data.service.pricing}
-            slug: "${data.service.slug}"
-            workforceThreshold: ${data.service.workforceThreshold}
-            tags: "${data.service.tags}"
-            seoTitle: "${data.service.seoTitle}"
-            seoKeywords: "${data.service.seoKeywords}"
-            seoDescription: "${data.service.seoDescription}"
-            currency: "${data.service.currency}"
-            image: "${data.service.image}"
+            name: "${fakeData[0].service.name}"
+            code: "${fakeData[0].service.code}"
+            description: "${fakeData[0].service.description}"
+            shortDescription: "${fakeData[0].service.shortDescription}"
+            pricing: ${fakeData[0].service.pricing}
+            slug: "${fakeData[0].service.slug}"
+            workforceThreshold: ${fakeData[0].service.workforceThreshold}
+            tags: "${fakeData[0].service.tags}"
+            seoTitle: "${fakeData[0].service.seoTitle}"
+            seoKeywords: "${fakeData[0].service.seoKeywords}"
+            seoDescription: "${fakeData[0].service.seoDescription}"
+            currency: "${fakeData[0].service.currency}"
+            image: "${fakeData[0].service.image}"
             attributes: [
               {
-                name: "${data.attributes[0].attribute}",
+                name: "${fakeData[0].attributes[0].attribute}",
                 options: [
-                  "${data.attributes[0].options[0]}",
-                  "${data.attributes[0].options[1]}",
-                  "${data.attributes[0].options[2]}"
+                  "${fakeData[0].attributes[0].options[0]}",
+                  "${fakeData[0].attributes[0].options[1]}",
+                  "${fakeData[0].attributes[0].options[2]}"
                 ]
               },
               {
-                name: "${data.attributes[0].attribute}",
+                name: "${fakeData[0].attributes[0].attribute}",
                 options: [
-                  "${data.attributes[0].options[0]}",
-                  "${data.attributes[0].options[1]}",
-                  "${data.attributes[0].options[2]}"
+                  "${fakeData[0].attributes[0].options[0]}",
+                  "${fakeData[0].attributes[0].options[1]}",
+                  "${fakeData[0].attributes[0].options[2]}"
                 ]
               },
             ],
             variants: [
               {
-                name: "${data.variants[0].name}",
+                name: "${fakeData[0].variants[0].name}",
                 pricing: ${faker.commerce.price()},
                 attributeData: [
                   {
-                    attribute: "${data.variants[0].attributeData[0].attribute.name}",
-                    option: "${data.variants[0].attributeData[0].option.name}"
+                    attribute: "${fakeData[0].variants[0].attributeData[0].attribute.name}",
+                    option: "${fakeData[0].variants[0].attributeData[0].option.name}"
                   },
                   {
-                    attribute: "${data.variants[0].attributeData[0].attribute.name}",
-                    option: "${data.variants[0].attributeData[0].option.name}"
+                    attribute: "${fakeData[0].variants[0].attributeData[0].attribute.name}",
+                    option: "${fakeData[0].variants[0].attributeData[0].option.name}"
                   }
                 ]
               }
@@ -293,49 +299,49 @@ describe('add/edit variants', () => {
       query: `
         mutation {
           createOneService(record: {
-            name: "${data.service.name}"
-            code: "${data.service.code}"
-            description: "${data.service.description}"
-            shortDescription: "${data.service.shortDescription}"
-            pricing: ${data.service.pricing}
-            slug: "${data.service.slug}"
-            workforceThreshold: ${data.service.workforceThreshold}
-            tags: "${data.service.tags}"
-            seoTitle: "${data.service.seoTitle}"
-            seoKeywords: "${data.service.seoKeywords}"
-            seoDescription: "${data.service.seoDescription}"
-            currency: "${data.service.currency}"
-            image: "${data.service.image}"
+            name: "${fakeData[0].service.name}"
+            code: "${fakeData[0].service.code}"
+            description: "${fakeData[0].service.description}"
+            shortDescription: "${fakeData[0].service.shortDescription}"
+            pricing: ${fakeData[0].service.pricing}
+            slug: "${fakeData[0].service.slug}"
+            workforceThreshold: ${fakeData[0].service.workforceThreshold}
+            tags: "${fakeData[0].service.tags}"
+            seoTitle: "${fakeData[0].service.seoTitle}"
+            seoKeywords: "${fakeData[0].service.seoKeywords}"
+            seoDescription: "${fakeData[0].service.seoDescription}"
+            currency: "${fakeData[0].service.currency}"
+            image: "${fakeData[0].service.image}"
             attributes: [
               {
-                name: "${data.attributes[0].attribute}",
+                name: "${fakeData[0].attributes[0].attribute}",
                 options: [
-                  "${data.attributes[0].options[0]}",
-                  "${data.attributes[0].options[1]}",
-                  "${data.attributes[0].options[2]}"
+                  "${fakeData[0].attributes[0].options[0]}",
+                  "${fakeData[0].attributes[0].options[1]}",
+                  "${fakeData[0].attributes[0].options[2]}"
                 ]
               },
               {
-                name: "${data.attributes[1].attribute}",
+                name: "${fakeData[0].attributes[1].attribute}",
                 options: [
-                  "${data.attributes[1].options[0]}",
-                  "${data.attributes[1].options[0]}",
-                  "${data.attributes[1].options[0]}"
+                  "${fakeData[0].attributes[1].options[0]}",
+                  "${fakeData[0].attributes[1].options[0]}",
+                  "${fakeData[0].attributes[1].options[0]}"
                 ]
               }
             ],
             variants: [
               {
-                name: "${data.variants[0].name}",
+                name: "${fakeData[0].variants[0].name}",
                 pricing: ${faker.commerce.price()},
                 attributeData: [
                   {
-                    attribute: "${data.variants[0].attributeData[0].attribute.name}",
-                    option: "${data.variants[0].attributeData[0].option.name}"
+                    attribute: "${fakeData[0].variants[0].attributeData[0].attribute.name}",
+                    option: "${fakeData[0].variants[0].attributeData[0].option.name}"
                   },
                   {
-                    attribute: "${data.variants[0].attributeData[1].attribute.name}",
-                    option: "${data.attributes[1].options[0]}"
+                    attribute: "${fakeData[0].variants[0].attributeData[1].attribute.name}",
+                    option: "${fakeData[0].attributes[1].options[0]}"
                   }
                 ]
               },
@@ -364,7 +370,7 @@ describe('add/edit variants', () => {
       })
   })
 
-  it('should the service to the variant', () => {
+  it('should relate the service to the variant', () => {
     return request({
       query: `
         query {
@@ -380,6 +386,86 @@ describe('add/edit variants', () => {
       .expect(res => {
         expect(res.body).toHaveProperty('data.variant')
         expect(res.body.data.variant.service.name).toStrictEqual(service.name)
+      })
+  })
+
+  it('should edit service attributes and options', () => {
+    return request({
+      query: `
+        mutation {
+          updateServiceById(_id: "${service._id}", record: {
+            attributes: [
+              {
+                name: "${fakeData[1].attributes[0].attribute}",
+                options: [
+                  "${fakeData[1].attributes[0].options[0]}",
+                  "${fakeData[1].attributes[0].options[1]}",
+                  "${fakeData[1].attributes[0].options[2]}"
+                ]
+              },
+              {
+                name: "${fakeData[1].attributes[1].attribute}",
+                options: [
+                  "${fakeData[1].attributes[1].options[0]}",
+                  "${fakeData[1].attributes[1].options[1]}",
+                  "${fakeData[1].attributes[1].options[2]}"
+                ]
+              }
+            ],
+            variants: [
+              {
+                name: "${fakeData[1].variants[0].name}",
+                pricing: ${faker.commerce.price()},
+                attributeData: [
+                  {
+                    attribute: "${fakeData[1].variants[0].attributeData[0].attribute.name}",
+                    option: "${fakeData[1].variants[0].attributeData[0].option.name}"
+                  },
+                  {
+                    attribute: "${fakeData[1].variants[0].attributeData[1].attribute.name}",
+                    option: "${fakeData[1].variants[0].attributeData[1].option.name}"
+                  }
+                ]
+              },
+              {
+                name: "${fakeData[1].variants[1].name}",
+                pricing: ${faker.commerce.price()},
+                attributeData: [
+                  {
+                    attribute: "${fakeData[1].variants[1].attributeData[0].attribute.name}",
+                    option: "${fakeData[1].variants[1].attributeData[0].option.name}"
+                  },
+                  {
+                    attribute: "${fakeData[1].variants[1].attributeData[1].attribute.name}",
+                    option: "${fakeData[1].variants[1].attributeData[1].option.name}"
+                  }
+                ]
+              }
+            ]
+          }) {
+            record {
+              name
+              variants {
+                _id
+                name
+                attributeData {
+                  attribute {
+                    name
+                  }
+                  option {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.updateServiceById.record.variants')
+        expect(res.body.data.updateServiceById.record.variants[0].name).toStrictEqual(fakeData[1].variants[0].name)
+        expect(res.body.data.updateServiceById.record.variants[0].attributeData[0].attribute.name).toStrictEqual(fakeData[1].variants[0].attributeData[0].attribute.name)
       })
   })
 })
