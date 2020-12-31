@@ -4,8 +4,13 @@ const { schemaComposer } = require('graphql-compose')
 schemaComposer.createInputTC({
   name: 'SignupUserInput',
   fields: {
-    fullName: 'String!',
+    first_name: 'String!',
+    last_name: 'String!',
+    username: 'String!',
     email: 'String!',
-    password: 'String!'
+    password: 'String!',
+    mentorID: 'String!',
+    skills: '[String]',
+    knowledge: '[String]'
   }
 })

@@ -17,11 +17,7 @@ const SALT_ROUNDS = 12
  *
  * @return {mongoose.model} Resulting user
  */
-userSchema.statics.signup = async ({
-  fullName,
-  email,
-  password
-}) => {
+userSchema.statics.signup = async ({ fullName, email, password }) => {
   try {
     // make sure email is unique
     const existingUser = await User.findOne({

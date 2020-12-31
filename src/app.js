@@ -17,4 +17,6 @@ server.applyMiddleware({
   app
 })
 
+// app.use("/api", validator, routes);
+
 module.exports = app
