@@ -17,7 +17,17 @@ const SALT_ROUNDS = 12
  *
  * @return {mongoose.model} Resulting user
  */
-userSchema.statics.signup = async ({ fullName, email, password }) => {
+
+userSchema.statics.signup = async ({
+  firstname,
+  lastname,
+  username,
+  email,
+  password,
+  mentorID,
+  skills,
+  knowledge
+}) => {
   try {
     // make sure email is unique
     const existingUser = await User.findOne({
@@ -29,10 +39,17 @@ userSchema.statics.signup = async ({ fullName, email, password }) => {
 
     // apply hash
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
+    const hashedUsername = await bcrypt.hash(username, SALT_ROUNDS)
     const user = await User.create({
-      fullName: fullName,
-      email: email,
-      hashedPassword: hashedPassword
+      firstname,
+      lastname,
+      username,
+      email,
+      hashedPassword: hashedPassword,
+      mentor: mentorID,
+      skills,
+      knowledge,
+      verification_code: hashedUsername
     })
     return user
   } catch (error) {

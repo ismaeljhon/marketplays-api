@@ -40,13 +40,17 @@ const userSchema = new mongoose.Schema({
   },
   certified_for_mentorship: {
     type: Boolean, // department
-    required: true,
+    required: false,
     default: false
   },
   email_verified: {
     type: Boolean, // department
     required: false,
     default: false
+  },
+  verification_code: {
+    type: String, // department
+    required: true
   },
   hashedPassword: {
     type: String,
