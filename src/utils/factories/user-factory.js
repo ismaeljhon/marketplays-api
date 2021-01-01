@@ -5,19 +5,17 @@ const UserFactory = {
     const firstName = faker.name.firstName()
     const lastName = faker.name.lastName()
     const username = faker.internet.userName(firstName, lastName)
-    const mentor = faker.random.uuid()
+    const verificationCode = faker.random.uuid()
     return {
       firstName: `${firstName}`,
       lastName: `${lastName}`,
       username,
-      mentor,
       email: faker.internet.email(
         firstName,
         lastName,
         faker.internet.domainName()
       ),
-      skills: [],
-      knowledge: [],
+      verificationCode,
       password: faker.internet.password(20)
     }
   }

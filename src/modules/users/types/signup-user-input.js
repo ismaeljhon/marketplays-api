@@ -9,8 +9,8 @@ schemaComposer.createInputTC({
     username: 'String!',
     email: 'String!',
     password: 'String!',
-    mentor: 'String!',
-    skills: '[String]!',
-    knowledge: '[String]!'
+    mentor: 'String',
+    skills: '[String]',
+    knowledge: '[String]'
   }
 })

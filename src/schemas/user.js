@@ -30,8 +30,7 @@ const userSchema = new mongoose.Schema({
   },
   mentor: {
     type: Schema.Types.ObjectId,
-    required: false,
-    default: ''
+    required: false
   },
   mentorshipCertified: {
     type: Boolean, // department

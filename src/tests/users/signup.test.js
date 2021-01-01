@@ -4,25 +4,27 @@ const { UserFactory } = require('../../utils/factories/')
 
 describe('signup', () => {
   const fakeUser = UserFactory.generate()
-
   it('should create a new user', () => {
     return request({
       query: `
         mutation {
           signup(record: {
-              fullName: "${fakeUser.fullName}",
-              email: "${fakeUser.email}",
-              password: "${fakeUser.password}"
+              firstName: "${fakeUser.firstName}"
+              lastName: "${fakeUser.lastName}"
+              email: "${fakeUser.email}"
+              password: "${fakeUser.password}"  
+              username: "${fakeUser.username}"
           }) {
             record {
-              fullName
+              firstName
+              lastName
               email
             }
           }
         }
       `
     })
-      .expect(res => {
+      .expect((res) => {
         expect(res.body).toHaveProperty('data.signup.record')
         expect(res.body.data.signup.record.email).toStrictEqual(fakeUser.email)
       })
@@ -34,19 +36,22 @@ describe('signup', () => {
       query: `
         mutation {
           signup(record: {
-              fullName: "${fakeUser.fullName}",
-              email: "${fakeUser.email}",
-              password: "${fakeUser.password}"
+            firstName: "${fakeUser.firstName}"
+            lastName: "${fakeUser.lastName}"
+            email: "${fakeUser.email}"
+            password: "${fakeUser.password}"    
+            username: "${fakeUser.username}"
           }) {
             record {
-              fullName
+              firstName
+              lastName
               email
             }
           }
         }
       `
     })
-      .expect(res => {
+      .expect((res) => {
         expect(res.body).toHaveProperty('errors')
         expect(Array.isArray(res.body.errors)).toBe(true)
       })
