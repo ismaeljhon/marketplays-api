@@ -15,7 +15,7 @@ module.exports = {
       path: '/home/marketplays/public_html/staging/backend',
       'pre-deploy-local': '',
       'post-deploy':
-        'npm install && pm2 reload ecosystem.config.js --env production',
+        'git pull origin staging && npm install && pm2 reload ecosystem.config.js --env production',
       'pre-setup': ''
     }
   }
