@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      script: 'src/index.js',
+      script: 'npm run dev',
       watch: '.'
     }
   ],
@@ -15,7 +15,7 @@ module.exports = {
       path: '/home/marketplays/public_html/staging/backend',
       'pre-deploy-local': '',
       'post-deploy':
-        'git pull origin staging && npm install && pm2 startOrReload ecosystem.config.js "npm run dev" --name BackendStaging --env production',
+        'git pull origin staging && npm install && pm2 startOrReload ecosystem.config.js --name BackendStaging --env production',
       'pre-setup': ''
     }
   }
