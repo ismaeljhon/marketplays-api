@@ -19,12 +19,12 @@ const SALT_ROUNDS = 12
  */
 
 userSchema.statics.signup = async ({
-  firstname,
-  lastname,
+  firstName,
+  lastName,
   username,
   email,
   password,
-  mentorID,
+  mentor,
   skills,
   knowledge
 }) => {
@@ -39,17 +39,20 @@ userSchema.statics.signup = async ({
 
     // apply hash
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
-    const hashedUsername = await bcrypt.hash(username, SALT_ROUNDS)
+    const verificationCode = await bcrypt.hash(
+      Date.now() + username,
+      SALT_ROUNDS
+    )
     const user = await User.create({
-      firstname,
-      lastname,
+      firstName,
+      lastName,
       username,
       email,
-      hashedPassword: hashedPassword,
-      mentor: mentorID,
+      hashedPassword,
+      mentor,
       skills,
       knowledge,
-      verification_code: hashedUsername
+      verificationCode
     })
     return user
   } catch (error) {

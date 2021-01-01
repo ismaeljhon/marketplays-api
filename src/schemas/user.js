@@ -1,19 +1,13 @@
 const mongoose = require('mongoose')
 const Schema = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
-/* @param {Request} request object with json encoded body in format
- *   {first_name: String, last_name: String, email: String, username: String,
- *       password: String, confirm_password: String, agree_to_terms: Boolean, skills: Array<ObjectId>,
- *       knowledge: Array<ObjectId>, mentor: ObjectId}
- * @param {Response} response object that send json encoded object in format
- *   {status: Number, error_messages: Array<String>, success: Boolean, data: Array<any>}
- */
+
 const userSchema = new mongoose.Schema({
-  first_name: {
+  firstName: {
     type: String,
     required: true
   },
-  last_name: {
+  lastName: {
     type: String,
     required: true
   },
@@ -38,17 +32,17 @@ const userSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     required: true
   },
-  certified_for_mentorship: {
+  mentorshipCertified: {
     type: Boolean, // department
     required: false,
     default: false
   },
-  email_verified: {
+  emailVerified: {
     type: Boolean, // department
     required: false,
     default: false
   },
-  verification_code: {
+  verificationCode: {
     type: String, // department
     required: true
   },
