@@ -22,11 +22,13 @@ const userSchema = new mongoose.Schema({
   },
   skills: {
     type: [Schema.Types.ObjectId], // department
-    default: []
+    default: [],
+    required: true
   },
   knowledge: {
     type: [Schema.Types.ObjectId], // department
-    default: []
+    default: [],
+    required: true
   },
   mentor: {
     type: Schema.Types.ObjectId,

@@ -18,6 +18,13 @@ const SALT_ROUNDS = 12
  * @return {mongoose.model} Resulting user
  */
 
+const uniqueValidator = function (v) {
+  return v.filter((item, index) => v.indexOf(item) !== index).length === 0
+}
+const countValidator = function (v) {
+  return v.length >= 5
+}
+
 userSchema.statics.signup = async ({
   firstName,
   lastName,
@@ -29,12 +36,35 @@ userSchema.statics.signup = async ({
   knowledge
 }) => {
   try {
-    // make sure email is unique
-    const existingUser = await User.findOne({
+    // make sure email and username are unique
+    const existingEmail = await User.findOne({
       email: email
     })
-    if (existingUser) {
-      throw new UserInputError('User already exists')
+    const existingUserName = await User.findOne({
+      username: username
+    })
+    if (existingEmail) {
+      throw new UserInputError('Email already exists')
+    }
+    if (existingUserName) {
+      throw new UserInputError('Username already exists')
+    }
+    if (mentor === undefined) {
+      skills = []
+      knowledge = []
+    } else {
+      userSchema
+        .path(['skills'])
+        .validate(uniqueValidator, `{PATH} must be unique`)
+      userSchema
+        .path('skills')
+        .validate(countValidator, `user must pass 5 {PATH}`)
+      userSchema
+        .path('knowledge')
+        .validate(uniqueValidator, `{PATH} must be unique`)
+      userSchema
+        .path('knowledge')
+        .validate(countValidator, `user must pass 5 {PATH}`)
     }
 
     // apply hash
@@ -43,7 +73,7 @@ userSchema.statics.signup = async ({
       Date.now() + username,
       SALT_ROUNDS
     )
-    const user = await User.create({
+    const user = new User({
       firstName,
       lastName,
       username,
@@ -54,7 +84,8 @@ userSchema.statics.signup = async ({
       knowledge,
       verificationCode
     })
-    return user
+    const newUser = await user.save()
+    if (newUser === user) return user
   } catch (error) {
     throw error
   }
