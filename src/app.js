@@ -8,8 +8,8 @@ const server = new ApolloServer({
   context: async ({ req }) => ({
     user: await context.getUser(req)
   }),
-  introspection: false,
-  playground: false
+  introspection: process.env.NODE_ENV !== 'production',
+  playground: process.env.NODE_ENV !== 'production'
 })
 
 const app = express()

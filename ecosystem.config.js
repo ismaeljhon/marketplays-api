@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'BackendStaging',
-      script: 'npm run dev',
+      script: 'npm run staging',
       watch: '.',
       env: {
         'NODE_ENV': 'development'
