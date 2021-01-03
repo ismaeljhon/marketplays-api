@@ -6,8 +6,8 @@ const UserFactory = {
     const lastName = faker.name.lastName()
     const username = faker.internet.userName(firstName, lastName)
     return {
-      firstName: `${firstName}`,
-      lastName: `${lastName}`,
+      firstName,
+      lastName,
       username,
       email: faker.internet.email(
         firstName,

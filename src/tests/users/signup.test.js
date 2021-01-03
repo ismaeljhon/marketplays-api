@@ -6,15 +6,12 @@ const User = require('../../models/user')
 
 describe('signup', () => {
   const fakeUser = UserFactory.generate()
+  const fakeUser2 = UserFactory.generate()
   let users = []
   let skills = []
   let knowledge = []
+  let user = null
   before(async () => {
-    for (let x = 0; x <= 1; x++) {
-      let user = await UserFactory.generate()
-      user = await User.signup(user)
-      users.push(user)
-    }
     for (let y = 0; y < 5; y++) {
       const skill = await Qualification.create(
         QualificationFactory.generateSkill()
@@ -24,6 +21,11 @@ describe('signup', () => {
         QualificationFactory.generateKnowledge()
       )
       knowledge.push(`"${knowledge1._id}"`)
+    }
+    for (let x = 0; x <= 1; x++) {
+      let user = await UserFactory.generate()
+      user = await User.signup(user)
+      users.push(user)
     }
   })
 
@@ -78,17 +80,63 @@ describe('signup', () => {
       .expect(200)
   })
 
-  it('should verify email', () => {
+  it('should not verify email with incorrect verification code', () => {
     return request({
       query: `
         mutation {
-          verifyEmail (verificationCode: "${users[0].verificationCode}")
+          verifyEmail (verificationCode: "XYZ") {
+            record 
+            error {
+              message
+            }
+          }
         }
       `
     })
       .expect((res) => {
-        expect(res.body).toHaveProperty('data.verifyEmail')
-        expect(res.body.data.verifyEmail).toStrictEqual(true)
+        expect(res.body).toHaveProperty('data.verifyEmail.error.message')
+        expect(res.body.data.verifyEmail.error.message).toStrictEqual(
+          'no user associated with this verification code'
+        )
+      })
+      .expect(200)
+  })
+
+  it('should verify email', () => {
+    return request({
+      query: `
+        mutation {
+          verifyEmail (verificationCode: "${users[0].verificationCode}") {
+            record
+          }
+        }
+      `
+    })
+      .expect((res) => {
+        expect(res.body).toHaveProperty('data.verifyEmail.record')
+        expect(res.body.data.verifyEmail.record).toStrictEqual(true)
+      })
+      .expect(200)
+  })
+
+  it('check email verified already', () => {
+    return request({
+      query: `
+        mutation {
+          verifyEmail (verificationCode: "${users[0].verificationCode}") {
+            record 
+            error {
+              message
+            }
+          }
+        }
+      `
+    })
+      .expect((res) => {
+        expect(res.body).toHaveProperty('data.verifyEmail.error.message')
+        expect(res.body.data.verifyEmail.error.message).toStrictEqual(
+          'user verified already'
+        )
       })
       .expect(200)
   })
@@ -113,6 +161,34 @@ describe('signup', () => {
       .expect(200)
   })
 
+  it('should create a new user', () => {
+    return request({
+      query: `
+        mutation {
+          signup(record: {
+              firstName: "${fakeUser2.firstName}"
+              lastName: "${fakeUser2.lastName}"
+              email: "${fakeUser2.email}"
+              password: "${fakeUser2.password}"  
+              username: "${fakeUser2.username}"
+          }) {
+            record {
+              _id
+              email
+            }
+          }
+        }
+      `
+    })
+      .expect((res) => {
+        expect(res.body).toHaveProperty('data.signup.record')
+        expect(res.body.data.signup.record.email).toStrictEqual(
+          fakeUser2.email
+        )
+      })
+      .expect(200)
+  })
+
   it('should create a new user with mentor and atleast 5 skills and 5 knowledge', () => {
     return request({
       query: `
@@ -128,6 +204,7 @@ describe('signup', () => {
               knowledge: [${knowledge}]
           }) {
             record {
+              _id
               email
               skills { title }
               knowledge { title }
@@ -145,6 +222,47 @@ describe('signup', () => {
         expect(
           res.body.data.signup.record.knowledge.length
         ).toBeGreaterThanOrEqual(5)
+        user = res.body.data.signup.record._id
+      })
+      .expect(200)
+  })
+
+  it('check if user has the skill', () => {
+    return request({
+      query: `
+      query {
+        qualification(record: { qualificationID: ${skills[0]}, userID: "${user}" }) {
+          record 
+          error {
+            message
+          }
+        }
+      }
+      `
+    })
+      .expect((res) => {
+        expect(res.body).toHaveProperty('data.qualification.record')
+        expect(res.body.data.qualification.record).toBe(true)
+      })
+      .expect(200)
+  })
+
+  it('check if user has the kowledge', () => {
+    return request({
+      query: `
+      query {
+        qualification(record: { qualificationID: ${knowledge[0]}, userID: "${user}" }) {
+          record 
+          error {
+            message
+          }
+        }
+      }
+      `
+    })
+      .expect((res) => {
+        expect(res.body).toHaveProperty('data.qualification.record')
+        expect(res.body.data.qualification.record).toBe(true)
       })
       .expect(200)
   })
@@ -199,25 +317,6 @@ describe('signup', () => {
       .expect((res) => {
         expect(res.body).toHaveProperty('errors')
         expect(Array.isArray(res.body.errors)).toBe(true)
-      })
-      .expect(200)
-  })
-
-  it('user can be verified via verification code', () => {
-    return request({
-      query: `
-        query {
-          getOneUser(filter: {
-            email: "${fakeUser.email}"  
-            username: "${fakeUser.username}"
-          }) {
-            verificationCode
-          }
-        }
-      `
-    })
-      .expect((res) => {
-        expect(res.body).toHaveProperty('data.getOneUser.verificationCode')
       })
       .expect(200)
   })

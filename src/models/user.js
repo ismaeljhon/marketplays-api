@@ -2,6 +2,7 @@ const userSchema = require('../schemas/user')
 const bcrypt = require('bcrypt')
 const { UserInputError } = require('apollo-server-express')
 const generateModel = require('../utils/generate-model')
+const Qualification = require('./qualifications')
 
 const SALT_ROUNDS = 12
 
@@ -17,10 +18,6 @@ const SALT_ROUNDS = 12
  *
  * @return {mongoose.model} Resulting user
  */
-
-const uniqueValidator = function (v) {
-  return v.filter((item, index) => v.indexOf(item) !== index).length === 0
-}
 const countValidator = function (v) {
   return v.length >= 5
 }
@@ -63,15 +60,17 @@ userSchema.statics.signup = async ({
       } else if (!mentor1.emailVerified) {
         throw new UserInputError('Mentor is not email verified')
       }
-      userSchema
-        .path(['skills'])
-        .validate(uniqueValidator, `{PATH} must be unique`)
+      let qualifications = await Qualification.find({
+        _id: [...skills, ...knowledge]
+      })
+      if (qualifications.length !== skills.length + knowledge.length) {
+        throw new UserInputError(
+          'qualification(s) does not exist or duplicate'
+        )
+      }
       userSchema
         .path('skills')
         .validate(countValidator, `user must pass 5 {PATH}`)
-      userSchema
-        .path('knowledge')
-        .validate(uniqueValidator, `{PATH} must be unique`)
       userSchema
         .path('knowledge')
         .validate(countValidator, `user must pass 5 {PATH}`)

@@ -46,6 +46,7 @@ describe('service project manager', () => {
                 _id
                 firstName
                 lastName
+                email
               }
             }
           }
@@ -56,8 +57,8 @@ describe('service project manager', () => {
         'data.createOneService.record.projectManager'
       )
       expect(
-        res.body.data.createOneService.record.projectManager.fullName
-      ).toStrictEqual(defaultProjectManager.fullName)
+        res.body.data.createOneService.record.projectManager.email
+      ).toStrictEqual(defaultProjectManager.email)
       service = res.body.data.createOneService.record
     })
   })
@@ -106,6 +107,7 @@ describe('service project manager', () => {
                 _id
                 firstName
                 lastName
+                email
               }
             }
           }
@@ -117,8 +119,8 @@ describe('service project manager', () => {
           'data.createOneService.record.projectManager'
         )
         expect(
-          res.body.data.createOneService.record.projectManager.fullName
-        ).toStrictEqual(newProjectManager.fullName)
+          res.body.data.createOneService.record.projectManager.email
+        ).toStrictEqual(newProjectManager.email)
         service = res.body.data.createOneService.record
       })
       .expect(200)
@@ -165,6 +167,7 @@ describe('service project manager', () => {
                 _id
                 firstName
                 lastName
+                email
               }
             }
           }
@@ -175,8 +178,8 @@ describe('service project manager', () => {
         'data.updateServiceById.record.projectManager'
       )
       expect(
-        res.body.data.updateServiceById.record.projectManager.fullName
-      ).toStrictEqual(updatedProjectManager.fullName)
+        res.body.data.updateServiceById.record.projectManager.email
+      ).toStrictEqual(updatedProjectManager.email)
     })
   })
 
@@ -240,6 +243,7 @@ describe('service project manager', () => {
                 _id
                 firstName
                 lastName
+                email
               }
             }
           }
@@ -250,8 +254,8 @@ describe('service project manager', () => {
         'data.updateServiceById.record.projectManager'
       )
       expect(
-        res.body.data.updateServiceById.record.projectManager.fullName
-      ).toStrictEqual(defaultProjectManager.fullName)
+        res.body.data.updateServiceById.record.projectManager.email
+      ).toStrictEqual(defaultProjectManager.email)
     })
   })
 

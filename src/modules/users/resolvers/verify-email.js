@@ -5,14 +5,20 @@ const UserTC = schemaComposer.getOTC('User')
 
 UserTC.addResolver({
   name: 'verifyEmail',
-  type: 'Boolean',
+  type: 'VerifyPayload',
   args: {
     verificationCode: 'String!'
   },
   description: 'Verify a user email',
-  resolve: async ({ source, args }) => {
-    const verified = User.verifyEmail(args.verificationCode)
-    return verified
+  resolve: async ({ args }) => {
+    try {
+      const response = await User.verifyEmail(args.verificationCode)
+      return { record: response }
+    } catch (err) {
+      return {
+        error: { message: err.message }
+      }
+    }
   }
 })
 schemaComposer.Mutation.addFields({
