@@ -82,21 +82,15 @@ describe('signup', () => {
     return request({
       query: `
         mutation {
-          updateUserById (_id: "${users[0]._id}", record: {
+          verifyEmail (verificationCode: "${users[0].verificationCode}") , record: {
             emailVerified: true
-          }) {
-            record {
-              email
-            }
-          }
+          })
         }
       `
     })
       .expect((res) => {
-        expect(res.body).toHaveProperty('data.updateUserById.record')
-        expect(res.body.data.updateUserById.record.email).toStrictEqual(
-          users[0].email
-        )
+        expect(res.body).toHaveProperty('data.verificationCode')
+        expect(res.body.data.verificationCode).toStrictEqual(true)
       })
       .expect(200)
   })
@@ -137,6 +131,8 @@ describe('signup', () => {
           }) {
             record {
               email
+              skills
+              knowledge
             }
           }
         }
@@ -145,6 +141,12 @@ describe('signup', () => {
       .expect((res) => {
         expect(res.body).toHaveProperty('data.signup.record')
         expect(res.body.data.signup.record.email).toStrictEqual(fakeUser.email)
+        expect(
+          res.body.data.signup.record.skills.length
+        ).toBeGreaterThanOrEqual(5)
+        expect(
+          res.body.data.signup.record.knowledge.length
+        ).toBeGreaterThanOrEqual(5)
       })
       .expect(200)
   })

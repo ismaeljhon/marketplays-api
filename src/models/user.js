@@ -101,6 +101,29 @@ userSchema.statics.signup = async ({
   }
 }
 
+userSchema.statics.verifyEmail = async (verificationCode) => {
+  try {
+    // make sure email and username are unique
+    const user = await User.findOne({
+      verificationCode
+    })
+    if (!user) {
+      throw new UserInputError(
+        'no user associated with this verification code'
+      )
+    } else if (user.emailVerified) {
+      throw new UserInputError('user verified already')
+    }
+    const res = await User.updateOne(
+      { _id: user._id },
+      { emailVerified: true }
+    )
+    return res.nModified > 0
+  } catch (error) {
+    throw error
+  }
+}
+
 const User = generateModel('User', userSchema)
 
 module.exports = User
