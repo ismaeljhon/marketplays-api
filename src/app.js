@@ -7,7 +7,9 @@ const server = new ApolloServer({
   schema: schema,
   context: async ({ req }) => ({
     user: await context.getUser(req)
-  })
+  }),
+  introspection: false,
+  playground: false
 })
 
 const app = express()
