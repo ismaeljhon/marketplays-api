@@ -53,6 +53,16 @@ userSchema.statics.signup = async ({
       skills = []
       knowledge = []
     } else {
+      const mentor1 = await User.findById(mentor)
+      if (!mentor1) {
+        throw new UserInputError(
+          'Selected mentor does not exist in our database'
+        )
+      } else if (!mentor1.mentorshipCertified) {
+        throw new UserInputError('Mentor is not certified yet')
+      } else if (!mentor1.emailVerified) {
+        throw new UserInputError('Mentor is not email verified')
+      }
       userSchema
         .path(['skills'])
         .validate(uniqueValidator, `{PATH} must be unique`)

@@ -27,6 +27,34 @@ describe('signup', () => {
     }
   })
 
+  it("should not signup if mentor is not certified or mentor's email is not verified", () => {
+    return request({
+      query: `
+        mutation {
+          signup(record: {
+              firstName: "${fakeUser.firstName}"
+              lastName: "${fakeUser.lastName}"
+              email: "${fakeUser.email}"
+              password: "${fakeUser.password}"  
+              username: "${fakeUser.username}"
+              mentor: "${users[0]._id}"
+              skills: [${skills}]
+              knowledge: [${knowledge}]
+          }) {
+            record {
+              email
+            }
+          }
+        }
+      `
+    })
+      .expect((res) => {
+        expect(res.body).toHaveProperty('errors')
+        expect(Array.isArray(res.body.errors)).toBe(true)
+      })
+      .expect(200)
+  })
+
   it('should make user a mentor', () => {
     return request({
       query: `
@@ -50,7 +78,30 @@ describe('signup', () => {
       .expect(200)
   })
 
-  it('there is more than 0 mentor in database', () => {
+  it('should verify email', () => {
+    return request({
+      query: `
+        mutation {
+          updateUserById (_id: "${users[0]._id}", record: {
+            emailVerified: true
+          }) {
+            record {
+              email
+            }
+          }
+        }
+      `
+    })
+      .expect((res) => {
+        expect(res.body).toHaveProperty('data.updateUserById.record')
+        expect(res.body.data.updateUserById.record.email).toStrictEqual(
+          users[0].email
+        )
+      })
+      .expect(200)
+  })
+
+  it('there are more than 0 mentors in database', () => {
     return request({
       query: `
         query {
