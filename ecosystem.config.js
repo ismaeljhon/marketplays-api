@@ -4,14 +4,14 @@ module.exports = {
       name: 'BackendStaging',
       script: 'npm run staging',
       watch: '.',
-      env_production: {
-        'NODE_ENV': 'production'
+      env: {
+        'NODE_ENV': 'development'
       },
       env_staging: {
         'NODE_ENV': 'production'
       },
-      env: {
-        'NODE_ENV': 'development'
+      env_production: {
+        'NODE_ENV': 'production'
       }
     }
   ],
@@ -25,7 +25,7 @@ module.exports = {
       path: '/home/marketplays/public_html/staging/backend',
       'pre-deploy-local': '',
       'post-deploy':
-        'git pull origin staging && npm install && pm2 startOrReload ecosystem.config.js --env staging',
+        'git pull origin staging && npm install && pm2 startOrReload ecosystem.config.js --env staging --update-env',
       'pre-setup': ''
     }
   }
