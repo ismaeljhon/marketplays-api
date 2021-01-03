@@ -82,15 +82,13 @@ describe('signup', () => {
     return request({
       query: `
         mutation {
-          verifyEmail (verificationCode: "${users[0].verificationCode}") , record: {
-            emailVerified: true
-          })
+          verifyEmail (verificationCode: "${users[0].verificationCode}")
         }
       `
     })
       .expect((res) => {
-        expect(res.body).toHaveProperty('data.verificationCode')
-        expect(res.body.data.verificationCode).toStrictEqual(true)
+        expect(res.body).toHaveProperty('data.verifyEmail')
+        expect(res.body.data.verifyEmail).toStrictEqual(true)
       })
       .expect(200)
   })
@@ -131,8 +129,8 @@ describe('signup', () => {
           }) {
             record {
               email
-              skills
-              knowledge
+              skills { title }
+              knowledge { title }
             }
           }
         }
