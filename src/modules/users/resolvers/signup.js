@@ -16,7 +16,16 @@ UserTC.addResolver({
     const user = await User.signup(args.record)
     return {
       recordId: user._id,
-      record: user
+      record: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        skills: user.skills,
+        knowledge: user.knowledge,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        mentor: user.mentor
+      }
     }
   }
 })
