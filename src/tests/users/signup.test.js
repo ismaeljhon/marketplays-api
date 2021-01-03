@@ -121,4 +121,50 @@ describe('signup', () => {
       })
       .expect(200)
   })
+
+  it('should only create a new user if the username is unique', () => {
+    return request({
+      query: `
+        mutation {
+          signup(record: {
+            firstName: "${fakeUser.firstName}"
+            lastName: "${fakeUser.lastName}"
+            email: "${fakeUser.email}"
+            password: "${fakeUser.password}"    
+            username: "${fakeUser.username}"
+          }) {
+            record {
+              firstName
+              lastName
+              email
+            }
+          }
+        }
+      `
+    })
+      .expect((res) => {
+        expect(res.body).toHaveProperty('errors')
+        expect(Array.isArray(res.body.errors)).toBe(true)
+      })
+      .expect(200)
+  })
+
+  it('user can be verified via verification code', () => {
+    return request({
+      query: `
+        query {
+          getOneUser(filter: {
+            email: "${fakeUser.email}"  
+            username: "${fakeUser.username}"
+          }) {
+            verificationCode
+          }
+        }
+      `
+    })
+      .expect((res) => {
+        expect(res.body).toHaveProperty('data.getOneUser.verificationCode')
+      })
+      .expect(200)
+  })
 })
