@@ -3,7 +3,13 @@ module.exports = {
     {
       name: 'BackendStaging',
       script: 'npm run dev',
-      watch: '.'
+      watch: '.',
+      env: {
+        'NODE_ENV': 'development'
+      },
+      env_production: {
+        'NODE_ENV': 'production'
+      }
     }
   ],
 
