@@ -105,15 +105,18 @@ describe('signup', () => {
     return request({
       query: `
         query {
-          users (filter: { mentorshipCertified: true }) {
-            email
+          mentors {
+            record {
+              username
+              email
+            }
           }
         }
       `
     })
       .expect((res) => {
-        expect(res.body).toHaveProperty('data.users')
-        expect(res.body.data.users.length).toBeGreaterThan(0)
+        expect(res.body).toHaveProperty('data.mentors.record')
+        expect(res.body.data.mentors.record.length).toBeGreaterThan(0)
       })
       .expect(200)
   })

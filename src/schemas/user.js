@@ -21,12 +21,12 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   skills: {
-    type: [Schema.Types.ObjectId], // department
+    type: [Schema.Types.ObjectId],
     default: [],
     required: true
   },
   knowledge: {
-    type: [Schema.Types.ObjectId], // department
+    type: [Schema.Types.ObjectId],
     default: [],
     required: true
   },
@@ -35,17 +35,17 @@ const userSchema = new mongoose.Schema({
     required: false
   },
   mentorshipCertified: {
-    type: Boolean, // department
+    type: Boolean,
     required: false,
     default: false
   },
   emailVerified: {
-    type: Boolean, // department
+    type: Boolean,
     required: false,
     default: false
   },
   verificationCode: {
-    type: String, // department
+    type: String,
     required: true
   },
   hashedPassword: {
@@ -64,11 +64,11 @@ const userSchema = new mongoose.Schema({
     type: Date
   },
   teamLeadOf: {
-    type: [Schema.Types.ObjectId], // department
+    type: [Schema.Types.ObjectId],
     default: []
   },
   projectManagerOf: {
-    type: [Schema.Types.ObjectId], // service
+    type: [Schema.Types.ObjectId],
     default: []
   }
 })

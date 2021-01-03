@@ -8,7 +8,9 @@ UserTC.addResolver({
   type: 'MentorsListPayload',
   description: 'Retrieves a list of certified mentors from users table',
   resolve: async () => {
-    const users = await User.find({ certified_for_mentorship: true })
+    const users = await User.find({ mentorshipCertified: true }, null, {
+      limit: 50
+    })
     return {
       record: users
     }
