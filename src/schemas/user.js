@@ -23,16 +23,19 @@ const userSchema = new mongoose.Schema({
   },
   skills: {
     type: [Schema.Types.ObjectId],
+    ref: 'Qualification',
     default: [],
     required: true
   },
   knowledge: {
     type: [Schema.Types.ObjectId],
+    ref: 'Qualification',
     default: [],
     required: true
   },
   mentor: {
     type: Schema.Types.ObjectId,
+    ref: 'User',
     required: false
   },
   mentorshipCertified: {

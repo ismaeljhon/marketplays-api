@@ -4,7 +4,7 @@ const User = require('../../../models/user')
 const UserTC = schemaComposer.getOTC('User')
 
 UserTC.addResolver({
-  name: 'qualification',
+  name: 'userhasqualification',
   type: 'VerifyPayload',
   args: {
     record: 'QualificationUserInput'
@@ -25,5 +25,5 @@ UserTC.addResolver({
   }
 })
 schemaComposer.Query.addFields({
-  qualification: UserTC.getResolver('qualification')
+  userHasQualification: UserTC.getResolver('userhasqualification')
 })

@@ -231,7 +231,7 @@ describe('signup', () => {
     return request({
       query: `
       query {
-        qualification(record: { qualificationID: ${skills[0]}, userID: "${user}" }) {
+        userHasQualification(record: { qualificationID: ${skills[0]}, userID: "${user}" }) {
           record 
           error {
             message
@@ -241,8 +241,8 @@ describe('signup', () => {
       `
     })
       .expect((res) => {
-        expect(res.body).toHaveProperty('data.qualification.record')
-        expect(res.body.data.qualification.record).toBe(true)
+        expect(res.body).toHaveProperty('data.userHasQualification.record')
+        expect(res.body.data.userHasQualification.record).toBe(true)
       })
       .expect(200)
   })
@@ -251,7 +251,7 @@ describe('signup', () => {
     return request({
       query: `
       query {
-        qualification(record: { qualificationID: ${knowledge[0]}, userID: "${user}" }) {
+        userHasQualification(record: { qualificationID: ${knowledge[0]}, userID: "${user}" }) {
           record 
           error {
             message
@@ -261,8 +261,8 @@ describe('signup', () => {
       `
     })
       .expect((res) => {
-        expect(res.body).toHaveProperty('data.qualification.record')
-        expect(res.body.data.qualification.record).toBe(true)
+        expect(res.body).toHaveProperty('data.userHasQualification.record')
+        expect(res.body.data.userHasQualification.record).toBe(true)
       })
       .expect(200)
   })

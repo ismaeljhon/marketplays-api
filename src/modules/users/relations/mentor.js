@@ -5,7 +5,7 @@ const UserTC = schemaComposer.getOTC('User')
 UserTC.addRelation('mentor', {
   resolver: () => UserTC.getResolver('dataLoader'),
   prepareArgs: {
-    _ids: (source) => source.mentor
+    _id: (source) => source.mentor
   },
   projection: { mentor: true }
 })
