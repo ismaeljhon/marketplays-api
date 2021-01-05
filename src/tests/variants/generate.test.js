@@ -106,4 +106,7 @@ describe('generate variants', () => {
           .toStrictEqual(`${attributeData[0].options[0].code}-${attributeData[1].options[0].code}`)
       })
   })
+
+  // @TODO - test generating variants with duplicate attribute codes
+  // @TODO - test generating variants with duplicate option codes
 })
