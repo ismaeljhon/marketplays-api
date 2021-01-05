@@ -1,54 +1,66 @@
 const mongoose = require('mongoose')
 const {
   map,
-  uniq,
-  flatten,
   keyBy
 } = require('lodash')
+const hasDuplicates = require('../utils/has-duplicates')
 const { UserInputError } = require('apollo-server-express')
 const itemAttributeSchema = require('../schemas/itemAttribute')
 const generateModel = require('../utils/generate-model')
 
 itemAttributeSchema.statics.createManyFromAttributeData = async (attributeInputData) => {
+  // get all attributes, options, retaining the sort
+  let attributeInput = map(attributeInputData, 'attribute')
+  let optionInput = map(attributeInputData, 'options')
+
+  // make sure attribute codes are unique
+  if (hasDuplicates(map(attributeInput, 'code'))) {
+    throw new UserInputError(`Duplicate attribute codes exist.`)
+  }
+
+  // make sure options codes are unique per attribute
+  let optionMap = {}
+  optionInput.forEach((list, index) => {
+    let codes = map(list, 'code')
+    if (hasDuplicates(codes)) {
+      throw new UserInputError(`Duplicate option codes exist on attribute code ${attributeInput[index].code}`)
+    }
+
+    // make sure option names are unique per option code
+    // for the entire attributeData
+    // eg if there is a option of : {code: 'SML', name: 'Small'},
+    // there cannot be another option of: {code: 'SML', name: '2x2 cm'}
+    list.forEach(optionData => {
+      if (optionMap[optionData.code] && optionMap[optionData.code].name !== optionData.name) {
+        // @TODO - check if the option code that is already saved, but being used here with a different name
+        throw new UserInputError(`Option code ${optionData.code} already exists with a name ${optionMap[optionData.code].name}.`) // @TODO - update message
+      }
+
+      // save to options map, which will be the list of options to be created
+      optionMap[optionData.code] = optionData
+    })
+  })
+
+  // find or create attributes, options
   const Attribute = mongoose.models['Attribute']
   const Option = mongoose.models['Option']
   const ItemAttribute = mongoose.models['ItemAttribute']
+  let attributes = await Attribute.findOrCreate(attributeInput)
+  let options = await Option.findOrCreate(Object.values(optionMap))
+  attributes = keyBy(attributes, 'code')
+  options = keyBy(options, 'code')
 
-  // create the attributes
-  const attributeNames = uniq(map(attributeInputData, 'name'))
-  // make sure attribute names are unique
-  if (attributeNames.length < attributeInputData.length) {
-    throw new UserInputError(`Duplicate attribute names exist.`)
-  }
-  const attributes = await Attribute.findOrCreate(attributeNames)
-
-  // make sure options names are unique per attribute
-  let optionNames = map(attributeInputData, 'options')
-  optionNames.forEach((names, index) => {
-    if (uniq(names).length < names.length) {
-      throw new UserInputError(`Duplicate options exist on attribute ${attributeInputData[index].name}`)
+  // prepare itemattribute data by by mapping codes to ids
+  const itemAttributeData = attributeInputData.map(itemAttributeInput => {
+    return {
+      attribute: attributes[itemAttributeInput.attribute.code]._id,
+      options: itemAttributeInput.options.map(optionInput => {
+        return options[optionInput.code]._id
+      })
     }
   })
 
-  // generate the options
-  optionNames = uniq(flatten(optionNames))
-  const options = await Option.findOrCreate(optionNames)
-
-  // build item attribute data (along with the corresponding options)
-  // honoring how it was sorted in the input data
-  const keyedAttributes = keyBy(attributes, 'name')
-  const keyedOptions = keyBy(options, 'name')
-
-  // @TODO - itemAttribute should be unique
-  // eg an item cannot have 2 attributes named 'Size'
-  const itemAttributeData = attributeInputData.map(attribute => {
-    let data = {}
-    data.attribute = keyedAttributes[attribute.name]._id
-    data.options = attribute.options.map(option => {
-      return keyedOptions[option]._id
-    })
-    return data
-  })
+  // create itemAttributes
   const itemAttributes = await ItemAttribute.insertMany(itemAttributeData)
   return map(itemAttributes, '_id')
 }

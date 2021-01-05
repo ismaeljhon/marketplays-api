@@ -68,33 +68,36 @@ variantSchema.statics.generateMany = async (attributeData) => {
   return variants
 }
 
-variantSchema.statics.validateAndCreateMany = async (variantData, itemAttributeIds) => {
+variantSchema.statics.validateAndCreateMany = async function (variantInputData, itemAttributeIds) {
+  // retrieve related item attributes
   const ItemAttribute = mongoose.models['ItemAttribute']
-  const Variant = mongoose.models['Variant']
-  const itemAttributes = keyBy(await ItemAttribute.find({
+  let itemAttributes = await ItemAttribute.find({
     _id: { $in: itemAttributeIds }
-  }).populate(['attribute', 'options']), 'attribute.name')
-  let validated = []
-  variantData.forEach(variant => {
-    let validatedAttributeData = []
-    variant.attributeData.forEach(data => {
-      const itemAttribute = itemAttributes[data.attribute]
+  }).populate(['attribute', 'options'])
+  itemAttributes = keyBy(itemAttributes, 'attribute.code')
 
-      // check if the attribute is valid
+  // prepare and validate variant input data
+  let validated = []
+  variantInputData.forEach(variantInput => {
+    let validatedAttributeData = []
+    variantInput.attributeData.forEach(attributeInputData => {
+      const itemAttribute = itemAttributes[attributeInputData.attribute]
+
+      // make sure attributes set for the variant are valid
       if (!itemAttribute) {
-        throw new UserInputError(`Variant attribute '${data.attribute}' not found in the provided attributes.`)
+        throw new UserInputError(`Variant attribute '${attributeInputData.attribute}' not found in the provided attributes.`)
       }
 
       // check if the option is valid
-      const keyedOptions = keyBy(itemAttribute.options, 'name')
-      if (indexOf(Object.keys(keyedOptions), data.option) < 0) {
-        throw new UserInputError(`Variant attribute option '${data.option}' not found in the provided attribute options.`)
+      const keyedOptions = keyBy(itemAttribute.options, 'code')
+      if (indexOf(Object.keys(keyedOptions), attributeInputData.option) < 0) {
+        throw new UserInputError(`Variant attribute option '${attributeInputData.option}' not found in the provided attribute options.`)
       }
 
       // convert names to ids
       validatedAttributeData.push({
         attribute: itemAttribute.attribute._id,
-        option: keyedOptions[data.option]._id
+        option: keyedOptions[attributeInputData.option]._id
       })
     })
 
@@ -105,13 +108,13 @@ variantSchema.statics.validateAndCreateMany = async (variantData, itemAttributeI
       throw new UserInputError(`Variants of duplicate attribute data exists.`)
     }
     validated.push({
-      ...variant,
+      ...variantInput,
       attributeData: validatedAttributeData
     })
   })
 
   // create the variants
-  const variants = await Variant.insertMany(validated)
+  const variants = await this.insertMany(validated)
   return map(variants, '_id')
 }
 
