@@ -11,7 +11,28 @@ const {
   isEqual,
   uniq
 } = require('lodash')
-
+/**
+ * Generates an array of variant data out of the provided attribute data
+ * @param {Array} attributeData array of structured attribute data to generate variants with
+ *                              eg:
+ *                              [
+ *                                {
+ *                                  attribute: {  code: 'size', name: "Size" }
+ *                                  options: [
+ *                                      { code: "S", name: "Small" },
+ *                                      { code: "M", name: "Medium" }
+ *                                  ]
+ *                                },
+ *                                {
+ *                                  attribute: {  code: 'color', name: "Color" }
+ *                                  options: [
+ *                                      { code: "RED", name: "Red" },
+ *                                      { code: "BLU", name: "Green" }
+ *                                  ]
+ *                                }
+ *                              ]
+ * @return {Array} list of variant data
+ */
 variantSchema.statics.generateFromAttributes = async (attributeData) => {
   let attributes = keyBy(map(attributeData, 'attribute'), 'code')
   // make sure no duplicate attribute exists
@@ -60,7 +81,7 @@ variantSchema.statics.generateFromAttributes = async (attributeData) => {
     })
     variants.push({
       name: names.join(', '),
-      code: combination.join('-'),
+      code: combination.join('-'), // @TODO - should prefix the item code. should we add item code to generateVariants payload?
       attributeData: lineAttributeData
     })
   })
