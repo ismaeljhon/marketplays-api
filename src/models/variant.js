@@ -14,9 +14,8 @@ const {
 
 variantSchema.statics.generateMany = async (attributeData) => {
   let attributes = keyBy(map(attributeData, 'attribute'), 'code')
-
   // make sure no duplicate attribute exists
-  if (Object.keys(attributes) < attributeData.length) {
+  if (Object.keys(attributes).length < attributeData.length) {
     throw new UserInputError(`Attribute codes must be unique.`)
   }
 

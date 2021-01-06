@@ -107,6 +107,77 @@ describe('generate variants', () => {
       })
   })
 
-  // @TODO - test generating variants with duplicate attribute codes
+  it('should NOT generate variants when duplicate attribute codes are provided', () => {
+    return request({
+      query: `
+        mutation {
+          generateVariants(record: {
+            attributeData: [
+              {
+                attribute: {
+                  name: "${attributeData[0].attribute.name}",
+                  code: "${attributeData[0].attribute.code}"
+                },
+                options: [
+                  {
+                    name: "${attributeData[0].options[0].name}",
+                    code: "${attributeData[0].options[0].code}"
+                  },
+                  {
+                    name: "${attributeData[0].options[1].name}",
+                    code: "${attributeData[0].options[1].code}"
+                  },
+                  {
+                    name: "${attributeData[0].options[2].name}",
+                    code: "${attributeData[0].options[2].code}"
+                  },
+                ]
+              },
+              {
+                attribute: {
+                  name: "${attributeData[0].attribute.name}",
+                  code: "${attributeData[0].attribute.code}"
+                },
+                options: [
+                  {
+                    name: "${attributeData[1].options[0].name}",
+                    code: "${attributeData[1].options[0].code}"
+                  },
+                  {
+                    name: "${attributeData[1].options[1].name}",
+                    code: "${attributeData[1].options[1].code}"
+                  },
+                  {
+                    name: "${attributeData[1].options[2].name}",
+                    code: "${attributeData[1].options[2].code}"
+                  },
+                ]
+              }
+            ]
+          }) {
+            record {
+              variants {
+                name
+                code
+                attributeData {
+                  attribute {
+                    code
+                    name
+                  }
+                  option {
+                    code
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body.data.generateVariants).toBeNull()
+      })
+  })
   // @TODO - test generating variants with duplicate option codes
 })
