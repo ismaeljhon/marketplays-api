@@ -44,6 +44,36 @@ userSchema.statics.signup = async ({
   }
 }
 
+/**
+ *
+ * @param {Object} payload payload data
+ * @param {String} payload.code verification code
+ *
+ * @return {Object} email and verification status of the user
+ */
+userSchema.statics.verifyUser = async ({
+  code
+}) => {
+  // mark user, of verification code, as verified
+  const user = await User.findOneAndUpdate(
+    {
+      verificationCode: code,
+      emailVerified: false // only verify ones that are not
+    },
+    { $set: { emailVerified: true } }, // @TODO - do we unset the verification code as well?
+    {
+      new: true,
+      useFindAndModify: false
+    }
+  )
+  if (!user) {
+    // just throw a generic error message for security reasons
+    throw new UserInputError('User validation failed')
+  }
+  return {
+    email: user.email,
+    emailVerified: user.emailVerified
+  }
+}
 const User = generateModel('User', userSchema)
-
 module.exports = User

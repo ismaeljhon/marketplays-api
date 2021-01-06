@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = require('mongoose')
+const faker = require('faker')
 const uniqueValidator = require('mongoose-unique-validator')
 
 const userSchema = new mongoose.Schema({
@@ -34,6 +35,16 @@ const userSchema = new mongoose.Schema({
   projectManagerOf: {
     type: [Schema.Types.ObjectId], // service
     default: []
+  },
+  verificationCode: {
+    type: String,
+    default: function () {
+      return faker.random.alphaNumeric(20) // @TODO - use something more secure?
+    }
+  },
+  emailVerified: {
+    type: Boolean,
+    default: false
   }
 })
 
