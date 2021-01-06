@@ -13,7 +13,7 @@ VariantTC.addResolver({
   resolve: async ({ source, args }) => {
     return {
       record: {
-        variants: await Variant.generateMany(args.record.attributeData)
+        variants: await Variant.generateFromAttributes(args.record.attributeData)
       }
     }
   }

@@ -12,7 +12,7 @@ const {
   uniq
 } = require('lodash')
 
-variantSchema.statics.generateMany = async (attributeData) => {
+variantSchema.statics.generateFromAttributes = async (attributeData) => {
   let attributes = keyBy(map(attributeData, 'attribute'), 'code')
   // make sure no duplicate attribute exists
   if (Object.keys(attributes).length < attributeData.length) {

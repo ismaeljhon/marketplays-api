@@ -26,7 +26,7 @@ describe('add/edit variants', () => {
     }
 
     // generate variants based on the generated attribute data
-    fakeData.variants = await Variant.generateMany(fakeData.attributes)
+    fakeData.variants = await Variant.generateFromAttributes(fakeData.attributes)
   })
 
   it('should add variants when creating a service', () => {
