@@ -1,6 +1,6 @@
 const { schemaComposer } = require('graphql-compose')
 
-// add types for signup
+// add input type for verifying a user
 schemaComposer.createInputTC({
   name: 'UserVerifyEmailInput',
   fields: {

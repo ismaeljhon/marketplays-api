@@ -1,4 +1,6 @@
 const { schemaComposer } = require('graphql-compose')
+
+// define payload response type for verifying a user
 schemaComposer.createObjectTC({
   name: 'UserVerifyEmailRecord',
   fields: {
@@ -6,7 +8,6 @@ schemaComposer.createObjectTC({
     emailVerified: 'Boolean'
   }
 })
-
 schemaComposer.createObjectTC({
   name: 'UserVerifyEmailPayload',
   fields: {
