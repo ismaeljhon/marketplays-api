@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const { UserInputError } = require('apollo-server-express')
 const generateModel = require('../utils/generate-model')
 const Qualification = require('./qualifications')
+var ObjectId = require('mongoose').Types.ObjectId
 
 const SALT_ROUNDS = 12
 
@@ -19,7 +20,7 @@ const SALT_ROUNDS = 12
  * @return {mongoose.model} Resulting user
  */
 const countValidator = function (v) {
-  return v.length >= 5
+  return v.length < 1 || v.length >= 5
 }
 
 userSchema.statics.signup = async ({
@@ -60,6 +61,28 @@ userSchema.statics.signup = async ({
       } else if (!mentor1.emailVerified) {
         throw new UserInputError('Mentor is not email verified')
       }
+      const qualificator = (data) => {
+        return data.filter((qua) => ObjectId.isValid(qua))
+      }
+      const userCustomQua = async (data, type) => {
+        let customQualif = data.filter((qua) => !ObjectId.isValid(qua))
+        if (customQualif.length === 0) return Promise.resolve([])
+        customQualif = customQualif.map((title) => {
+          return {
+            type,
+            title
+          }
+        })
+        return Qualification.create(customQualif)
+      }
+      const skills_ = (await userCustomQua(skills, 'skill')).map(
+        (skill) => `${skill._id}`
+      )
+      const knowledge_ = (await userCustomQua(knowledge, 'knowledge')).map(
+        (knowledge_) => `${knowledge_._id}`
+      )
+      skills = qualificator([...skills, ...skills_])
+      knowledge = qualificator([...knowledge, ...knowledge_])
       let qualifications = await Qualification.find({
         _id: [...skills, ...knowledge]
       })
@@ -70,10 +93,10 @@ userSchema.statics.signup = async ({
       }
       userSchema
         .path('skills')
-        .validate(countValidator, `user must pass 5 {PATH}`)
+        .validate(countValidator, `user must pass 5 {PATH} or skip`)
       userSchema
         .path('knowledge')
-        .validate(countValidator, `user must pass 5 {PATH}`)
+        .validate(countValidator, `user must pass 5 {PATH} or skip`)
     }
 
     // apply hash
