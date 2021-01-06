@@ -1,14 +1,15 @@
 const mongoose = require('mongoose')
 const {
   map,
-  keyBy
+  keyBy,
+  flatten
 } = require('lodash')
 const hasDuplicates = require('../utils/has-duplicates')
 const { UserInputError } = require('apollo-server-express')
 const itemAttributeSchema = require('../schemas/itemAttribute')
 const generateModel = require('../utils/generate-model')
 
-itemAttributeSchema.statics.createManyFromAttributeData = async (attributeInputData) => {
+itemAttributeSchema.statics.validateAttributeData = async function (attributeInputData) {
   // get all attributes, options, retaining the sort
   let attributeInput = map(attributeInputData, 'attribute')
   let optionInput = map(attributeInputData, 'options')
@@ -35,16 +36,27 @@ itemAttributeSchema.statics.createManyFromAttributeData = async (attributeInputD
         // @TODO - check if the option code that is already saved, but being used here with a different name
         throw new UserInputError(`Option code ${optionData.code} already exists with a name ${optionMap[optionData.code].name}.`) // @TODO - update message
       }
-
-      // save to options map, which will be the list of options to be created
       optionMap[optionData.code] = optionData
     })
   })
+  return true
+}
+itemAttributeSchema.statics.createManyFromAttributeData = async function (attributeInputData) {
+  // make sure attribute data is valid
+  if (!this.validateAttributeData(attributeInputData)) {
+    throw new UserInputError('Invalid attribute data provided.')
+  }
 
   // find or create attributes, options
   const Attribute = mongoose.models['Attribute']
   const Option = mongoose.models['Option']
   const ItemAttribute = mongoose.models['ItemAttribute']
+  const attributeInput = map(attributeInputData, 'attribute')
+  const optionInput = flatten(map(attributeInputData, 'options'))
+  let optionMap = {}
+  optionInput.forEach(option => {
+    optionMap[option.code] = option
+  })
   let attributes = await Attribute.findOrCreate(attributeInput)
   let options = await Option.findOrCreate(Object.values(optionMap))
   attributes = keyBy(attributes, 'code')

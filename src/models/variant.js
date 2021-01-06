@@ -8,8 +8,7 @@ const {
   keyBy,
   indexOf,
   find,
-  isEqual,
-  uniq
+  isEqual
 } = require('lodash')
 /**
  * Generates an array of variant data out of the provided attribute data
@@ -33,36 +32,33 @@ const {
  *                              ]
  * @return {Array} list of variant data
  */
-variantSchema.statics.generateFromAttributes = async (attributeData) => {
-  let attributes = keyBy(map(attributeData, 'attribute'), 'code')
-  // make sure no duplicate attribute exists
-  if (Object.keys(attributes).length < attributeData.length) {
-    throw new UserInputError(`Attribute codes must be unique.`)
+variantSchema.statics.generateFromAttributes = async (attributeInputData) => {
+  // make sure attribute data is valid
+  let itemAttribute = mongoose.model('ItemAttribute')
+  const isValid = await itemAttribute.validateAttributeData(attributeInputData)
+  if (!isValid) {
+    throw new UserInputError('Invalid attribute data provided.')
   }
 
-  // make sure no duplicate option per attribute exists
-  let rawOptions = map(attributeData, 'options')
-  let options = {}
-  rawOptions.forEach((list, index) => {
-    if (uniq(map(list, 'code')).length < list.length) {
-      throw new UserInputError(`Duplicate options exist on attribute code: ${attributeData[index].attribute.code}`)
-    }
+  // get all attributes, options, retaining the sort
+  let attributeInput = map(attributeInputData, 'attribute')
+  const optionInput = map(attributeInputData, 'options')
 
-    // map the option names to its respective code
-    // note that since a code is only unique per attribute,
-    // it's name should be the same if it will be used under a different attribute
-    list.forEach(option => {
-      if (options[option.code] && options[option.code].name !== option.name) {
-        throw new UserInputError(`Option code ${option.code} already exists with a name ${options[option.code].name}.`) // @TODO - update message
+  // prepare option data
+  let optionMap = {}
+  let optionCodes = []
+  optionInput.forEach(options => {
+    let lineCodes = []
+    options.forEach(option => {
+      lineCodes.push(option.code)
+      if (!optionMap[option.code]) {
+        optionMap[option.code] = option
       }
-      options[option.code] = option
     })
+    optionCodes.push(lineCodes)
   })
 
-  // retrieve option codes per attribute
-  let optionCodes = rawOptions.map(option => {
-    return map(option, 'code')
-  })
+  // generate combinations
   let combinations = fastCartesian(optionCodes)
 
   // build variant data
@@ -71,12 +67,12 @@ variantSchema.statics.generateFromAttributes = async (attributeData) => {
     let names = []
     let lineAttributeData = []
     combination.forEach((optionCode, index) => {
-      names.push(options[optionCode].name)
+      names.push(optionMap[optionCode].name)
       lineAttributeData.push({
         // since this honors how attribute data has been sorted,
         // we'll map the combination index to its corresponding attribute (parent)
-        attribute: attributeData[index].attribute,
-        option: options[optionCode]
+        attribute: attributeInput[index],
+        option: optionMap[optionCode]
       })
     })
     variants.push({
