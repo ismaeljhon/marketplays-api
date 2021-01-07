@@ -10,8 +10,10 @@ ServiceTC.addResolver({
   name: 'createNew',
   resolve: async ({ source, args, context, info }) => {
     // create variants, if applicable
-    // only create item attributes if variants were also provided
-    if (Array.isArray(args.record.variants) && args.record.variants.length > 0) {
+    // only create item attributes if attributes AND variants are provided
+    // @TODO - abstract this to the model?
+    if (Array.isArray(args.record.attributes) && args.record.attributes.length > 0 &&
+        Array.isArray(args.record.variants) && args.record.variants.length > 0) {
       // since the schema for creating a service requies that the attributes and variants fields
       // are of ObjectID, the values will become null at `create` method level.
       // case in point, we need to create them first out of the input data
@@ -26,9 +28,6 @@ ServiceTC.addResolver({
                 .resolve({ source, args, context, info })
             })
             .catch((error) => {
-              // if for some reason, creation of variants failed,
-              // the created item attributes need to be deleted
-              ItemAttribute.cleanup()
               throw error
             })
         })
@@ -36,6 +35,9 @@ ServiceTC.addResolver({
           throw error
         })
     } else {
+      // make sure when creating a standard product,
+      // no attributes or variants will be added
+      args.record.attributes = args.record.variants = []
       return ServiceTC.getResolver('createOne')
         .resolve({ source, args, context, info })
     }

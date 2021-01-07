@@ -10,6 +10,7 @@ const {
   find,
   isEqual
 } = require('lodash')
+const hasDuplicates = require('../utils/has-duplicates')
 /**
  * Generates an array of variant data out of the provided attribute data
  * @param {Array} attributeData array of structured attribute data to generate variants with
@@ -95,6 +96,11 @@ variantSchema.statics.validateAndCreateMany = async function (variantInputData, 
       return keyBy(itemAttributes, 'attribute.code')
     })
     .then(itemAttributes => {
+      // make sure variant codes are unique
+      if (hasDuplicates(map(variantInputData, 'code'))) {
+        throw new UserInputError(`Duplicate variant code exists.`)
+      }
+
       // prepare and validate variant input data
       let validated = []
       variantInputData.forEach(variantInput => {
@@ -104,19 +110,13 @@ variantSchema.statics.validateAndCreateMany = async function (variantInputData, 
 
           // make sure attributes set for the variant are valid
           if (!itemAttribute) {
-            return ItemAttribute.cleanup()
-              .then(() => {
-                throw new UserInputError(`Variant attribute '${attributeInputData.attribute}' not found in the provided attributes.`)
-              })
+            throw new UserInputError(`Variant attribute '${attributeInputData.attribute}' not found in the provided attributes.`)
           }
 
           // check if the option is valid
           const keyedOptions = keyBy(itemAttribute.options, 'code')
           if (indexOf(Object.keys(keyedOptions), attributeInputData.option) < 0) {
-            return ItemAttribute.cleanup()
-              .then(() => {
-                throw new UserInputError(`Variant attribute option '${attributeInputData.option}' not found in the provided attribute options.`)
-              })
+            throw new UserInputError(`Variant attribute option '${attributeInputData.option}' not found in the provided attribute options.`)
           }
 
           // convert names to ids
@@ -130,10 +130,7 @@ variantSchema.statics.validateAndCreateMany = async function (variantInputData, 
         if (find(validated, (variant) => {
           return isEqual(variant.attributeData, validatedAttributeData)
         })) {
-          return ItemAttribute.cleanup()
-            .then(() => {
-              throw new UserInputError(`Variants of duplicate attribute data exists.`)
-            })
+          throw new UserInputError(`Variants of duplicate attribute data exists.`)
         }
         validated.push({
           ...variantInput,
@@ -149,7 +146,10 @@ variantSchema.statics.validateAndCreateMany = async function (variantInputData, 
       return map(results, '_id')
     })
     .catch(error => {
-      throw error
+      return ItemAttribute.cleanup()
+        .then(() => {
+          throw error
+        })
     })
 }
 
