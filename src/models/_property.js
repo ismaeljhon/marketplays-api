@@ -18,29 +18,36 @@ const {
 propertySchema.statics.findOrCreate = async function (propertyData) {
   // retrieve existing properties
   let codes = map(propertyData, 'code')
-  let existingProperties = await this.find({
+  return this.find({
     code: { $in: codes }
   })
+    .then(existingProperties => {
+      // determine properties that still need to be created
+      let propertyDataMap = keyBy(propertyData, 'code')
+      let pendingPropertyCodes = difference(codes, map(existingProperties, 'code'))
 
-  // determine properties that still need to be created
-  let propertyDataMap = keyBy(propertyData, 'code')
-  let pendingPropertyCodes = difference(codes, map(existingProperties, 'code'))
-
-  // create pending properties
-  const newPropertiesData = pendingPropertyCodes.map(code => {
-    return propertyDataMap[code]
-  })
-  const newProperties = await this.insertMany(newPropertiesData)
-
-  // sort data according to how the input has been sorted
-  const allProperties = keyBy([
-    ...existingProperties,
-    ...newProperties
-  ], 'code')
-  const sorted = propertyData.map(data => {
-    return allProperties[data.code]
-  })
-  return sorted
+      // create pending properties
+      const newPropertiesData = pendingPropertyCodes.map(code => {
+        return propertyDataMap[code]
+      })
+      return this.insertMany(newPropertiesData)
+        .then(newProperties => {
+          return keyBy([
+            ...existingProperties,
+            ...newProperties
+          ], 'code')
+        })
+    })
+    .then(allProperties => {
+      // sort data according to how the input has been sorted
+      const sorted = propertyData.map(data => {
+        return allProperties[data.code]
+      })
+      return sorted
+    })
+    .catch(errors => {
+      throw errors
+    })
 }
 
 module.exports = Property

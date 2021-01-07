@@ -9,7 +9,7 @@ const { UserInputError } = require('apollo-server-express')
 const itemAttributeSchema = require('../schemas/itemAttribute')
 const generateModel = require('../utils/generate-model')
 
-itemAttributeSchema.statics.validateAttributeData = async function (attributeInputData) {
+itemAttributeSchema.statics.validateAttributeData = function (attributeInputData) {
   // get all attributes, options, retaining the sort
   let attributeInput = map(attributeInputData, 'attribute')
   let optionInput = map(attributeInputData, 'options')
@@ -42,41 +42,66 @@ itemAttributeSchema.statics.validateAttributeData = async function (attributeInp
   return true
 }
 itemAttributeSchema.statics.createManyFromAttributeData = async function (attributeInputData) {
-  // make sure attribute data is valid
-  if (!this.validateAttributeData(attributeInputData)) {
-    throw new UserInputError('Invalid attribute data provided.')
+  let isValid = false
+  try {
+    isValid = this.validateAttributeData(attributeInputData)
+  } catch (error) {
+    throw error
   }
-
-  // find or create attributes, options
-  const Attribute = mongoose.models['Attribute']
-  const Option = mongoose.models['Option']
-  const ItemAttribute = mongoose.models['ItemAttribute']
-  const attributeInput = map(attributeInputData, 'attribute')
-  const optionInput = flatten(map(attributeInputData, 'options'))
-  let optionMap = {}
-  optionInput.forEach(option => {
-    optionMap[option.code] = option
-  })
-  let attributes = await Attribute.findOrCreate(attributeInput)
-  let options = await Option.findOrCreate(Object.values(optionMap))
-  attributes = keyBy(attributes, 'code')
-  options = keyBy(options, 'code')
-
-  // prepare itemattribute data by by mapping codes to ids
-  const itemAttributeData = attributeInputData.map(itemAttributeInput => {
-    return {
-      attribute: attributes[itemAttributeInput.attribute.code]._id,
-      options: itemAttributeInput.options.map(optionInput => {
-        return options[optionInput.code]._id
+  // make sure attribute data is valid
+  if (isValid) {
+    // find or create attributes, options
+    const Attribute = mongoose.models['Attribute']
+    const Option = mongoose.models['Option']
+    const ItemAttribute = mongoose.models['ItemAttribute']
+    const attributeInput = map(attributeInputData, 'attribute')
+    const optionInput = flatten(map(attributeInputData, 'options'))
+    let optionMap = {}
+    optionInput.forEach(option => {
+      optionMap[option.code] = option
+    })
+    return Attribute.findOrCreate(attributeInput)
+      .then(attributes => {
+        return attributes
       })
-    }
-  })
+      .then(attributes => {
+        return Option.findOrCreate(Object.values(optionMap))
+          .then(options => {
+            return {
+              attributes: keyBy(attributes, 'code'),
+              options: keyBy(options, 'code')
+            }
+          })
+      })
+      .then(({ attributes, options }) => {
+        // prepare itemattribute data by by mapping codes to ids
+        const itemAttributeData = attributeInputData.map(itemAttributeInput => {
+          return {
+            attribute: attributes[itemAttributeInput.attribute.code]._id,
+            options: itemAttributeInput.options.map(optionInput => {
+              return options[optionInput.code]._id
+            })
+          }
+        })
+        return ItemAttribute.insertMany(itemAttributeData)
+      })
+      .then(result => {
+        return map(result, '_id')
+      })
+      .catch(error => {
+        throw error
+      })
+  }
+}
 
-  // create itemAttributes
-  const itemAttributes = await ItemAttribute.insertMany(itemAttributeData)
-  return map(itemAttributes, '_id')
+itemAttributeSchema.statics.cleanup = async function () {
+  return this.deleteMany({
+    $or: [
+      { service: null },
+      { product: null }
+    ]
+  })
 }
 
 const ItemAttribute = generateModel('ItemAttribute', itemAttributeSchema)
-
 module.exports = ItemAttribute

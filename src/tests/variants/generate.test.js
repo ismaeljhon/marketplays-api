@@ -176,7 +176,8 @@ describe('generate variants', () => {
       `
     })
       .expect(res => {
-        expect(res.body.data.generateVariants).toBeNull()
+        expect(res.body).toHaveProperty('errors')
+        expect(Array.isArray(res.body.errors)).toBe(true)
       })
   })
 
@@ -249,7 +250,8 @@ describe('generate variants', () => {
       `
     })
       .expect(res => {
-        expect(res.body.data.generateVariants).toBeNull()
+        expect(res.body).toHaveProperty('errors')
+        expect(Array.isArray(res.body.errors)).toBe(true)
       })
   })
 
@@ -410,7 +412,8 @@ describe('generate variants', () => {
       `
     })
       .expect(res => {
-        expect(res.body.data.generateVariants).toBeNull()
+        expect(res.body).toHaveProperty('errors')
+        expect(Array.isArray(res.body.errors)).toBe(true)
       })
   })
 })

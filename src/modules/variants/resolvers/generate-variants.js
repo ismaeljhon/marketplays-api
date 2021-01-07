@@ -10,11 +10,16 @@ VariantTC.addResolver({
     record: 'GenerateVariantsInput'
   },
   description: 'Generates all the possible variants out of the attributes and options',
-  resolve: async ({ source, args }) => {
-    return {
-      record: {
-        variants: await Variant.generateFromAttributes(args.record.attributeData)
+  resolve: ({ source, args }) => {
+    try {
+      return {
+        record: {
+          variants: Variant.generateFromAttributes(args.record.attributeData)
+        }
       }
+    } catch (error) {
+      // @TODO - update to show only relevant information
+      return error
     }
   }
 })
