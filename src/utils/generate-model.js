@@ -5,10 +5,14 @@ const pluralize = require('pluralize')
  * Adds deifned hooks for all models
  * @param {String} name  name of the model
  * @param {MongooseSchema} schema schema to create a model with
+ * @param {Object} options Optional parameters
+ * @param {mongoose.model} options.baseModel base model of the discriminator model
  *
  * @returns {MongooseModel}
  */
-const generateModel = (name, schema) => {
+const generateModel = (name, schema, {
+  baseModel
+} = {}) => {
   // apply any hooks defined for this model
   try {
     let directory = pluralize(name.charAt(0).toLowerCase() + name.slice(1))
@@ -32,7 +36,15 @@ const generateModel = (name, schema) => {
     // no hooks found for the current model
     // @TODO - throw exemption?
   }
-  return mongoose.model(name, schema)
+
+  let model = null
+  if (baseModel) {
+    // instantiate the model using the base model using discriminator
+    model = baseModel.discriminator(name, schema)
+  } else {
+    model = mongoose.model(name, schema)
+  }
+  return model
 }
 
 module.exports = generateModel
