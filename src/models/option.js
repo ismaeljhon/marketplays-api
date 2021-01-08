@@ -1,7 +1,7 @@
-const mongoose = require('mongoose')
 const optionSchema = require('../schemas/option')
 const generateModel = require('../utils/generate-model')
-const Property = mongoose.models['Property']
+const getModel = require('../utils/get-model')
+const Property = getModel('Property')
 
 // configure discriminator
 Property.discriminator('Option', optionSchema)
