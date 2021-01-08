@@ -2,6 +2,9 @@ const expect = require('expect')
 const { request } = require('../../utils/test')
 const { map } = require('lodash')
 const {
+  jsonToGraphQLQuery
+} = require('json-to-graphql-query')
+const {
   CustomerFactory,
   ServiceFactory,
   SubscriptionTypeFactory,
@@ -17,9 +20,9 @@ const Orderline = require('../../models/orderline')
 const Subscription = require('../../models/subscription')
 const JobCategory = require('../../models/jobCategory')
 
-let data = {}
-let job = JobFactory.generate()
 describe('create jobs', () => {
+  let data = {}
+  let job = JobFactory.generate()
   before(async () => {
     // create dummy customer
     data.customer = await Customer.create(CustomerFactory.generate())
@@ -53,32 +56,24 @@ describe('create jobs', () => {
   let createdJob = null
   it('should create jobs', () => {
     return request({
-      query: `
-        mutation {
-          createOneJob(record: {
-            title: "${job.title}"
-            slug: "${job.slug}"
-            description: "${job.description}"
-            instructions: "${job.instructions}"
-            biddable: ${job.biddable}
-            openingMarketBid: ${job.openingMarketBid}
-            type: "${job.type}"
-            timeframe: ${job.timeframe}
-            seoTitle: "${job.seoTitle}"
-            seoKeywords: "${job.seoKeywords}"
-            seoDescription: "${job.seoDescription}"
-            currency: "${job.currency}"
-            category: "${data.jobCategory._id}"
-            serviceRequest: "${data.subscription.serviceRequests[0]}"
-          }) {
-            record {
-              _id
-              title
-              serviceRequest {
-                subscription {
-                  orderline {
-                    order {
-                      orderNumber
+      query: jsonToGraphQLQuery({
+        mutation: {
+          createOneJob: {
+            __args: {
+              record: {
+                ...job,
+                category: `${data.jobCategory._id}`,
+                serviceRequest: `${data.subscription.serviceRequests[0]}`
+              }
+            },
+            record: {
+              _id: true,
+              title: true,
+              serviceRequest: {
+                subscription: {
+                  orderline: {
+                    order: {
+                      orderNumber: true
                     }
                   }
                 }
@@ -86,7 +81,7 @@ describe('create jobs', () => {
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.createOneJob.record.title')
@@ -97,16 +92,19 @@ describe('create jobs', () => {
 
   it('should add the job against the service request', () => {
     return request({
-      query: `
-        query {
-          serviceRequest(_id: "${data.subscription.serviceRequests[0]}") {
-            _id
-            jobs {
-              _id
+      query: jsonToGraphQLQuery({
+        query: {
+          serviceRequest: {
+            __args: {
+              _id: `${data.subscription.serviceRequests[0]}`
+            },
+            _id: true,
+            jobs: {
+              _id: true
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.serviceRequest')
@@ -122,16 +120,19 @@ describe('create jobs', () => {
 
   it('should add the job under the job category', () => {
     return request({
-      query: `
-        query {
-          jobCategory(_id: "${data.jobCategory._id}") {
-            name
-            jobs {
-              _id
+      query: jsonToGraphQLQuery({
+        query: {
+          jobCategory: {
+            __args: {
+              _id: `${data.jobCategory._id}`
+            },
+            name: true,
+            jobs: {
+              _id: true
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.jobCategory')
