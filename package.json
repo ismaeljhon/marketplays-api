@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "cross-env nodemon src/index.js --exec \"node --preserve-symlinks -r dotenv/config\"",
-    "test": "cross-env NODE_ENV=mocha mocha --timeout=10000 --preserve-symlinks -r dotenv/config --recursive './{,!(node_modules)/**}/*.test.js'"
+    "staging": "cross-env NODE_ENV=production nodemon src/index.js --exec \"node --preserve-symlinks -r dotenv/config\"",
+    "test": "cross-env NODE_ENV=mocha mocha --timeout=10000 --preserve-symlinks -r dotenv/config --recursive './{,!(node_modules)/**}/*.test.js'",
+    "deploy:staging": "pm2 deploy ecosystem.config.js staging"
   },
   "husky": {
     "hooks": {
