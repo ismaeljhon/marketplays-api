@@ -1,13 +1,12 @@
 const mongoose = require('mongoose')
 
 /**
- *
+ * Retrives the model instance for a given model name
  * @param {String} name model name to check
- * @param {Boolean} autoLoad If set to true, automatically loads the model if it doesn't exist
  *
  * @return {mongoose.model} returns the retrieved or loaded model
  */
-const getModel = (name, autoLoad = true) => {
+const getModel = name => {
   let model = null
   try {
     model = mongoose.model(name)
@@ -15,7 +14,7 @@ const getModel = (name, autoLoad = true) => {
     // @TODO - add error message
   }
 
-  if (!model && autoLoad) {
+  if (!model) {
     let fileName = name.charAt(0).toLowerCase() + name.slice(1)
     model = require(`../models/${fileName}.js`)
   }
