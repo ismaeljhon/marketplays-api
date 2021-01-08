@@ -56,10 +56,7 @@ itemAttributeSchema.statics.createManyFromAttributeData = async function (attrib
     const ItemAttribute = mongoose.models['ItemAttribute']
     const attributeInput = map(attributeInputData, 'attribute')
     const optionInput = flatten(map(attributeInputData, 'options'))
-    let optionMap = {}
-    optionInput.forEach(option => {
-      optionMap[option.code] = option
-    })
+    const optionMap = keyBy(optionInput, 'code')
     return Attribute.findOrCreate(attributeInput)
       .then(attributes => {
         return attributes
