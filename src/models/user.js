@@ -53,7 +53,11 @@ userSchema.statics.signup = async ({
  */
 userSchema.statics.verifyUser = async ({
   code
-}) => {
+} = {}) => {
+  if (!code) {
+    throw new UserInputError('Verification code not provided.')
+  }
+
   // mark user, of verification code, as verified
   const user = await User.findOneAndUpdate(
     {
