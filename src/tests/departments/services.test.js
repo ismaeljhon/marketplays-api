@@ -2,13 +2,15 @@ const expect = require('expect')
 const { request } = require('../../utils/test')
 const Service = require('../../models/service')
 const { DepartmentFactory, ServiceFactory } = require('../../utils/factories/')
-
-const fakeDepartment = DepartmentFactory.generate()
+const {
+  jsonToGraphQLQuery
+} = require('json-to-graphql-query')
 
 describe('department services', () => {
-  let services = []
+  const fakeDepartment = DepartmentFactory.generate()
 
   // create dummy services
+  let services = []
   before(async () => {
     for (let x = 0; x <= 1; x++) {
       const service = ServiceFactory.generate()
@@ -18,24 +20,28 @@ describe('department services', () => {
 
   let department = null
   it('should create a department with a service', () => {
+    const { name, code } = fakeDepartment
     return request({
-      query: `
-        mutation {
-          createOneDepartment(record: {
-            name: "${fakeDepartment.name}",
-            code: "${fakeDepartment.code}",
-            services: ["${services[0]._id}"]
-          }) {
-            record {
-              _id
-              name
-              services {
-                name
+      query: jsonToGraphQLQuery({
+        mutation: {
+          createOneDepartment: {
+            __args: {
+              record: {
+                name: name,
+                code: code,
+                services: [ `${services[0]._id}` ]
+              }
+            },
+            record: {
+              _id: true,
+              name: true,
+              services: {
+                name: true
               }
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.createOneDepartment.record.services')
@@ -52,17 +58,20 @@ describe('department services', () => {
 
   it('should also add the department against the service', () => {
     return request({
-      query: `
-        query {
-          service(_id: "${services[0]._id}") {
-            name
-            department {
-              _id
-              name
+      query: jsonToGraphQLQuery({
+        query: {
+          service: {
+            __args: {
+              _id: `${services[0]._id}`
+            },
+            name: true,
+            department: {
+              _id: true,
+              name: true
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.service.department')
@@ -72,25 +81,26 @@ describe('department services', () => {
 
   it('should update the department\'s services', () => {
     return request({
-      query: `
-        mutation {
-          updateDepartmentById(
-            _id: "${department._id}"
+      query: jsonToGraphQLQuery({
+        mutation: {
+          updateDepartmentById: {
+            __args: {
+              _id: `${department._id}`,
+              record: {
+                services: [ `${services[1]._id}` ]
+              }
+            },
             record: {
-              services: ["${services[1]._id}"]
-            }
-          ) {
-            record {
-              _id
-              name
-              services {
-                _id
-                name
+              _id: true,
+              name: true,
+              services: {
+                _id: true,
+                name: true
               }
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.updateDepartmentById.record')
@@ -107,17 +117,20 @@ describe('department services', () => {
 
   it('should also delete the old department in the service', () => {
     return request({
-      query: `
-        query {
-          service(_id: "${services[0]._id}") {
-            _id
-            name
-            department {
-              name
+      query: jsonToGraphQLQuery({
+        query: {
+          service: {
+            __args: {
+              _id: `${services[0]._id}`
+            },
+            _id: true,
+            name: true,
+            department: {
+              name: true
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.service.department')
