@@ -1,6 +1,3 @@
-// @TODO - prefixing the file name with '_' for this file is just a temporary workaround
-// to ensure this model loads first
-// the abstraction layer to handle this is still to be written
 /**
  * Property abstract model
  * This is where all property instances (eg Attribute, Option) will inherit from
