@@ -19,7 +19,8 @@ UserTC.addResolver({
       record: {
         _id: user._id,
         fullName: user.fullName,
-        email: user.email
+        email: user.email,
+        verificationCode: user.verificationCode
       }
     }
   }
