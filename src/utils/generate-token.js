@@ -1,10 +1,20 @@
 const User = require('../models/user')
+const faker = require('faker')
+const bcrypt = require('bcrypt')
 const Token = require('./token')
-const { UserFactory } = require('./factories')
+
+const SALT_ROUNDS = 12
+
+const firstName = faker.name.firstName()
+const lastName = faker.name.lastName()
 
 const generateToken = async (_) => {
-  const testUser = UserFactory.generate()
-  const user = await User.signup(testUser)
+  const testUser = {
+    fullName: firstName + ' ' + lastName,
+    email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
+    hashedPassword: await bcrypt.hash(faker.internet.password(20), SALT_ROUNDS)
+  }
+  const user = await User.create(testUser)
   const token = await Token.create(user._id)
   return token
 }

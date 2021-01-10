@@ -14,6 +14,7 @@ describe('department team lead', () => {
       users.push(await User.signup(user))
     }
   })
+
   let departmentId = null
   it('should create a department with a team lead', () => {
     return request({
@@ -30,8 +31,7 @@ describe('department team lead', () => {
               code
               teamLead {
                 _id
-                firstName
-                lastName
+                fullName
                 email
               }
             }
@@ -39,12 +39,10 @@ describe('department team lead', () => {
         }
       `
     })
-      .expect((res) => {
+      .expect(res => {
         // check if the user is assigned to the department
         expect(res.body).toHaveProperty('data.createOneDepartment.record')
-        expect(res.body.data.createOneDepartment.record.teamLead.email).toEqual(
-          users[0].email
-        )
+        expect(res.body.data.createOneDepartment.record.teamLead.fullName).toEqual(users[0].fullName)
         departmentId = res.body.data.createOneDepartment.record._id
       })
       .expect(200)
@@ -62,16 +60,17 @@ describe('department team lead', () => {
           }
         }
       `
-    }).expect((res) => {
-      expect(res.body).toHaveProperty('data.user.teamLeadOf')
-      expect(res.body.data.user.teamLeadOf).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            _id: departmentId
-          })
-        ])
-      )
     })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.user.teamLeadOf')
+        expect(res.body.data.user.teamLeadOf).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              _id: departmentId
+            })
+          ])
+        )
+      })
   })
   it('should update team lead', () => {
     return request({
@@ -87,20 +86,16 @@ describe('department team lead', () => {
               name
               teamLead {
                 _id
-                firstName
-                lastName
-                email
+                fullName
               }
             }
           }
         }
       `
     })
-      .expect((res) => {
+      .expect(res => {
         expect(res.body).toHaveProperty('data.updateDepartmentById.record')
-        expect(
-          res.body.data.updateDepartmentById.record.teamLead.email
-        ).toEqual(users[1].email)
+        expect(res.body.data.updateDepartmentById.record.teamLead.fullName).toEqual(users[1].fullName)
       })
       .expect(200)
   })
@@ -117,15 +112,16 @@ describe('department team lead', () => {
           }
         }
       `
-    }).expect((res) => {
-      expect(res.body).toHaveProperty('data.user.teamLeadOf')
-      expect(res.body.data.user.teamLeadOf).toEqual(
-        expect.not.arrayContaining([
-          expect.not.objectContaining({
-            _id: departmentId
-          })
-        ])
-      )
     })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.user.teamLeadOf')
+        expect(res.body.data.user.teamLeadOf).toEqual(
+          expect.not.arrayContaining([
+            expect.not.objectContaining({
+              _id: departmentId
+            })
+          ])
+        )
+      })
   })
 })
