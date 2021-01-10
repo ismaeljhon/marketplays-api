@@ -18,8 +18,13 @@ UserTC.addResolver({
       recordId: user._id,
       record: {
         _id: user._id,
-        fullName: user.fullName,
-        email: user.email
+        username: user.username,
+        email: user.email,
+        skills: user.skills,
+        knowledge: user.knowledge,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        mentor: user.mentor
       }
     }
   }

@@ -4,9 +4,16 @@ const UserFactory = {
   generate: () => {
     const firstName = faker.name.firstName()
     const lastName = faker.name.lastName()
+    const username = faker.internet.userName(firstName, lastName)
     return {
-      fullName: `${firstName} ${lastName}`,
-      email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
+      firstName,
+      lastName,
+      username,
+      email: faker.internet.email(
+        firstName,
+        lastName,
+        faker.internet.domainName()
+      ),
       password: faker.internet.password(20)
     }
   }

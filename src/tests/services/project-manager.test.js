@@ -1,6 +1,10 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
-const { UserFactory, ServiceFactory, DepartmentFactory } = require('../../utils/factories/')
+const {
+  UserFactory,
+  ServiceFactory,
+  DepartmentFactory
+} = require('../../utils/factories/')
 const User = require('../../models/user')
 const Department = require('../../models/department')
 
@@ -40,18 +44,23 @@ describe('service project manager', () => {
               name
               projectManager {
                 _id
-                fullName
+                firstName
+                lastName
+                email
               }
             }
           }
         }
       `
+    }).expect((res) => {
+      expect(res.body).toHaveProperty(
+        'data.createOneService.record.projectManager'
+      )
+      expect(
+        res.body.data.createOneService.record.projectManager.email
+      ).toStrictEqual(defaultProjectManager.email)
+      service = res.body.data.createOneService.record
     })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.createOneService.record.projectManager')
-        expect(res.body.data.createOneService.record.projectManager.fullName).toStrictEqual(defaultProjectManager.fullName)
-        service = res.body.data.createOneService.record
-      })
   })
 
   it('should add the service under the default project manager', () => {
@@ -67,17 +76,16 @@ describe('service project manager', () => {
           }
         }
       `
+    }).expect((res) => {
+      expect(res.body).toHaveProperty('data.user.projectManagerOf')
+      expect(res.body.data.user.projectManagerOf).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: service.name
+          })
+        ])
+      )
     })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.user.projectManagerOf')
-        expect(res.body.data.user.projectManagerOf).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              name: service.name
-            })
-          ])
-        )
-      })
   })
 
   it('should create a service with a project manager', () => {
@@ -97,16 +105,22 @@ describe('service project manager', () => {
               name
               projectManager {
                 _id
-                fullName
+                firstName
+                lastName
+                email
               }
             }
           }
         }
       `
     })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.createOneService.record.projectManager')
-        expect(res.body.data.createOneService.record.projectManager.fullName).toStrictEqual(newProjectManager.fullName)
+      .expect((res) => {
+        expect(res.body).toHaveProperty(
+          'data.createOneService.record.projectManager'
+        )
+        expect(
+          res.body.data.createOneService.record.projectManager.email
+        ).toStrictEqual(newProjectManager.email)
         service = res.body.data.createOneService.record
       })
       .expect(200)
@@ -125,17 +139,16 @@ describe('service project manager', () => {
           }
         }
       `
+    }).expect((res) => {
+      expect(res.body).toHaveProperty('data.user.projectManagerOf')
+      expect(res.body.data.user.projectManagerOf).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: service.name
+          })
+        ])
+      )
     })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.user.projectManagerOf')
-        expect(res.body.data.user.projectManagerOf).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              name: service.name
-            })
-          ])
-        )
-      })
   })
 
   it('should update the project manager of an existing service', () => {
@@ -152,17 +165,22 @@ describe('service project manager', () => {
               _id
               projectManager {
                 _id
-                fullName
+                firstName
+                lastName
+                email
               }
             }
           }
         }
       `
+    }).expect((res) => {
+      expect(res.body).toHaveProperty(
+        'data.updateServiceById.record.projectManager'
+      )
+      expect(
+        res.body.data.updateServiceById.record.projectManager.email
+      ).toStrictEqual(updatedProjectManager.email)
     })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.updateServiceById.record.projectManager')
-        expect(res.body.data.updateServiceById.record.projectManager.fullName).toStrictEqual(updatedProjectManager.fullName)
-      })
   })
 
   it('should add the service under the updated project manager', () => {
@@ -178,17 +196,16 @@ describe('service project manager', () => {
           }
         }
       `
+    }).expect((res) => {
+      expect(res.body).toHaveProperty('data.user.projectManagerOf')
+      expect(res.body.data.user.projectManagerOf).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: service.name
+          })
+        ])
+      )
     })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.user.projectManagerOf')
-        expect(res.body.data.user.projectManagerOf).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              name: service.name
-            })
-          ])
-        )
-      })
   })
 
   it('should remove the service under the old project manager', () => {
@@ -204,11 +221,10 @@ describe('service project manager', () => {
           }
         }
       `
+    }).expect((res) => {
+      expect(res.body).toHaveProperty('data.user')
+      expect(res.body.data.user.projectManagerOf).toHaveLength(0)
     })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.user')
-        expect(res.body.data.user.projectManagerOf).toHaveLength(0)
-      })
   })
 
   it('should remove the set project manager and fall back to the department team lead', () => {
@@ -225,17 +241,22 @@ describe('service project manager', () => {
               _id
               projectManager {
                 _id
-                fullName
+                firstName
+                lastName
+                email
               }
             }
           }
         }
       `
+    }).expect((res) => {
+      expect(res.body).toHaveProperty(
+        'data.updateServiceById.record.projectManager'
+      )
+      expect(
+        res.body.data.updateServiceById.record.projectManager.email
+      ).toStrictEqual(defaultProjectManager.email)
     })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.updateServiceById.record.projectManager')
-        expect(res.body.data.updateServiceById.record.projectManager.fullName).toStrictEqual(defaultProjectManager.fullName)
-      })
   })
 
   it('should remove the service under the preivous project manager', () => {
@@ -251,10 +272,9 @@ describe('service project manager', () => {
           }
         }
       `
+    }).expect((res) => {
+      expect(res.body).toHaveProperty('data.user.projectManagerOf')
+      expect(res.body.data.user.projectManagerOf).toHaveLength(0)
     })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.user.projectManagerOf')
-        expect(res.body.data.user.projectManagerOf).toHaveLength(0)
-      })
   })
 })
