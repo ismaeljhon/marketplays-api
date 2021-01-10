@@ -67,22 +67,19 @@ describe('service attributes', () => {
           }
         }
       `
-    }).expect((res) => {
-      expect(res.body).toHaveProperty('data.createOneService.record')
-      expect(
-        res.body.data.createOneService.record.attributes[0].attribute.name
-      ).toStrictEqual(data.attributes[0].name)
-      expect(
-        res.body.data.createOneService.record.attributes[0].options
-      ).toStrictEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            name: data.options[0].name
-          })
-        ])
-      )
-      service = res.body.data.createOneService.record
     })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.createOneService.record')
+        expect(res.body.data.createOneService.record.attributes[0].attribute.name).toStrictEqual(data.attributes[0].name)
+        expect(res.body.data.createOneService.record.attributes[0].options).toStrictEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              name: data.options[0].name
+            })
+          ])
+        )
+        service = res.body.data.createOneService.record
+      })
   })
 
   it('should establish the relationships between item attributes and services correctly', () => {
@@ -96,12 +93,11 @@ describe('service attributes', () => {
           }
         }
       `
-    }).expect((res) => {
-      expect(res.body).toHaveProperty('data.itemAttribute')
-      expect(res.body.data.itemAttribute.service.name).toStrictEqual(
-        service.name
-      )
     })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.itemAttribute')
+        expect(res.body.data.itemAttribute.service.name).toStrictEqual(service.name)
+      })
   })
 
   it('should not create new attributes, options when using existing ones', () => {
@@ -151,14 +147,11 @@ describe('service attributes', () => {
           }
         }
       `
-    }).expect((res) => {
-      expect(res.body).toHaveProperty('data.createOneService.record')
-      expect(
-        res.body.data.createOneService.record.attributes[0].attribute._id
-      ).toStrictEqual(service.attributes[0].attribute._id)
-      expect(
-        res.body.data.createOneService.record.attributes[0].options[0]._id
-      ).toStrictEqual(service.attributes[0].options[0]._id)
     })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.createOneService.record')
+        expect(res.body.data.createOneService.record.attributes[0].attribute._id).toStrictEqual(service.attributes[0].attribute._id)
+        expect(res.body.data.createOneService.record.attributes[0].options[0]._id).toStrictEqual(service.attributes[0].options[0]._id)
+      })
   })
 })
