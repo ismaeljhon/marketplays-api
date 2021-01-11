@@ -4,10 +4,24 @@ const ServiceTC = schemaComposer.getOTC('Service')
 // modify service input.attribute
 // to instead accept an array of attribute data
 schemaComposer.createInputTC({
+  name: 'AttributeOptionInput',
+  fields: {
+    name: 'String!',
+    code: 'String!'
+  }
+})
+schemaComposer.createInputTC({
   name: 'AttributeInput',
   fields: {
-    name: 'String',
-    options: '[String]'
+    name: 'String!',
+    code: 'String!'
+  }
+})
+schemaComposer.createInputTC({
+  name: 'ItemAttributeInput',
+  fields: {
+    attribute: 'AttributeInput!',
+    options: '[AttributeOptionInput!]!'
   }
 })
 
@@ -15,14 +29,15 @@ schemaComposer.createInputTC({
 // to instead accept an array of variant data
 schemaComposer.getITC('VariantAttributeDataInput')
   .setFields({
-    attribute: 'String!',
-    option: 'String!'
+    attribute: 'String!', // of attribyte code
+    option: 'String!' // of option code
   })
 
 schemaComposer.createInputTC({
   name: 'VariantInput',
   fields: {
     name: 'String!',
+    code: 'String!',
     description: 'String',
     pricing: 'Float!',
     attributeData: '[VariantAttributeDataInput]'
@@ -32,7 +47,7 @@ schemaComposer.createInputTC({
 schemaComposer.getITC('CreateOneServiceInput')
   .removeField(['attributes', 'variants'])
   .addFields({
-    attributes: '[AttributeInput]',
+    attributes: '[ItemAttributeInput]',
     variants: '[VariantInput]'
   })
 

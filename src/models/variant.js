@@ -8,94 +8,150 @@ const {
   keyBy,
   indexOf,
   find,
-  isEqual,
-  uniq
+  isEqual
 } = require('lodash')
+const hasDuplicates = require('../utils/has-duplicates')
+/**
+ * Generates an array of variant data out of the provided attribute data
+ * @param {Array} attributeData array of structured attribute data to generate variants with
+ *                              eg:
+ *                              [
+ *                                {
+ *                                  attribute: {  code: 'size', name: "Size" }
+ *                                  options: [
+ *                                      { code: "S", name: "Small" },
+ *                                      { code: "M", name: "Medium" }
+ *                                  ]
+ *                                },
+ *                                {
+ *                                  attribute: {  code: 'color', name: "Color" }
+ *                                  options: [
+ *                                      { code: "RED", name: "Red" },
+ *                                      { code: "BLU", name: "Green" }
+ *                                  ]
+ *                                }
+ *                              ]
+ * @return {Array} list of variant data
+ */
+variantSchema.statics.generateFromAttributes = function (attributeInputData) {
+  // make sure attribute data is valid
+  try {
+    let itemAttribute = mongoose.model('ItemAttribute')
+    if (itemAttribute.validateAttributeData(attributeInputData)) {
+      // get all attributes, options, retaining the sort
+      let attributeInput = map(attributeInputData, 'attribute')
+      const optionInput = map(attributeInputData, 'options')
 
-variantSchema.statics.generateMany = async (attributeData) => {
-  // make sure there are no duplicate attributes
-  if (uniq(map(attributeData, 'attribute')).length < attributeData.length) {
-    throw new UserInputError(`Duplicate attribute names exist.`)
-  }
-
-  // get all the options
-  let options = map(attributeData, 'options')
-
-  // make sure options are unique per attribute data
-  options.forEach((optionList, index) => {
-    if (uniq(optionList).length < optionList.length) {
-      throw new UserInputError(`Duplicate options exist on attribute ${attributeData[index].attribute}`)
-    }
-  })
-
-  // generate all the combinations
-  let combinations = fastCartesian(options)
-
-  // build variant data
-  let variants = []
-  combinations.forEach(combination => {
-    variants.push({
-      name: combination.join(', '),
-      attributeData: combination.map((option, index) => {
-        // since this honors how attribute data has been sorted,
-        // we'll map the combination index to its corresponding attribute (parent)
-        return {
-          attribute: { name: attributeData[index].attribute },
-          option: { name: option }
-        }
+      // prepare option data
+      let optionMap = {}
+      let optionCodes = []
+      optionInput.forEach(options => {
+        let lineCodes = []
+        options.forEach(option => {
+          lineCodes.push(option.code)
+          if (!optionMap[option.code]) {
+            optionMap[option.code] = option
+          }
+        })
+        optionCodes.push(lineCodes)
       })
-    })
-  })
-  return variants
+
+      // generate combinations
+      let combinations = fastCartesian(optionCodes)
+
+      // build variant data
+      let variants = []
+      combinations.forEach((combination) => {
+        let names = []
+        let lineAttributeData = []
+        combination.forEach((optionCode, index) => {
+          names.push(optionMap[optionCode].name)
+          lineAttributeData.push({
+            // since this honors how attribute data has been sorted,
+            // we'll map the combination index to its corresponding attribute (parent)
+            attribute: attributeInput[index],
+            option: optionMap[optionCode]
+          })
+        })
+        variants.push({
+          name: names.join(', '),
+          code: combination.join('-'), // @TODO - should prefix the item code. should we add item code to generateVariants payload?
+          attributeData: lineAttributeData
+        })
+      })
+      return variants
+    }
+  } catch (error) {
+    throw error
+  }
 }
 
-variantSchema.statics.validateAndCreateMany = async (variantData, itemAttributeIds) => {
-  const ItemAttribute = mongoose.models['ItemAttribute']
-  const Variant = mongoose.models['Variant']
-  const itemAttributes = keyBy(await ItemAttribute.find({
+variantSchema.statics.validateAndCreateMany = async function (variantInputData, itemAttributeIds) {
+  const ItemAttribute = mongoose.model('ItemAttribute')
+  // retrieve related item attributes
+  return ItemAttribute.find({
     _id: { $in: itemAttributeIds }
-  }).populate(['attribute', 'options']), 'attribute.name')
-  let validated = []
-  variantData.forEach(variant => {
-    let validatedAttributeData = []
-    variant.attributeData.forEach(data => {
-      const itemAttribute = itemAttributes[data.attribute]
-
-      // check if the attribute is valid
-      if (!itemAttribute) {
-        throw new UserInputError(`Variant attribute '${data.attribute}' not found in the provided attributes.`)
+  }).populate(['attribute', 'options'])
+    .then(itemAttributes => {
+      return keyBy(itemAttributes, 'attribute.code')
+    })
+    .then(itemAttributes => {
+      // make sure variant codes are unique
+      if (hasDuplicates(map(variantInputData, 'code'))) {
+        throw new UserInputError(`Duplicate variant code exists.`)
       }
 
-      // check if the option is valid
-      const keyedOptions = keyBy(itemAttribute.options, 'name')
-      if (indexOf(Object.keys(keyedOptions), data.option) < 0) {
-        throw new UserInputError(`Variant attribute option '${data.option}' not found in the provided attribute options.`)
-      }
+      // prepare and validate variant input data
+      let validated = []
+      variantInputData.forEach(variantInput => {
+        let validatedAttributeData = []
+        variantInput.attributeData.forEach(attributeInputData => {
+          const itemAttribute = itemAttributes[attributeInputData.attribute]
 
-      // convert names to ids
-      validatedAttributeData.push({
-        attribute: itemAttribute.attribute._id,
-        option: keyedOptions[data.option]._id
+          // make sure attributes set for the variant are valid
+          if (!itemAttribute) {
+            throw new UserInputError(`Variant attribute '${attributeInputData.attribute}' not found in the provided attributes.`)
+          }
+
+          // check if the option is valid
+          const keyedOptions = keyBy(itemAttribute.options, 'code')
+          if (indexOf(Object.keys(keyedOptions), attributeInputData.option) < 0) {
+            throw new UserInputError(`Variant attribute option '${attributeInputData.option}' not found in the provided attribute options.`)
+          }
+
+          // convert names to ids
+          validatedAttributeData.push({
+            attribute: itemAttribute.attribute._id,
+            option: keyedOptions[attributeInputData.option]._id
+          })
+        })
+
+        // make sure no variants of duplicate attributeData will be created
+        if (find(validated, (variant) => {
+          return isEqual(variant.attributeData, validatedAttributeData)
+        })) {
+          throw new UserInputError(`Variants of duplicate attribute data exists.`)
+        }
+        validated.push({
+          ...variantInput,
+          attributeData: validatedAttributeData
+        })
       })
-    })
 
-    // make sure no variants of duplicate attributeData will be created
-    if (find(validated, (variant) => {
-      return isEqual(variant.attributeData, validatedAttributeData)
-    })) {
-      throw new UserInputError(`Variants of duplicate attribute data exists.`)
-    }
-    validated.push({
-      ...variant,
-      attributeData: validatedAttributeData
+      // create the variants
+      return this.insertMany(validated)
     })
-  })
-
-  // create the variants
-  const variants = await Variant.insertMany(validated)
-  return map(variants, '_id')
+    .then(results => {
+      // return the ids
+      return map(results, '_id')
+    })
+    .catch(error => {
+      return ItemAttribute.cleanup()
+        .then(() => {
+          throw error
+        })
+    })
 }
 
 const Variant = generateModel('Variant', variantSchema)
-
 module.exports = Variant

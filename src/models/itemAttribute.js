@@ -1,58 +1,104 @@
 const mongoose = require('mongoose')
 const {
   map,
-  uniq,
-  flatten,
-  keyBy
+  keyBy,
+  flatten
 } = require('lodash')
+const hasDuplicates = require('../utils/has-duplicates')
 const { UserInputError } = require('apollo-server-express')
 const itemAttributeSchema = require('../schemas/itemAttribute')
 const generateModel = require('../utils/generate-model')
 
-itemAttributeSchema.statics.createManyFromAttributeData = async (attributeInputData) => {
-  const Attribute = mongoose.models['Attribute']
-  const Option = mongoose.models['Option']
-  const ItemAttribute = mongoose.models['ItemAttribute']
+itemAttributeSchema.statics.validateAttributeData = function (attributeInputData) {
+  // get all attributes, options, retaining the sort
+  let attributeInput = map(attributeInputData, 'attribute')
+  let optionInput = map(attributeInputData, 'options')
 
-  // create the attributes
-  const attributeNames = uniq(map(attributeInputData, 'name'))
-  // make sure attribute names are unique
-  if (attributeNames.length < attributeInputData.length) {
-    throw new UserInputError(`Duplicate attribute names exist.`)
+  // make sure attribute codes are unique
+  if (hasDuplicates(map(attributeInput, 'code'))) {
+    throw new UserInputError(`Duplicate attribute codes exist.`)
   }
-  const attributes = await Attribute.findOrCreate(attributeNames)
 
-  // make sure options names are unique per attribute
-  let optionNames = map(attributeInputData, 'options')
-  optionNames.forEach((names, index) => {
-    if (uniq(names).length < names.length) {
-      throw new UserInputError(`Duplicate options exist on attribute ${attributeInputData[index].name}`)
+  // make sure options codes are unique per attribute
+  let optionMap = {}
+  optionInput.forEach((list, index) => {
+    let codes = map(list, 'code')
+    if (hasDuplicates(codes)) {
+      throw new UserInputError(`Duplicate option codes exist on attribute code ${attributeInput[index].code}`)
     }
-  })
 
-  // generate the options
-  optionNames = uniq(flatten(optionNames))
-  const options = await Option.findOrCreate(optionNames)
-
-  // build item attribute data (along with the corresponding options)
-  // honoring how it was sorted in the input data
-  const keyedAttributes = keyBy(attributes, 'name')
-  const keyedOptions = keyBy(options, 'name')
-
-  // @TODO - itemAttribute should be unique
-  // eg an item cannot have 2 attributes named 'Size'
-  const itemAttributeData = attributeInputData.map(attribute => {
-    let data = {}
-    data.attribute = keyedAttributes[attribute.name]._id
-    data.options = attribute.options.map(option => {
-      return keyedOptions[option]._id
+    // make sure option names are unique per option code
+    // for the entire attributeData
+    // eg if there is a option of : {code: 'SML', name: 'Small'},
+    // there cannot be another option of: {code: 'SML', name: '2x2 cm'}
+    list.forEach(optionData => {
+      if (optionMap[optionData.code] && optionMap[optionData.code].name !== optionData.name) {
+        // @TODO - check if the option code that is already saved, but being used here with a different name
+        throw new UserInputError(`Option code ${optionData.code} already exists with a name ${optionMap[optionData.code].name}.`) // @TODO - update message
+      }
+      optionMap[optionData.code] = optionData
     })
-    return data
   })
-  const itemAttributes = await ItemAttribute.insertMany(itemAttributeData)
-  return map(itemAttributes, '_id')
+  return true
+}
+itemAttributeSchema.statics.createManyFromAttributeData = async function (attributeInputData) {
+  let isValid = false
+  try {
+    isValid = this.validateAttributeData(attributeInputData)
+  } catch (error) {
+    throw error
+  }
+  // make sure attribute data is valid
+  if (isValid) {
+    // find or create attributes, options
+    const Attribute = mongoose.models['Attribute']
+    const Option = mongoose.models['Option']
+    const ItemAttribute = mongoose.models['ItemAttribute']
+    const attributeInput = map(attributeInputData, 'attribute')
+    const optionInput = flatten(map(attributeInputData, 'options'))
+    const optionMap = keyBy(optionInput, 'code')
+    return Attribute.findOrCreate(attributeInput)
+      .then(attributes => {
+        return attributes
+      })
+      .then(attributes => {
+        return Option.findOrCreate(Object.values(optionMap))
+          .then(options => {
+            return {
+              attributes: keyBy(attributes, 'code'),
+              options: keyBy(options, 'code')
+            }
+          })
+      })
+      .then(({ attributes, options }) => {
+        // prepare itemattribute data by by mapping codes to ids
+        const itemAttributeData = attributeInputData.map(itemAttributeInput => {
+          return {
+            attribute: attributes[itemAttributeInput.attribute.code]._id,
+            options: itemAttributeInput.options.map(optionInput => {
+              return options[optionInput.code]._id
+            })
+          }
+        })
+        return ItemAttribute.insertMany(itemAttributeData)
+      })
+      .then(result => {
+        return map(result, '_id')
+      })
+      .catch(error => {
+        throw error
+      })
+  }
+}
+
+itemAttributeSchema.statics.cleanup = async function () {
+  return this.deleteMany({
+    $or: [
+      { service: null },
+      { product: null }
+    ]
+  })
 }
 
 const ItemAttribute = generateModel('ItemAttribute', itemAttributeSchema)
-
 module.exports = ItemAttribute

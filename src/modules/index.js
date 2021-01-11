@@ -32,7 +32,8 @@ models.forEach(model => {
 // check for any custom relationships, types and resolvers
 let customDefinitions = [ 'types', 'relations', 'resolvers' ]
 models.forEach(model => {
-  let directory = pluralize(model.collection.collectionName)
+  let directory = pluralize(model.modelName)
+  directory = directory.charAt(0).toLowerCase() + directory.slice(1)
   customDefinitions.forEach(definition => {
     glob.sync(`./src/modules/${directory}/${definition}/!(index).js`).forEach(file => {
       models.push(require(path.resolve(file)))

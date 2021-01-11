@@ -4,13 +4,15 @@ const { schemaComposer } = require('graphql-compose')
 schemaComposer.createObjectTC({
   name: 'GeneratedVariantAttributeDataAttribute',
   fields: {
-    name: 'String'
+    name: 'String',
+    code: 'String'
   }
 })
 schemaComposer.createObjectTC({
   name: 'GeneratedVariantAttributeDataOption',
   fields: {
-    name: 'String'
+    name: 'String',
+    code: 'String'
   }
 })
 schemaComposer.createObjectTC({
@@ -24,6 +26,7 @@ const GeneratedVariant = schemaComposer.createObjectTC({
   name: 'GeneratedVariant',
   fields: {
     name: 'String',
+    code: 'String',
     attributeData: '[GeneratedVariantAttributeData]'
   }
 })

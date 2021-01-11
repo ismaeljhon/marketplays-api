@@ -1,10 +1,16 @@
 const mongoose = require('mongoose')
 const Schema = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 
 const variantSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
+  },
+  code: {
+    type: String,
+    required: true,
+    unique: true
   },
   description: {
     type: String
@@ -27,5 +33,7 @@ const variantSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId
   }
 })
+
+variantSchema.plugin(uniqueValidator)
 
 module.exports = variantSchema
