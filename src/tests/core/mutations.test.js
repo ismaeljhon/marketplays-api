@@ -13,36 +13,30 @@ const generateFakeDocument = require('../../utils/generate-fake-document')
 const Test = require('../../models/test')
 const faker = require('faker')
 const slugify = require('slugify')
+const {
+  jsonToGraphQLQuery
+} = require('json-to-graphql-query')
 
 describe('Core mutations', () => {
   const fakeDocument = generateFakeDocument()
   describe('create', () => {
-    let email = null
     it('should create a new document', () => {
       return request({
-        query: `
-          mutation {
-            createOneTest(record: {
-              name: "${fakeDocument.name}",
-              address: {
-                street: "${fakeDocument.address.street}",
-                city: "${fakeDocument.address.city}",
-                state: "${fakeDocument.address.state}",
-                country: "${fakeDocument.address.country}",
-                zipCode: "${fakeDocument.address.zipCode}"
-              }
-              email: "${fakeDocument.email}"
-              age: ${fakeDocument.age}
-            }) {
-              record {
-                _id
-                name
-                email
-                slug
+        query: jsonToGraphQLQuery({
+          mutation: {
+            createOneTest: {
+              __args: {
+                record: fakeDocument
+              },
+              record: {
+                _id: true,
+                name: true,
+                email: true,
+                slug: true
               }
             }
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('data.createOneTest')
@@ -50,27 +44,30 @@ describe('Core mutations', () => {
 
           // check if slug was auto-generated
           expect(res.body.data.createOneTest.record.slug).toStrictEqual(slugify(fakeDocument.name))
-          email = res.body.data.createOneTest.record.email
         })
         .expect(200)
     })
 
     it('should only create a document when required fields are set', () => {
+      const { name, age } = fakeDocument
       return request({
-        query: `
-          mutation {
-            createOneTest(record: {
-              name: "${fakeDocument.name}",
-              age: ${fakeDocument.age}
-            }) {
-              record {
-                _id
-                name
-                email
+        query: jsonToGraphQLQuery({
+          mutation: {
+            createOneTest: {
+              __args: {
+                record: {
+                  name: name,
+                  age: age
+                }
+              },
+              record: {
+                _id: true,
+                name: true,
+                email: true
               }
             }
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('errors')
@@ -82,28 +79,21 @@ describe('Core mutations', () => {
 
     it('should only create a document when unique fields are unique', () => {
       return request({
-        query: `
-          mutation {
-            createOneTest(record: {
-              name: "${fakeDocument.name}",
-              address: {
-                street: "${fakeDocument.address.street}",
-                city: "${fakeDocument.address.city}",
-                state: "${fakeDocument.address.state}",
-                country: "${fakeDocument.address.country}",
-                zipCode: "${fakeDocument.address.zipCode}"
-              }
-              email: "${email}"
-              age: ${fakeDocument.age}
-            }) {
-              record {
-                _id
-                name
-                email
+        query: jsonToGraphQLQuery({
+          mutation: {
+            createOneTest: {
+              __args: {
+                record: fakeDocument
+              },
+              record: {
+                _id: true,
+                name: true,
+                email: true,
+                slug: true
               }
             }
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('errors')
@@ -124,28 +114,21 @@ describe('Core mutations', () => {
     const updatedDocument = generateFakeDocument()
     it('should update an existing document', () => {
       return request({
-        query: `
-          mutation {
-            updateTestById(_id: "${documentId}", record: {
-              name: "${updatedDocument.name}",
-              address: {
-                street: "${updatedDocument.address.street}",
-                city: "${updatedDocument.address.city}",
-                state: "${updatedDocument.address.state}",
-                country: "${updatedDocument.address.country}",
-                zipCode: "${updatedDocument.address.zipCode}"
-              }
-              email: "${updatedDocument.email}"
-              age: ${updatedDocument.age}              
-            }) {
-              record {
-                _id
-                name
-                email
+        query: jsonToGraphQLQuery({
+          mutation: {
+            updateTestById: {
+              __args: {
+                _id: `${documentId}`, // ObjectID needs to be a string
+                record: updatedDocument
+              },
+              record: {
+                _id: true,
+                name: true,
+                email: true
               }
             }
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('data.updateTestById')
@@ -155,25 +138,29 @@ describe('Core mutations', () => {
     })
 
     it('should update select fields of an existing document', () => {
-      let street = faker.address.streetName()
+      const street = faker.address.streetName()
       return request({
-        query: `
-          mutation {
-            updateTestById(_id: "${documentId}", record: {
-              address: {
-                street: "${street}",
-              }            
-            }) {
-              record {
-                _id
-                name
-                address {
-                  street
+        query: jsonToGraphQLQuery({
+          mutation: {
+            updateTestById: {
+              __args: {
+                _id: `${documentId}`,
+                record: {
+                  address: {
+                    street: street
+                  }
+                }
+              },
+              record: {
+                _id: true,
+                name: true,
+                address: {
+                  street: true
                 }
               }
             }
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('data.updateTestById')
@@ -198,17 +185,18 @@ describe('Core mutations', () => {
 
     it('should delete an existing document', () => {
       return request({
-        query: `
-        mutation{
-          removeTestById(
-            _id: "${documentId}",
-          ) {
-            record {
-              _id
+        query: jsonToGraphQLQuery({
+          mutation: {
+            removeTestById: {
+              __args: {
+                _id: `${documentId}`
+              },
+              record: {
+                _id: true
+              }
             }
           }
-        }        
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('data.removeTestById.record._id')
@@ -218,17 +206,18 @@ describe('Core mutations', () => {
 
     it('should only delete an existing document', () => {
       return request({
-        query: `
-        mutation{
-          removeTestById(
-            _id: "${faker.random.alphaNumeric(20)}",
-          ) {
-            record {
-              _id
+        query: jsonToGraphQLQuery({
+          mutation: {
+            removeTestById: {
+              __args: {
+                _id: `${faker.random.alphaNumeric(20)}` // non-existent code
+              },
+              record: {
+                _id: true
+              }
             }
           }
-        }        
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('errors')

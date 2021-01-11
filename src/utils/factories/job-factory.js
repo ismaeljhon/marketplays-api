@@ -9,7 +9,7 @@ const JobFactory = {
       description: faker.name.jobDescriptor(),
       instructions: faker.lorem.paragraph(7),
       biddable: faker.random.boolean(),
-      openingMarketBid: faker.commerce.price(10, 300),
+      openingMarketBid: parseFloat(faker.commerce.price(10, 300)),
       type: faker.random.arrayElement(['hourly', 'project']),
       timeframe: faker.random.number(20) * 60, // minutes
       seoTitle: title,

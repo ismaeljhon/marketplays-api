@@ -2,10 +2,13 @@ const expect = require('expect')
 const { request } = require('../../utils/test')
 const User = require('../../models/user')
 const { DepartmentFactory, UserFactory } = require('../../utils/factories/')
-
-const fakeDepartment = DepartmentFactory.generate()
+const {
+  jsonToGraphQLQuery
+} = require('json-to-graphql-query')
 
 describe('department team lead', () => {
+  const fakeDepartment = DepartmentFactory.generate()
+
   // create dummy users that will be team leads
   let users = []
   before(async () => {
@@ -17,27 +20,31 @@ describe('department team lead', () => {
 
   let departmentId = null
   it('should create a department with a team lead', () => {
+    const { name, code } = fakeDepartment
     return request({
-      query: `
-        mutation {
-          createOneDepartment(record: {
-            name: "${fakeDepartment.name}",
-            code: "${fakeDepartment.code}",
-            teamLead: "${users[0]._id}"
-          }) {
-            record {
-              _id
-              name
-              code
-              teamLead {
-                _id
-                fullName
-                email
+      query: jsonToGraphQLQuery({
+        mutation: {
+          createOneDepartment: {
+            __args: {
+              record: {
+                name: name,
+                code: code,
+                teamLead: `${users[0]._id}`
+              }
+            },
+            record: {
+              _id: true,
+              name: true,
+              code: true,
+              teamLead: {
+                _id: true,
+                fullName: true,
+                email: true
               }
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         // check if the user is assigned to the department
@@ -49,17 +56,20 @@ describe('department team lead', () => {
   })
   it('should also add the department against the user', () => {
     return request({
-      query: `
-        query {
-          user(_id: "${users[0]._id}") {
-            _id
-            teamLeadOf {
-              _id
-              name
+      query: jsonToGraphQLQuery({
+        query: {
+          user: {
+            __args: {
+              _id: `${users[0]._id}`
+            },
+            _id: true,
+            teamLeadOf: {
+              _id: true,
+              name: true
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.user.teamLeadOf')
@@ -74,24 +84,25 @@ describe('department team lead', () => {
   })
   it('should update team lead', () => {
     return request({
-      query: `
-        mutation {
-          updateDepartmentById(
-            _id: "${departmentId}",
+      query: jsonToGraphQLQuery({
+        mutation: {
+          updateDepartmentById: {
+            __args: {
+              _id: `${departmentId}`,
+              record: {
+                teamLead: `${users[1]._id}`
+              }
+            },
             record: {
-              teamLead: "${users[1]._id}"
-            }
-          ) {
-            record {
-              name
-              teamLead {
-                _id
-                fullName
+              name: true,
+              teamLead: {
+                _id: true,
+                fullName: true
               }
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.updateDepartmentById.record')
@@ -101,17 +112,20 @@ describe('department team lead', () => {
   })
   it('should remove the deparment under the old team lead', () => {
     return request({
-      query: `
-        query {
-          user(_id: "${users[0]._id}") {
-            _id
-            teamLeadOf {
-              _id
-              name
+      query: jsonToGraphQLQuery({
+        query: {
+          user: {
+            __args: {
+              _id: `${users[0]._id}`
+            },
+            _id: true,
+            teamLeadOf: {
+              _id: true,
+              name: true
             }
           }
         }
-      `
+      })
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.user.teamLeadOf')

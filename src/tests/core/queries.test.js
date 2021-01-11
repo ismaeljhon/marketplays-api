@@ -11,6 +11,9 @@ const expect = require('expect')
 const { request } = require('../../utils/test')
 const generateFakeDocument = require('../../utils/generate-fake-document')
 const Test = require('../../models/test')
+const {
+  jsonToGraphQLQuery
+} = require('json-to-graphql-query')
 
 // insert dummy documents
 const documents = [
@@ -38,14 +41,14 @@ describe('retrieve', () => {
   describe('many', () => {
     it('should retrieve all documents', () => {
       return request({
-        query: `
-          query {
-            tests {
-              name
-              email
+        query: jsonToGraphQLQuery({
+          query: {
+            tests: {
+              name: true,
+              email: true
             }
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('data.tests')
@@ -55,21 +58,24 @@ describe('retrieve', () => {
 
     it('should retrieve all filtered documents', () => {
       return request({
-        query: `
-          query {
-            tests(filter: {
-              _operators: {
-                age: {
-                  gt: 30
+        query: jsonToGraphQLQuery({
+          query: {
+            tests: {
+              __args: {
+                filter: {
+                  _operators: {
+                    age: {
+                      gt: 30
+                    }
+                  }
                 }
-              }
-            }) {
-              _id
-              name
-              age
+              },
+              _id: true,
+              name: true,
+              age: true
             }
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('data.tests')
@@ -81,14 +87,17 @@ describe('retrieve', () => {
   describe('by id', () => {
     it('should retrieve a document by ID', () => {
       return request({
-        query: `
-          query {
-            test(_id: "${id}") {
-              _id
-              name
+        query: jsonToGraphQLQuery({
+          query: {
+            test: {
+              __args: {
+                _id: `${id}`
+              },
+              _id: true,
+              name: true
             }
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('data.test')
@@ -100,21 +109,24 @@ describe('retrieve', () => {
   describe('get one', () => {
     it('should retrieve a single filtered document', () => {
       return request({
-        query: `
-          query {
-            getOneTest(filter: {
-              _operators: {
-                age: {
-                  lt: 10
+        query: jsonToGraphQLQuery({
+          query: {
+            getOneTest: {
+              __args: {
+                filter: {
+                  _operators: {
+                    age: {
+                      lt: 10
+                    }
+                  }
                 }
-              }
-            }) {
-              _id
-              name
-              age
+              },
+              _id: true,
+              name: true,
+              age: true
             }
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('data.getOneTest._id')
@@ -126,11 +138,11 @@ describe('retrieve', () => {
   describe('count', () => {
     it('should count all documents', () => {
       return request({
-        query: `
-          query {
-            countTests
+        query: jsonToGraphQLQuery({
+          query: {
+            countTests: true
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('data.countTests')
@@ -139,17 +151,21 @@ describe('retrieve', () => {
     })
     it('should count all filtered documents', () => {
       return request({
-        query: `
-          query {
-            countTests(filter: {
-              _operators: {
-                age: {
-                  gt: 5                    
+        query: jsonToGraphQLQuery({
+          query: {
+            countTests: {
+              __args: {
+                filter: {
+                  _operators: {
+                    age: {
+                      gt: 5
+                    }
+                  }
                 }
               }
-            })
+            }
           }
-        `
+        })
       })
         .expect(res => {
           expect(res.body).toHaveProperty('data.countTests')
