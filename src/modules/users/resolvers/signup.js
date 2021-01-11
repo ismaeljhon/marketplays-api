@@ -4,7 +4,7 @@ const User = require('../../../models/user')
 const UserTC = schemaComposer.getOTC('User')
 
 // remove create user and replace with signup
-// schemaComposer.Mutation.removeField('createOneUser')
+schemaComposer.Mutation.removeField('createOneUser')
 UserTC.addResolver({
   name: 'signup',
   type: 'UserSignupPayload',
