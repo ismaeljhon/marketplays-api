@@ -610,7 +610,7 @@ describe('add/edit variants', () => {
       })
   })
 
-  // @TODO - when variant validation fails, all created item attributes must be deleted
+  // when variant validation fails, all created item attributes must be deleted
   it('should delete any created item attributes when variant creation fails', () => {
     return request({
       query: `
