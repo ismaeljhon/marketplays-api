@@ -11,7 +11,7 @@ const pluralize = require('pluralize')
  * @returns {MongooseModel}
  */
 const generateModel = (name, schema, {
-  baseModel
+  baseModel // @TODO - update to instead receive a string of base model name, then let these method instantiate it
 } = {}) => {
   // apply any hooks defined for this model
   try {
