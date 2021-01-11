@@ -8,6 +8,15 @@ const itemSchema = require('../schemas/item')
 const generateModel = require('../utils/generate-model')
 const Item = generateModel('Item', itemSchema)
 
+/**
+ * Prepare args data before creating the item
+ * This checks if any variants need to be created first
+ * then updates the args to replace the variant, attribute data
+ * with _id of their respective documents
+ * @param {Object} args Payload data passed to the resolver
+ *
+ * @return {Object} updated args data with the _ids (if necessary)
+ */
 itemSchema.statics.prepareArgs = async function (args) {
   const ItemAttribute = mongoose.model('ItemAttribute')
   const Variant = mongoose.model('Variant')
