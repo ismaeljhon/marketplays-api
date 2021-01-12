@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
 const slugify = require('slugify')
 const options = {
   // add discriminators for distinguish properties of certain type
@@ -41,6 +42,14 @@ const itemSchema = new mongoose.Schema({
   },
   seoDescription: {
     type: String
+  },
+  attributes: {
+    type: [Schema.Types.ObjectId],
+    default: []
+  },
+  variants: {
+    type: [Schema.Types.ObjectId],
+    default: []
   }
 }, options)
 
