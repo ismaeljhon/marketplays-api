@@ -7,4 +7,11 @@ const Product = generateModel('Product', productSchema, {
   baseModel: getModel('Item') // configure discriminator
 })
 
+// configuration for discriminator class
+Product.__discriminatorConfig = {
+  discriminatorModel: true,
+  typeConverterOptions: {},
+  baseModelName: 'Item'
+}
+
 module.exports = Product

@@ -8,4 +8,11 @@ const Option = generateModel('Option', optionSchema, {
   // instead of the actual model
   baseModel: getModel('Property') // configure discriminator
 })
+
+// configuration for discriminator class
+Option.__discriminatorConfig = {
+  discriminatorModel: true,
+  typeConverterOptions: {},
+  baseModelName: 'Property'
+}
 module.exports = Option

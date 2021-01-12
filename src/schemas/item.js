@@ -1,13 +1,21 @@
 const mongoose = require('mongoose')
 const Schema = require('mongoose')
 const slugify = require('slugify')
-const options = {
-  // add discriminators for distinguish properties of certain type
-  // in this case, product or service
-  discriminatorKey: 'kind'
-}
 
+// discriminator key
+const dKey = 'kind'
+
+// item kinds
+const enumItemKind = {
+  PRODUCT: 'Product',
+  SERVICE: 'Service'
+}
 const itemSchema = new mongoose.Schema({
+  kind: {
+    type: String,
+    required: true,
+    enum: Object.keys(enumItemKind)
+  },
   name: {
     type: String,
     required: true
@@ -23,7 +31,8 @@ const itemSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true
+    required: true,
+    default: 0.00
   },
   slug: {
     type: String,
@@ -51,6 +60,9 @@ const itemSchema = new mongoose.Schema({
     type: [Schema.Types.ObjectId],
     default: []
   }
-}, options)
+})
+
+// set discriminator Key
+itemSchema.set('discriminatorKey', dKey)
 
 module.exports = itemSchema

@@ -47,4 +47,10 @@ propertySchema.statics.findOrCreate = async function (propertyData) {
     })
 }
 
+// configure to compose using mongoose discriminators
+Property.__discriminatorConfig = {
+  composeWtihDiscriminators: true,
+  baseOptions: {}
+}
+
 module.exports = Property

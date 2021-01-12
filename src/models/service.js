@@ -6,4 +6,12 @@ const getModel = require('../utils/get-model')
 const Service = generateModel('Service', serviceSchema, {
   baseModel: getModel('Item') // configure discriminator
 })
+
+// configuration for discriminator class
+Service.__discriminatorConfig = {
+  discriminatorModel: true,
+  typeConverterOptions: {},
+  baseModelName: 'Item'
+}
+
 module.exports = Service

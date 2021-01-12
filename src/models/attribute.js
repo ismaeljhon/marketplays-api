@@ -8,4 +8,11 @@ const Attribute = generateModel('Attribute', attributeSchema, {
   // instead of the actual model
   baseModel: getModel('Property') // configure discriminator
 })
+
+// configuration for discriminator class
+Attribute.__discriminatorConfig = {
+  discriminatorModel: true,
+  typeConverterOptions: {},
+  baseModelName: 'Property'
+}
 module.exports = Attribute

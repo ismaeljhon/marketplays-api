@@ -1,10 +1,19 @@
 const mongoose = require('mongoose')
-const options = {
-  // add discriminators for distinguish properties of certain type
-  // in this case, attribute or option
-  discriminatorKey: 'kind'
+
+// discriminator key
+const dKey = 'kind'
+
+// item kinds
+const enumPropertyKind = {
+  ATTRIBUTE: 'Attribute',
+  OPTION: 'Option'
 }
 const propertySchema = new mongoose.Schema({
+  kind: {
+    type: String,
+    required: true,
+    enum: Object.keys(enumPropertyKind)
+  },
   name: {
     type: String,
     required: true
@@ -25,6 +34,9 @@ const propertySchema = new mongoose.Schema({
       message: props => `Code ${props.value} already in use.`
     }
   }
-}, options)
+})
+
+// set discriminator Key
+propertySchema.set('discriminatorKey', dKey)
 
 module.exports = propertySchema

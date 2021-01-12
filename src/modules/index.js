@@ -1,16 +1,66 @@
-const { composeWithMongoose } = require('graphql-compose-mongoose')
+const {
+  composeWithMongoose,
+  composeWithMongooseDiscriminators
+} = require('graphql-compose-mongoose')
 const { schemaComposer } = require('graphql-compose')
 const models = require('../models')
 const glob = require('glob')
 const path = require('path')
 const pluralize = require('pluralize')
 const { remove } = require('lodash')
+const getModel = require('../utils/get-model')
 
 // auto-compose default schemas for each models
 const addToSchema = (model) => {
   const modelName = model.modelName
   const lowerCaseModelName = modelName.charAt(0).toLowerCase() + modelName.slice(1)
-  const typeComposer = composeWithMongoose(model)
+  let typeComposer = null
+
+  // handle models configured for discrimination
+  if (model.__discriminatorConfig) {
+    const config = model.__discriminatorConfig
+
+    // create type composer for base models of discriminators
+    if (config.composeWtihDiscriminators === true) {
+      try {
+        // check if it already exists
+        typeComposer = schemaComposer.getOTC(modelName)
+      } catch (error) {
+        // do no throw any errors as this is to determine if there is an OTC of `modelName` that exists
+      }
+
+      // generate type composer using mongoose discriminators
+      if (!typeComposer) {
+        typeComposer = composeWithMongooseDiscriminators(model, config.baseOptions)
+      }
+
+    // create type composer for discriminator models
+    } else if (config.discriminatorModel === true) {
+      // retrieve base model type composer first
+      let baseDTC = null
+      try {
+        // check if it already exists
+        baseDTC = schemaComposer.getOTC(config.baseModelName)
+      } catch (error) {
+        // do no throw any errors as this is to determine if there is an OTC of `baseModelName` that exists
+      }
+      if (!baseDTC) {
+        const baseModel = getModel(config.baseModelName)
+        if (baseModel) {
+          // generate if it does not exist yet
+          baseDTC = composeWithMongooseDiscriminators(baseModel, baseModel.__discriminatorConfig.baseOptions)
+        }
+      }
+
+      // generate disciminator type composer using base model of the discriminator model
+      typeComposer = baseDTC.discriminator(model, config.typeConverterOptions)
+    }
+  }
+
+  // default
+  if (!typeComposer) {
+    typeComposer = composeWithMongoose(model)
+  }
 
   let queries = {}
   queries[pluralize(lowerCaseModelName)] = typeComposer.getResolver('findMany')

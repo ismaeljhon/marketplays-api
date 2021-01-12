@@ -45,4 +45,10 @@ itemSchema.statics.prepareArgs = async function (args) {
   return args
 }
 
+// configure to compose using mongoose discriminators
+Item.__discriminatorConfig = {
+  composeWtihDiscriminators: true,
+  baseOptions: {}
+}
+
 module.exports = Item
