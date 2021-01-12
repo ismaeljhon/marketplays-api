@@ -1,7 +1,7 @@
 const { schemaComposer } = require('graphql-compose')
 const Service = require('../../../models/service')
 
-// reimplement creation of an order
+// reimplement creation of a service
 const ServiceTC = schemaComposer.getOTC('Service')
 const oldResolver = ServiceTC.getResolver('createOne')
 ServiceTC.addResolver({

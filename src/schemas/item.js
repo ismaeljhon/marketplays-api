@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const slugify = require('slugify')
 const options = {
   // add discriminators for distinguish properties of certain type
-  // in this case, attribute or option
+  // in this case, product or service
   discriminatorKey: 'kind'
 }
 
