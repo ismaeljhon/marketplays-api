@@ -32,7 +32,7 @@ describe('service project manager', () => {
           createOneService(record: {
             name: "${fakeService.name}"
             code: "${fakeService.code}"
-            pricing: ${fakeService.pricing}
+            price: ${fakeService.price}
             department: "${department._id}"
           }) {
             record {
@@ -88,7 +88,7 @@ describe('service project manager', () => {
           createOneService(record: {
             name: "${fakeService.name}"
             code: "${fakeService.code}"
-            pricing: ${fakeService.pricing}
+            price: ${fakeService.price}
             department: "${department._id}"
             projectManager: "${newProjectManager._id}"
           }) {

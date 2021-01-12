@@ -29,7 +29,7 @@ describe('add/edit variants', () => {
         variants: Variant.generateFromAttributes(attributes).map(variant => {
           return {
             ...variant,
-            pricing: faker.random.float(200)
+            price: faker.random.float(200)
           }
         })
       }
@@ -46,7 +46,7 @@ describe('add/edit variants', () => {
             record: {
               name: record.service.name,
               code: record.service.code,
-              pricing: record.service.pricing,
+              price: record.service.price,
               attributes: record.attributes,
               variants: record.variants.map(variant => {
                 return {
@@ -117,7 +117,7 @@ describe('add/edit variants', () => {
             record: {
               name: record.service.name,
               code: record.service.code,
-              pricing: record.service.pricing,
+              price: record.service.price,
               // use duplicate attribute codes
               attributes: record.attributes.map(data => {
                 return {
@@ -165,7 +165,7 @@ describe('add/edit variants', () => {
             record: {
               name: record.service.name,
               code: record.service.code,
-              pricing: record.service.pricing,
+              price: record.service.price,
               // use duplicate option codes
               attributes: record.attributes.map(data => {
                 return {
@@ -216,7 +216,7 @@ describe('add/edit variants', () => {
             record: {
               name: record.service.name,
               code: record.service.code,
-              pricing: record.service.pricing,
+              price: record.service.price,
               attributes: record.attributes,
               variants: record.variants.map(variant => {
                 return {
@@ -257,7 +257,7 @@ describe('add/edit variants', () => {
             record: {
               name: record.service.name,
               code: record.service.code,
-              pricing: record.service.pricing,
+              price: record.service.price,
               attributes: record.attributes,
               variants: record.variants.map(variant => {
                 return {

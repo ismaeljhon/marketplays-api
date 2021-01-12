@@ -85,7 +85,7 @@ orderSchema.statics.createNew = async ({
       // get the total cost of the subscription
       let totalPrice = 0
       subscription.services.forEach(service => {
-        totalPrice += keyedServices[service].pricing
+        totalPrice += keyedServices[service].price
       })
       subscriptionData.push({
         subscriptionType: subscription.type,

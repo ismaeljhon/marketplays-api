@@ -39,7 +39,7 @@ schemaComposer.createInputTC({
     name: 'String!',
     code: 'String!',
     description: 'String',
-    pricing: 'Float!',
+    price: 'Float!',
     attributeData: '[VariantAttributeDataInput]'
   }
 })

@@ -6,7 +6,7 @@ const ProductFactory = {
     return {
       sku: sku,
       name: faker.commerce.productName(),
-      price: faker.commerce.price(10, 2000)
+      price: parseFloat(faker.commerce.price(10, 2000))
     }
   }
 }

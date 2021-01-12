@@ -138,8 +138,8 @@ describe('create an order', () => {
             })
           ])
         )
-        expect(res.body.data.createOneOrder.record.orderlines[1].totalPrice).toStrictEqual(data.services[1].pricing + data.services[0].pricing)
-        expect(res.body.data.createOneOrder.record.totalAmount).toStrictEqual((data.services[1].pricing + data.services[0].pricing) * 2)
+        expect(res.body.data.createOneOrder.record.orderlines[1].totalPrice).toStrictEqual(data.services[1].price + data.services[0].price)
+        expect(res.body.data.createOneOrder.record.totalAmount).toStrictEqual((data.services[1].price + data.services[0].price) * 2)
       })
   })
 
@@ -175,7 +175,7 @@ describe('create an order', () => {
                 sku: "${data.products[1].sku}",
                 quantity: 2
               }
-            ]            
+            ]
           }) {
             record {
               _id
@@ -191,7 +191,7 @@ describe('create an order', () => {
                 }
                 product {
                   sku
-                }                
+                }
                 unitPrice
                 totalPrice
               }
@@ -239,7 +239,7 @@ describe('create an order', () => {
             }
           }
         }
-      
+
       `
     })
       .expect(res => {

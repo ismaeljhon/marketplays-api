@@ -27,13 +27,13 @@ describe('service department', () => {
           createOneService(record: {
             name: "${fakeService.name}"
             code: "${fakeService.code}"
-            pricing: ${fakeService.pricing}
+            price: ${fakeService.price}
             department: "${departments[0]._id}"
           }) {
             record {
               _id
               name
-              pricing
+              price
               department {
                 _id
                 name

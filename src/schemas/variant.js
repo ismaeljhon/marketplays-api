@@ -15,7 +15,7 @@ const variantSchema = new mongoose.Schema({
   description: {
     type: String
   },
-  pricing: {
+  price: {
     type: Number,
     required: true
   },
