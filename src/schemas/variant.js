@@ -29,7 +29,7 @@ const variantSchema = new mongoose.Schema({
       }
     }]
   },
-  service: { // @TODO - utilise fragments, discriminators. single field for both product or service
+  item: {
     type: Schema.Types.ObjectId
   }
 })

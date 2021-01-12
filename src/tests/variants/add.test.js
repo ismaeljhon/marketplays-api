@@ -142,6 +142,34 @@ describe('add variants', () => {
       })
   })
 
+  it('should add the service under the created variants', () => {
+    return request({
+      query: jsonToGraphQLQuery({
+        query: {
+          variants: {
+            __args: {
+              filter: {
+                item: service._id
+              }
+            },
+            _id: true,
+            item: {
+              _id: true
+            }
+          }
+        }
+      })
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.variants')
+        const variants = res.body.data.variants
+        expect(variants.length).toStrictEqual(service.variants.length)
+
+        // check if the relationship has been established correctly
+        expect(variants[0].item._id).toStrictEqual(`${service._id}`)
+      })
+  })
+
   it('should NOT create the service if attributes have duplicate attribute codes', () => {
     const record = {
       ...fakeData[1],
