@@ -93,10 +93,7 @@ itemAttributeSchema.statics.createManyFromAttributeData = async function (attrib
 
 itemAttributeSchema.statics.cleanup = async function () {
   return this.deleteMany({
-    $or: [
-      { service: null },
-      { product: null }
-    ]
+    item: null
   })
 }
 

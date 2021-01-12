@@ -2,13 +2,10 @@ const mongoose = require('mongoose')
 const Schema = require('mongoose')
 
 const itemAttributeSchema = new mongoose.Schema({
-  product: {
+  item: {
     type: Schema.Types.ObjectId,
-    default: null
-  },
-  service: {
-    type: Schema.Types.ObjectId,
-    default: null
+    default: null,
+    ref: 'Item'
   },
   attribute: {
     type: Schema.Types.ObjectId,

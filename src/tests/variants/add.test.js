@@ -37,6 +37,7 @@ describe('add variants', () => {
     })
   })
 
+  let service = null
   it('should add variants when creating a service', () => {
     const record = {
       ...fakeData[0],
@@ -68,6 +69,7 @@ describe('add variants', () => {
             _id: true,
             name: true,
             attributes: {
+              _id: true,
               attribute: {
                 name: true,
                 code: true
@@ -101,13 +103,42 @@ describe('add variants', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.createOneService.record.variants')
-        const variants = res.body.data.createOneService.record.variants
+        service = res.body.data.createOneService.record
+        const variants = service.variants
 
         // check if variants have been correctly assigned
         expect(variants[0].name)
           .toStrictEqual(record.variants[0].name)
         expect(variants[0].attributeData[0].attribute.name)
           .toStrictEqual(record.variants[0].attributeData[0].attribute.name)
+      })
+  })
+
+  it('should add the service under the created item attributes', () => {
+    return request({
+      query: jsonToGraphQLQuery({
+        query: {
+          itemAttributes: {
+            __args: {
+              filter: {
+                item: service._id
+              }
+            },
+            _id: true,
+            item: {
+              _id: true
+            }
+          }
+        }
+      })
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.itemAttributes')
+        const itemAttributes = res.body.data.itemAttributes
+        expect(itemAttributes.length).toStrictEqual(service.attributes.length)
+
+        // check if the relationship has been established correctly
+        expect(itemAttributes[0].item._id).toStrictEqual(`${service._id}`)
       })
   })
 
@@ -308,7 +339,7 @@ describe('add variants', () => {
       query: `
         query {
           countItemAttributes(filter: {
-            service: null
+            item: null
           })
         }
       `
