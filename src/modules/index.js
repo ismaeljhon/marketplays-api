@@ -4,6 +4,7 @@ const models = require('../models')
 const glob = require('glob')
 const path = require('path')
 const pluralize = require('pluralize')
+const { remove } = require('lodash')
 
 // auto-compose default schemas for each models
 const addToSchema = (model) => {
@@ -31,13 +32,30 @@ models.forEach(model => {
 
 // check for any custom relationships, types and resolvers
 let customDefinitions = [ 'types', 'relations', 'resolvers' ]
-models.forEach(model => {
-  let directory = pluralize(model.modelName)
-  directory = directory.charAt(0).toLowerCase() + directory.slice(1)
+// add `globals` on top of the directories to load definitions
+// that can be used across other definitions
+let directories = models.map(model => {
+  const directory = pluralize(model.modelName)
+  return directory.charAt(0).toLowerCase() + directory.slice(1)
+})
+directories.unshift('globals')
+
+// loop through each directories and load definitions
+directories.forEach(directory => {
   customDefinitions.forEach(definition => {
-    glob.sync(`./src/modules/${directory}/${definition}/!(index).js`).forEach(file => {
-      models.push(require(path.resolve(file)))
-    })
+    let files = glob.sync(`./src/modules/${directory}/${definition}/*.js`)
+    if (files.length > 0) {
+      // sort so that index will be loaded first
+      const indexFile = remove(files, (file) => {
+        return file.endsWith('index.js')
+      }).pop()
+      if (typeof indexFile !== 'undefined') {
+        files.unshift(indexFile)
+      }
+      files.forEach(file => {
+        models.push(require(path.resolve(file)))
+      })
+    }
   })
 })
 
