@@ -5,36 +5,18 @@ const hooks = {
     save: async (service, next) => {
       // add service under the department
       // @TODO - add check if adding a service to a department fails
-      const Department = mongoose.models['Department']
+      const Department = mongoose.model('Department')
       await Department.updateOne(
         { _id: service.department },
         { $push: { services: service._id } }
       )
 
       // add service under project manager
-      const User = mongoose.models['User']
+      const User = mongoose.model('User')
       await User.updateOne(
         { _id: service.projectManager },
         { $push: { projectManagerOf: service._id } }
       )
-
-      // add service under itemAttribute, if applicable
-      if (service.attributes) {
-        const ItemAttribute = mongoose.models['ItemAttribute']
-        await ItemAttribute.updateMany(
-          { _id: { $in: service.attributes } },
-          { $set: { service: service._id } }
-        )
-      }
-
-      // add variants under the service
-      if (service.variants) {
-        const Variant = mongoose.models['Variant']
-        await Variant.updateMany(
-          { _id: { $in: service.variants } },
-          { $set: { service: service._id } }
-        )
-      }
       next()
     }
   },
@@ -44,9 +26,9 @@ const hooks = {
       // (including null)
       if (typeof this.department !== 'undefined' ||
           typeof this.projectManager !== 'undefined') {
-        const Department = mongoose.models['Department']
-        const Service = mongoose.models['Service']
-        const User = mongoose.models['User']
+        const Department = mongoose.model('Department')
+        const Service = mongoose.model('Service')
+        const User = mongoose.model('User')
         const service = await Service.findById(this._id)
 
         if (service) {
