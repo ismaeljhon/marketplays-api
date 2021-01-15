@@ -9,6 +9,52 @@ const { UserInputError } = require('apollo-server-express')
 const itemAttributeSchema = require('../schemas/itemAttribute')
 const generateModel = require('../utils/generate-model')
 
+/**
+ * Checks if an attribute data is valid
+ * @param {Object[]} attributeInputData Array of attribute data to validate
+ *
+ * @return {(Boolean|Error)} returns true if attribute data is valid, throws an error if invalid
+ *
+ * @example
+ *
+ * const ItemAttribute = require('./models/itemAttribute')
+ *
+ * // returns true
+ * ItemAttribute.validateAttributeData([
+ *  {
+ *    attribute: {  code: 'size', name: "Size" }
+ *    options: [
+ *        { code: "S", name: "Small" },
+ *        { code: "M", name: "Medium" }
+ *    ]
+ *  },
+ *  {
+ *    attribute: {  code: 'color', name: "Color" }
+ *    options: [
+ *        { code: "RED", name: "Red" },
+ *        { code: "BLU", name: "Green" }
+ *    ]
+ *  }
+ * ])
+ *
+ * // throws an error due to duplicate codes
+ * ItemAttribute.validateAttributeData([
+ *  {
+ *    attribute: {  code: 'size', name: "Size" }
+ *    options: [
+ *        { code: "S", name: "Small" },
+ *        { code: "S", name: "Medium" }
+ *    ]
+ *  },
+ *  {
+ *    attribute: {  code: 'color', name: "Color" }
+ *    options: [
+ *        { code: "RED", name: "Red" },
+ *        { code: "RED", name: "Green" }
+ *    ]
+ *  }
+ * ])
+ */
 itemAttributeSchema.statics.validateAttributeData = function (attributeInputData) {
   // get all attributes, options, retaining the sort
   let attributeInput = map(attributeInputData, 'attribute')
@@ -41,6 +87,34 @@ itemAttributeSchema.statics.validateAttributeData = function (attributeInputData
   })
   return true
 }
+
+/**
+ * Creates item attributes out of the provided list of attribute data
+ * @param {Object[]} attributeInputData Array of attribute data to create item attributes with
+ *
+ * @return {(string[]|Error)} returns an array of objects IDs of the created item attributes, throws an error if data is invalid
+ *
+* @example
+ *
+ * const ItemAttribute = require('./models/itemAttribute')
+ *
+ * const itemAttributes = await ItemAttribute.createManyFromAttributeData([
+ *  {
+ *    attribute: {  code: 'size', name: "Size" }
+ *    options: [
+ *        { code: "S", name: "Small" },
+ *        { code: "M", name: "Medium" }
+ *    ]
+ *  },
+ *  {
+ *    attribute: {  code: 'color', name: "Color" }
+ *    options: [
+ *        { code: "RED", name: "Red" },
+ *        { code: "BLU", name: "Green" }
+ *    ]
+ *  }
+ * ])
+ */
 itemAttributeSchema.statics.createManyFromAttributeData = async function (attributeInputData) {
   let isValid = false
   try {

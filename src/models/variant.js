@@ -13,25 +13,26 @@ const {
 const hasDuplicates = require('../utils/has-duplicates')
 /**
  * Generates an array of variant data out of the provided attribute data
- * @param {Array} attributeData array of structured attribute data to generate variants with
- *                              eg:
- *                              [
- *                                {
- *                                  attribute: {  code: 'size', name: "Size" }
- *                                  options: [
- *                                      { code: "S", name: "Small" },
- *                                      { code: "M", name: "Medium" }
- *                                  ]
- *                                },
- *                                {
- *                                  attribute: {  code: 'color', name: "Color" }
- *                                  options: [
- *                                      { code: "RED", name: "Red" },
- *                                      { code: "BLU", name: "Green" }
- *                                  ]
- *                                }
- *                              ]
- * @return {Array} list of variant data
+ * @param {Object[]} attributeData array of structured attribute data to generate variants with
+ * @return {Object[]} list of generated variant data
+ * @example
+ *  const Variant = require('./models/variant)
+ *  const variants = await Variant.generateFromAttributes([
+ *  {
+ *    attribute: {  code: 'size', name: "Size" }
+ *    options: [
+ *        { code: "S", name: "Small" },
+ *        { code: "M", name: "Medium" }
+ *    ]
+ *  },
+ *  {
+ *    attribute: {  code: 'color', name: "Color" }
+ *    options: [
+ *        { code: "RED", name: "Red" },
+ *        { code: "BLU", name: "Green" }
+ *    ]
+ *  }
+ * ])
  */
 variantSchema.statics.generateFromAttributes = function (attributeInputData) {
   // make sure attribute data is valid
@@ -86,6 +87,36 @@ variantSchema.statics.generateFromAttributes = function (attributeInputData) {
   }
 }
 
+/**
+ *
+ * @param {Object[]} variantInputData array of variant data
+ * @param {string[]} itemAttributeIds array of item attribute ids of attributes used by the variant data provided
+ *
+ * @return {(string[]|Error)} array of created variant ids, throws an error if it fails
+ *
+ * @example
+ * const ItemAttribute = require('./models/itemAttribute)
+ * cont Variant = require('./models/variant')
+ *
+ * const attributes = [
+ *  {
+ *     attribute: {
+ *        name: 'Size',
+ *        code: 'size',
+ *     }
+ *     options: [
+ *      { code: 'SML', name: 'Small'},
+ *      { code: 'MED', name: 'Medium'},
+ *    ]
+ * }
+ * ]
+ * const itemAttributes = await ItemAttribute.createManyFromAttributeData(attributes)
+ *
+ * const variants = await Variants.validateAndCreateMany(
+ *  await Variants.generateFromAttributes(attributes),
+ *  itemAttributes
+ * )
+ */
 variantSchema.statics.validateAndCreateMany = async function (variantInputData, itemAttributeIds) {
   const ItemAttribute = mongoose.model('ItemAttribute')
   // retrieve related item attributes
