@@ -55,6 +55,8 @@ describe('add variants', () => {
               variants: record.variants.map(variant => {
                 return {
                   ...variant,
+
+                  // map variant attribute data to only provide attribute and option codes
                   attributeData: variant.attributeData.map(data => {
                     return {
                       attribute: data.attribute.code,
@@ -196,6 +198,8 @@ describe('add variants', () => {
               variants: record.variants.map(variant => {
                 return {
                   ...variant,
+
+                  // map variant attribute data to only provide attribute and option codes
                   attributeData: variant.attributeData.map(data => {
                     return {
                       attribute: data.attribute.code,
@@ -249,6 +253,8 @@ describe('add variants', () => {
               variants: record.variants.map(variant => {
                 return {
                   ...variant,
+
+                  // map variant attribute data to only provide attribute and option codes
                   attributeData: variant.attributeData.map(data => {
                     return {
                       attribute: data.attribute.code,
@@ -449,6 +455,83 @@ describe('add variants', () => {
           .toStrictEqual(record.variants[0].name)
         expect(variants[0].attributeData[0].attribute.name)
           .toStrictEqual(record.variants[0].attributeData[0].attribute.name)
+      })
+  })
+
+  it('should update the attributes and variants of a service', () => {
+    const attributes = times(2, () => {
+      return {
+        attribute: AttributeFactory.generate(),
+        options: times(2, () => { return OptionFactory.generate() })
+      }
+    })
+    const variants = Variant.generateFromAttributes(attributes).map(variant => {
+      return {
+        ...variant,
+        price: faker.random.float(200)
+      }
+    })
+
+    const query = jsonToGraphQLQuery({
+      mutation: {
+        updateServiceById: {
+          __args: {
+            _id: service._id,
+            record: {
+              attributes: attributes,
+              variants: variants.map(variant => {
+                return {
+                  ...variant,
+
+                  // map variant attribute data to only provide attribute and option codes
+                  attributeData: variant.attributeData.map(data => {
+                    return {
+                      attribute: data.attribute.code,
+                      option: data.option.code
+                    }
+                  })
+                }
+              })
+            }
+          },
+          record: {
+            _id: true,
+            name: true,
+            attributes: {
+              _id: true,
+              attribute: {
+                name: true,
+                code: true
+              },
+              options: {
+                name: true,
+                code: true
+              }
+            },
+            variants: {
+              _id: true,
+              name: true,
+              code: true,
+              attributeData: {
+                attribute: {
+                  name: true,
+                  code: true
+                },
+                option: {
+                  name: true,
+                  code: true
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+    return request({
+      query: query
+    })
+      .expect(res => {
+        // @TODO - add assertions
       })
   })
 })

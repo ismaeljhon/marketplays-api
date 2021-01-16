@@ -54,7 +54,17 @@ const itemSchema = new mongoose.Schema({
   },
   attributes: {
     type: [Schema.Types.ObjectId],
-    default: []
+    default: [],
+    validate: {
+      validator: function (value) {
+        // attributes can only be added if variant data is present
+        if (value && value.length > 0) {
+          return this.variants && this.variants.length > 0
+        } else {
+          return true
+        }
+      }
+    }
   },
   variants: {
     type: [Schema.Types.ObjectId],
