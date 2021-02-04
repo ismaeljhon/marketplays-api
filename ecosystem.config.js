@@ -21,7 +21,7 @@ module.exports = {
       user: 'root',
       host: 'staging.marketplays.app',
       ref: 'origin/staging',
-      repo: 'https://github.com/kyleag/marketplays-api.git',
+      repo: 'https://github.com/ismaeljhon/marketplays-api.git',
       path: '/home/marketplays/public_html/staging/backend',
       'pre-deploy-local': '',
       'post-deploy':
