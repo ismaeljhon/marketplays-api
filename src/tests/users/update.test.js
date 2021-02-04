@@ -7,7 +7,7 @@ describe('updating user password', () => {
   const fakeUser = UserFactory.generate()
   let user = null
   before(async () => {
-    user = await User.signup(fakeUser)
+    user = await User.SignupUser(fakeUser)
   })
 
   // password can be updated and should be saved as hashedPassword
