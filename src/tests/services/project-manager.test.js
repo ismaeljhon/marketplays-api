@@ -11,9 +11,9 @@ describe('service project manager', () => {
   let updatedProjectManager = null
   let department = null
   before(async () => {
-    defaultProjectManager = await User.signup(UserFactory.generate())
-    newProjectManager = await User.signup(UserFactory.generate())
-    updatedProjectManager = await User.signup(UserFactory.generate())
+    defaultProjectManager = await User.SignupUser(UserFactory.generate())
+    newProjectManager = await User.SignupUser(UserFactory.generate())
+    updatedProjectManager = await User.SignupUser(UserFactory.generate())
 
     // create a dummy department, assigning a team lead
     const fakeDepartment = DepartmentFactory.generate()

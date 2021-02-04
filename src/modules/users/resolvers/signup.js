@@ -6,14 +6,14 @@ const UserTC = schemaComposer.getOTC('User')
 // remove create user and replace with signup
 schemaComposer.Mutation.removeField('createOneUser')
 UserTC.addResolver({
-  name: 'signup',
+  name: 'SignupUser',
   type: 'UserSignupPayload',
   args: {
     record: 'SignupUserInput!'
   },
   description: 'Registers a user',
   resolve: async ({ source, args }) => {
-    const user = await User.signup(args.record)
+    const user = await User.SignupUser(args.record)
     return {
       recordId: user._id,
       record: {
@@ -26,5 +26,5 @@ UserTC.addResolver({
   }
 })
 schemaComposer.Mutation.addFields({
-  signup: UserTC.getResolver('signup')
+  SignupUser: UserTC.getResolver('SignupUser')
 })

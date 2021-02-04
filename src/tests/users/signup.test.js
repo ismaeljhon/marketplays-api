@@ -2,7 +2,7 @@ const expect = require('expect')
 const { request } = require('../../utils/test')
 const { UserFactory } = require('../../utils/factories/')
 
-describe('signup and verification', () => {
+describe('SignupUser', () => {
   const fakeUser = UserFactory.generate()
 
   let user = null
@@ -10,7 +10,7 @@ describe('signup and verification', () => {
     return request({
       query: `
         mutation {
-          signup(record: {
+          SignupUser(record: {
               fullName: "${fakeUser.fullName}",
               email: "${fakeUser.email}",
               password: "${fakeUser.password}"
@@ -25,9 +25,8 @@ describe('signup and verification', () => {
       `
     })
       .expect(res => {
-        expect(res.body).toHaveProperty('data.signup.record')
-        expect(res.body.data.signup.record.email).toStrictEqual(fakeUser.email)
-        user = res.body.data.signup.record
+        expect(res.body).toHaveProperty('data.SignupUser.record')
+        expect(res.body.data.SignupUser.record.email).toStrictEqual(fakeUser.email)
       })
       .expect(200)
   })
@@ -36,7 +35,7 @@ describe('signup and verification', () => {
     return request({
       query: `
         mutation {
-          signup(record: {
+          SignupUser(record: {
               fullName: "${fakeUser.fullName}",
               email: "${fakeUser.email}",
               password: "${fakeUser.password}"
