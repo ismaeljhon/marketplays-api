@@ -11,7 +11,7 @@ describe('department team lead', () => {
   before(async () => {
     for (let x = 0; x <= 1; x++) {
       const user = UserFactory.generate()
-      users.push(await User.signup(user))
+      users.push(await User.SignupUser(user))
     }
   })
 

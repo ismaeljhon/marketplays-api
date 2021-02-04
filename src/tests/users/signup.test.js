@@ -2,14 +2,14 @@ const expect = require('expect')
 const { request } = require('../../utils/test')
 const { UserFactory } = require('../../utils/factories/')
 
-describe('signup', () => {
+describe('SignupUser', () => {
   const fakeUser = UserFactory.generate()
 
   it('should create a new user', () => {
     return request({
       query: `
         mutation {
-          signup(record: {
+          SignupUser(record: {
               fullName: "${fakeUser.fullName}",
               email: "${fakeUser.email}",
               password: "${fakeUser.password}"
@@ -23,8 +23,8 @@ describe('signup', () => {
       `
     })
       .expect(res => {
-        expect(res.body).toHaveProperty('data.signup.record')
-        expect(res.body.data.signup.record.email).toStrictEqual(fakeUser.email)
+        expect(res.body).toHaveProperty('data.SignupUser.record')
+        expect(res.body.data.SignupUser.record.email).toStrictEqual(fakeUser.email)
       })
       .expect(200)
   })
@@ -33,7 +33,7 @@ describe('signup', () => {
     return request({
       query: `
         mutation {
-          signup(record: {
+          SignupUser(record: {
               fullName: "${fakeUser.fullName}",
               email: "${fakeUser.email}",
               password: "${fakeUser.password}"

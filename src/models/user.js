@@ -17,7 +17,7 @@ const SALT_ROUNDS = 12
  *
  * @return {mongoose.model} Resulting user
  */
-userSchema.statics.signup = async ({
+userSchema.statics.SignupUser = async ({
   fullName,
   email,
   password

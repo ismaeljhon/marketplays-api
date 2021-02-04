@@ -4,14 +4,14 @@ const typeDefs = gql`
   extend type Query {
     me: User @isAuthenticated
   }
-  
+
   extend type Mutation {
     login(
       email: String!,
       password: String!
     ): AuthData
 
-    signup(
+    SignupUser(
       fullName: String!,
       email: String!,
       password: String!
