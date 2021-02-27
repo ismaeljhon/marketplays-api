@@ -52,4 +52,17 @@ describe('SignupUser', () => {
       })
       .expect(200)
   })
+
+  /* username **
+    should be unique
+    not null
+     */
+
+  /*
+    Password **
+    should be able to check if password should not be null
+    should be strong contains alphanumeric chars;
+    confirm password and password should be equal;
+
+  */
 })
