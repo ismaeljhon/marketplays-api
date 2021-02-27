@@ -3,6 +3,12 @@ const mongoose = require('mongoose')
 const hooks = {
   post: {
     save: async (service, next) => {
+      // add service under category
+      const Category = mongoose.models['Category']
+      await Category.updateOne({ _id: service.category }, {
+        $push: { services: service._id }
+      })
+
       // add service under the department
       // @TODO - add check if adding a service to a department fails
       const Department = mongoose.models['Department']
@@ -45,12 +51,29 @@ const hooks = {
       if (typeof this.department !== 'undefined' ||
           typeof this.projectManager !== 'undefined') {
         const Department = mongoose.models['Department']
+        const Category = mongoose.models['Category']
         const Service = mongoose.models['Service']
         const User = mongoose.models['User']
         const service = await Service.findById(this._id)
 
         if (service) {
           let oldProjectManager = service.projectManager
+
+          if (service.category) {
+            // delete service under old category
+
+            const oldCategory = await Category.updateOne(
+              { _id: service.category },
+              { $pull: { services: service._id } }
+            )
+
+            // if no old projectManager has been set
+            // the old projectManager is the category teamLead
+            if (oldProjectManager === null) {
+              oldProjectManager = oldCategory.teamLead
+            }
+          }
+
           if (service.department) {
             // delete service under old department
             // if trying to update team lead

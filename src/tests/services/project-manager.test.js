@@ -10,6 +10,7 @@ describe('service project manager', () => {
   let newProjectManager = null
   let updatedProjectManager = null
   let department = null
+
   before(async () => {
     defaultProjectManager = await User.SignupUser(UserFactory.generate())
     newProjectManager = await User.SignupUser(UserFactory.generate())

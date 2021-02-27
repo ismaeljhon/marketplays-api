@@ -28,10 +28,16 @@ const userSchema = new mongoose.Schema({
   lastActive: {
     type: Date
   },
+
   teamLeadOf: {
     type: [Schema.Types.ObjectId], // department
     default: []
   },
+  catTeamLeadOf: {
+    type: [Schema.Types.ObjectId], // category
+    default: []
+  },
+
   projectManagerOf: {
     type: [Schema.Types.ObjectId], // service
     default: []

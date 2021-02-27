@@ -1,37 +1,26 @@
 const mongoose = require('mongoose')
 const Schema = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 const slugify = require('slugify')
 
-const serviceSchema = new mongoose.Schema({
+const categorySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
   },
   code: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   description: {
     type: String
-  },
-  shortDescription: {
-    type: String
-  },
-  pricing: {
-    type: Number,
-    required: true
   },
   slug: {
     type: String,
     default: function () { // enables access to 'this'
       return slugify(this.name)
     }
-  },
-  workforceThreshold: {
-    type: Number
-  },
-  tags: {
-    type: [String]
   },
   seoTitle: {
     type: String
@@ -42,32 +31,16 @@ const serviceSchema = new mongoose.Schema({
   seoDescription: {
     type: String
   },
-  projectManager: {
+  teamLead: {
     type: Schema.Types.ObjectId,
     default: null
   },
-  currency: {
-    type: String
-  },
-  image: {
-    type: String
-  },
-  department: {
-    type: Schema.Types.ObjectId,
-    default: null
-  },
-  category: {
-    type: Schema.Types.ObjectId,
-    default: null
-  },
-  attributes: {
-    type: [Schema.Types.ObjectId],
-    default: []
-  },
-  variants: {
+  services: {
     type: [Schema.Types.ObjectId],
     default: []
   }
 })
 
-module.exports = serviceSchema
+categorySchema.plugin(uniqueValidator)
+
+module.exports = categorySchema
