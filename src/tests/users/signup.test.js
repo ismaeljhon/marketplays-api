@@ -4,9 +4,7 @@ const { UserFactory } = require('../../utils/factories/')
 
 describe('SignupUser', () => {
   const fakeUser = UserFactory.generate()
-  const fakeUserFTP = UserFactory.generate()
-  const fakeUserCommerce = UserFactory.generate()
-  const fakeUserSocialMedia = UserFactory.generate()
+  const fakeUser2 = UserFactory.generate()
 
   it('should create a new user', () => {
     return request({
@@ -16,10 +14,8 @@ describe('SignupUser', () => {
               fullName: "${fakeUser.fullName}",
               email: "${fakeUser.email}",
               password: "${fakeUser.password}",
-              isECommerce : ${fakeUser.isECommerce},
-              isFTP : ${fakeUser.isFTP},
-              isSocialMedia  :${fakeUser.isSocialMedia}
-          }) {
+              access : "${fakeUser.access}",
+            }) {
             record {
               fullName
               email
@@ -43,10 +39,7 @@ describe('SignupUser', () => {
               fullName: "${fakeUser.fullName}",
               email: "${fakeUser.email}",
               password: "${fakeUser.password}",
-              isECommerce : ${fakeUser.isECommerce},
-              isFTP : ${fakeUser.isFTP},
-              isSocialMedia  :${fakeUser.isSocialMedia}
-
+              access : "${fakeUser.access}",
           }) {
             record {
               fullName
@@ -62,50 +55,21 @@ describe('SignupUser', () => {
       })
       .expect(200)
   })
-  it('should create a new user with access FTP', () => {
-    return request({
-      query: `
-        mutation {
-          SignupUser(record: {
-              fullName: "${fakeUserFTP.fullName}",
-              email: "${fakeUserFTP.email}",
-              password: "${fakeUserFTP.password}",
-              isFTP : ${fakeUserFTP.isFTP},
-              isECommerce : ${fakeUserFTP.isECommerce},
-              isSocialMedia  :${fakeUserFTP.isSocialMedia}
-          }) {
-            record {
-              fullName
-              email
-              isFTP
-            }
-          }
-        }
-      `
-    })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.SignupUser.record')
-        expect(res.body.data.SignupUser.record.isFTP).toStrictEqual(fakeUserFTP.isFTP)
-      })
-      .expect(200)
-  })
 
-  it('should create a new user with access isECommerce Access', () => {
+  it('should create a new user with access Access Type', () => {
     return request({
       query: `
         mutation {
           SignupUser(record: {
-              fullName: "${fakeUserCommerce.fullName}",
-              email: "${fakeUserCommerce.email}",
-              password: "${fakeUserCommerce.password}",
-              isFTP : ${fakeUserCommerce.isFTP},
-              isECommerce : ${fakeUserCommerce.isECommerce},
-              isSocialMedia  :${fakeUserCommerce.isSocialMedia}
+              fullName: "${fakeUser2.fullName}",
+              email: "${fakeUser2.email}",
+              password: "${fakeUser2.password}",
+              access : "${fakeUser2.access}",
           }) {
             record {
               fullName
               email
-              isECommerce
+              access
             }
           }
         }
@@ -113,35 +77,7 @@ describe('SignupUser', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.SignupUser.record')
-        expect(res.body.data.SignupUser.record.isECommerce).toStrictEqual(fakeUserCommerce.isECommerce)
-      })
-      .expect(200)
-  })
-
-  it('should create a new user with default Social Media Access', () => {
-    return request({
-      query: `
-        mutation {
-          SignupUser(record: {
-              fullName: "${fakeUserSocialMedia.fullName}",
-              email: "${fakeUserSocialMedia.email}",
-              password: "${fakeUserSocialMedia.password}",
-              isECommerce : ${fakeUserSocialMedia.isECommerce},
-              isFTP : ${fakeUserSocialMedia.isFTP},
-              isSocialMedia  :${fakeUserSocialMedia.isSocialMedia}
-          }) {
-            record {
-              fullName
-              email
-              isSocialMedia
-            }
-          }
-        }
-      `
-    })
-      .expect(res => {
-        expect(res.body).toHaveProperty('data.SignupUser.record')
-        expect(res.body.data.SignupUser.record.isSocialMedia).toStrictEqual(fakeUserSocialMedia.isSocialMedia)
+        expect(res.body.data.SignupUser.record.access).toStrictEqual(fakeUser2.access)
       })
       .expect(200)
   })
