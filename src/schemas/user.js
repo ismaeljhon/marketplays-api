@@ -51,6 +51,18 @@ const userSchema = new mongoose.Schema({
   emailVerified: {
     type: Boolean,
     default: false
+  },
+  isEcommerce: {
+    type: Boolean,
+    default: false
+  },
+  isFTP: {
+    type: Boolean,
+    default: false
+  },
+  isSocialMedia: {
+    type: Boolean,
+    default: true
   }
 })
 

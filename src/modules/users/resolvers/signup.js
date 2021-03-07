@@ -20,7 +20,10 @@ UserTC.addResolver({
         _id: user._id,
         fullName: user.fullName,
         email: user.email,
-        verificationCode: user.verificationCode
+        verificationCode: user.verificationCode,
+        isECommerce: user.isECommerce,
+        isFTP: user.isFTP,
+        isSocialMedia: user.isSocialMedia
       }
     }
   }

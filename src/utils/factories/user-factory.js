@@ -7,7 +7,10 @@ const UserFactory = {
     return {
       fullName: `${firstName} ${lastName}`,
       email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
-      password: faker.internet.password(20)
+      password: faker.internet.password(20),
+      isEcommerce: faker.random.boolean(),
+      isFTP: faker.random.boolean(),
+      isSocialMedia: true
     }
   }
 }
