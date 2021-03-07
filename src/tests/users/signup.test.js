@@ -16,7 +16,7 @@ describe('SignupUser', () => {
               fullName: "${fakeUser.fullName}",
               email: "${fakeUser.email}",
               password: "${fakeUser.password}",
-              isEcommerce : ${fakeUser.isEcommerce},
+              isECommerce : ${fakeUser.isECommerce},
               isFTP : ${fakeUser.isFTP},
               isSocialMedia  :${fakeUser.isSocialMedia}
           }) {
@@ -43,7 +43,7 @@ describe('SignupUser', () => {
               fullName: "${fakeUser.fullName}",
               email: "${fakeUser.email}",
               password: "${fakeUser.password}",
-              isEcommerce : ${fakeUser.isEcommerce},
+              isECommerce : ${fakeUser.isECommerce},
               isFTP : ${fakeUser.isFTP},
               isSocialMedia  :${fakeUser.isSocialMedia}
 
@@ -70,16 +70,14 @@ describe('SignupUser', () => {
               fullName: "${fakeUserFTP.fullName}",
               email: "${fakeUserFTP.email}",
               password: "${fakeUserFTP.password}",
-              isEcommerce : ${fakeUser.isEcommerce},
-              isFTP : ${fakeUser.isFTP},
-              isSocialMedia  :${fakeUser.isSocialMedia}
+              isFTP : ${fakeUserFTP.isFTP},
+              isECommerce : ${fakeUserFTP.isECommerce},
+              isSocialMedia  :${fakeUserFTP.isSocialMedia}
           }) {
             record {
               fullName
               email
-              isEcommerce
               isFTP
-              isSocialMedia
             }
           }
         }
@@ -87,12 +85,12 @@ describe('SignupUser', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.SignupUser.record')
-        expect(res.body.data.SignupUser.record.isFTP).toStrictEqual(fakeUserFTP.isFTP.toString())
+        expect(res.body.data.SignupUser.record.isFTP).toStrictEqual(fakeUserFTP.isFTP)
       })
       .expect(200)
   })
 
-  it('should create a new user with access Ecommere Access', () => {
+  it('should create a new user with access isECommerce Access', () => {
     return request({
       query: `
         mutation {
@@ -100,16 +98,14 @@ describe('SignupUser', () => {
               fullName: "${fakeUserCommerce.fullName}",
               email: "${fakeUserCommerce.email}",
               password: "${fakeUserCommerce.password}",
-              isEcommerce : ${fakeUser.isEcommerce},
-              isFTP : ${fakeUser.isFTP},
-              isSocialMedia  :${fakeUser.isSocialMedia}
+              isFTP : ${fakeUserCommerce.isFTP},
+              isECommerce : ${fakeUserCommerce.isECommerce},
+              isSocialMedia  :${fakeUserCommerce.isSocialMedia}
           }) {
             record {
               fullName
               email
-              isEcommerce
-              isFTP
-              isSocialMedia
+              isECommerce
             }
           }
         }
@@ -117,7 +113,7 @@ describe('SignupUser', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.SignupUser.record')
-        expect(res.body.data.SignupUser.record.isEcommerce).toStrictEqual(fakeUserCommerce.isEcommerce)
+        expect(res.body.data.SignupUser.record.isECommerce).toStrictEqual(fakeUserCommerce.isECommerce)
       })
       .expect(200)
   })
@@ -130,15 +126,13 @@ describe('SignupUser', () => {
               fullName: "${fakeUserSocialMedia.fullName}",
               email: "${fakeUserSocialMedia.email}",
               password: "${fakeUserSocialMedia.password}",
-              isEcommerce : ${fakeUser.isEcommerce},
-              isFTP : ${fakeUser.isFTP},
-              isSocialMedia  :${fakeUser.isSocialMedia}
+              isECommerce : ${fakeUserSocialMedia.isECommerce},
+              isFTP : ${fakeUserSocialMedia.isFTP},
+              isSocialMedia  :${fakeUserSocialMedia.isSocialMedia}
           }) {
             record {
               fullName
               email
-              isEcommerce
-              isFTP
               isSocialMedia
             }
           }
@@ -147,7 +141,7 @@ describe('SignupUser', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.SignupUser.record')
-        expect(res.body.SignupUser.isSocialMedia).toStrictEqual(true)
+        expect(res.body.data.SignupUser.record.isSocialMedia).toStrictEqual(fakeUserSocialMedia.isSocialMedia)
       })
       .expect(200)
   })

@@ -21,8 +21,8 @@ UserTC.addResolver({
         fullName: user.fullName,
         email: user.email,
         verificationCode: user.verificationCode,
-        isECommerce: user.isECommerce,
         isFTP: user.isFTP,
+        isECommerce: user.isECommerce,
         isSocialMedia: user.isSocialMedia
       }
     }

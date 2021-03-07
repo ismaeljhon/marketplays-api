@@ -20,7 +20,10 @@ const SALT_ROUNDS = 12
 userSchema.statics.SignupUser = async ({
   fullName,
   email,
-  password
+  password,
+  isFTP,
+  isECommerce,
+  isSocialMedia
 }) => {
   try {
     // make sure email is unique
@@ -36,7 +39,10 @@ userSchema.statics.SignupUser = async ({
     const user = await User.create({
       fullName: fullName,
       email: email,
-      hashedPassword: hashedPassword
+      hashedPassword: hashedPassword,
+      isFTP: isFTP,
+      isECommerce: isECommerce,
+      isSocialMedia: isSocialMedia
     })
     return user
   } catch (error) {

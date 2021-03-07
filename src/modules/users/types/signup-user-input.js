@@ -7,8 +7,8 @@ schemaComposer.createInputTC({
     fullName: 'String!',
     email: 'String!',
     password: 'String!',
-    isEcommerce: 'Boolean',
     isFTP: 'Boolean',
+    isECommerce: 'Boolean',
     isSocialMedia: 'Boolean'
   }
 })

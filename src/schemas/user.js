@@ -52,13 +52,14 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  isEcommerce: {
-    type: Boolean,
-    default: false
-  },
+
   isFTP: {
     type: Boolean,
-    default: false
+    default: null
+  },
+  isECommerce: {
+    type: Boolean,
+    default: null
   },
   isSocialMedia: {
     type: Boolean,
