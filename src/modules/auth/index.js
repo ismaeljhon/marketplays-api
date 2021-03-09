@@ -12,9 +12,12 @@ const typeDefs = gql`
     ): AuthData
 
     SignupUser(
-      fullName: String!,
+      firstName: String!,
+      middleName: String!,
+      lastName: String!,
       email: String!,
-      password: String!
+      password: String!,
+      access : String
     ): User
   }
 
@@ -26,7 +29,9 @@ const typeDefs = gql`
 
   type User {
     id: ID!
-    fullName: String!
+    firstName: String!,
+    middleName: String!,
+    lastName: String!,
     email: String!
     password: String!
     teamLeadOf: [ Department ]

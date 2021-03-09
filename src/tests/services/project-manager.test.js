@@ -41,7 +41,8 @@ describe('service project manager', () => {
               name
               projectManager {
                 _id
-                fullName
+                firstName,
+                lastName
               }
             }
           }
@@ -50,7 +51,7 @@ describe('service project manager', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.createOneService.record.projectManager')
-        expect(res.body.data.createOneService.record.projectManager.fullName).toStrictEqual(defaultProjectManager.fullName)
+        expect(res.body.data.createOneService.record.projectManager.firstName).toStrictEqual(defaultProjectManager.firstName)
         service = res.body.data.createOneService.record
       })
   })
@@ -98,7 +99,7 @@ describe('service project manager', () => {
               name
               projectManager {
                 _id
-                fullName
+                firstName
               }
             }
           }
@@ -107,7 +108,7 @@ describe('service project manager', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.createOneService.record.projectManager')
-        expect(res.body.data.createOneService.record.projectManager.fullName).toStrictEqual(newProjectManager.fullName)
+        expect(res.body.data.createOneService.record.projectManager.firstName).toStrictEqual(newProjectManager.firstName)
         service = res.body.data.createOneService.record
       })
       .expect(200)
@@ -153,7 +154,7 @@ describe('service project manager', () => {
               _id
               projectManager {
                 _id
-                fullName
+                firstName
               }
             }
           }
@@ -162,7 +163,7 @@ describe('service project manager', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.updateServiceById.record.projectManager')
-        expect(res.body.data.updateServiceById.record.projectManager.fullName).toStrictEqual(updatedProjectManager.fullName)
+        expect(res.body.data.updateServiceById.record.projectManager.firstName).toStrictEqual(updatedProjectManager.firstName)
       })
   })
 
@@ -226,7 +227,7 @@ describe('service project manager', () => {
               _id
               projectManager {
                 _id
-                fullName
+                firstName
               }
             }
           }
@@ -235,7 +236,7 @@ describe('service project manager', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.updateServiceById.record.projectManager')
-        expect(res.body.data.updateServiceById.record.projectManager.fullName).toStrictEqual(defaultProjectManager.fullName)
+        expect(res.body.data.updateServiceById.record.projectManager.firstName).toStrictEqual(defaultProjectManager.firstName)
       })
   })
 

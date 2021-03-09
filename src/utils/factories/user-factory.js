@@ -7,7 +7,9 @@ const UserFactory = {
     const lastName = faker.name.lastName()
 
     return {
-      fullName: `${firstName} ${lastName}`,
+      firstName: firstName,
+      middleName: faker.name.lastName(),
+      lastName: lastName,
       email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
       password: faker.internet.password(20),
       access: generateFakeAccess()

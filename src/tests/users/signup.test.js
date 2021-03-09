@@ -11,13 +11,17 @@ describe('SignupUser', () => {
       query: `
         mutation {
           SignupUser(record: {
-              fullName: "${fakeUser.fullName}",
+              firstName :"${fakeUser.firstName}",
+              middleName :"${fakeUser.middleName}",
+              lastName: "${fakeUser.lastName}",
               email: "${fakeUser.email}",
               password: "${fakeUser.password}",
               access : "${fakeUser.access}",
             }) {
             record {
-              fullName
+              firstName,
+              middleName,
+              lastName,
               email
             }
           }
@@ -36,13 +40,17 @@ describe('SignupUser', () => {
       query: `
         mutation {
           SignupUser(record: {
-              fullName: "${fakeUser.fullName}",
-              email: "${fakeUser.email}",
-              password: "${fakeUser.password}",
-              access : "${fakeUser.access}",
+            firstName :"${fakeUser.firstName}",
+            middleName :"${fakeUser.middleName}",
+            lastName: "${fakeUser.lastName}",
+            email: "${fakeUser.email}",
+            password: "${fakeUser.password}",
+            access : "${fakeUser.access}",
           }) {
             record {
-              fullName
+              firstName,
+              middleName,
+              lastName,
               email
             }
           }
@@ -61,13 +69,15 @@ describe('SignupUser', () => {
       query: `
         mutation {
           SignupUser(record: {
-              fullName: "${fakeUser2.fullName}",
-              email: "${fakeUser2.email}",
-              password: "${fakeUser2.password}",
-              access : "${fakeUser2.access}",
+            firstName :"${fakeUser2.firstName}",
+            middleName :"${fakeUser2.middleName}",
+            lastName: "${fakeUser2.lastName}",
+            email: "${fakeUser2.email}",
+            password: "${fakeUser2.password}",
+            access : "${fakeUser2.access}",
           }) {
             record {
-              fullName
+              firstName
               email
               access
             }

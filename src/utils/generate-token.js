@@ -7,10 +7,13 @@ const SALT_ROUNDS = 12
 
 const firstName = faker.name.firstName()
 const lastName = faker.name.lastName()
+const middleName = faker.name.lastName()
 
 const generateToken = async (_) => {
   const testUser = {
-    fullName: firstName + ' ' + lastName,
+    firstName: firstName,
+    middleName: middleName,
+    lastName: lastName,
     email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
     hashedPassword: await bcrypt.hash(faker.internet.password(20), SALT_ROUNDS)
   }
