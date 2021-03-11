@@ -39,6 +39,8 @@ describe('department team lead', () => {
               teamLead: {
                 _id: true,
                 firstName: true,
+                middleName: true,
+                lastName: true,
                 email: true
               }
             }
@@ -50,6 +52,8 @@ describe('department team lead', () => {
         // check if the user is assigned to the department
         expect(res.body).toHaveProperty('data.createOneDepartment.record')
         expect(res.body.data.createOneDepartment.record.teamLead.firstName).toEqual(users[0].firstName)
+        expect(res.body.data.createOneDepartment.record.teamLead.middleName).toEqual(users[0].middleName)
+        expect(res.body.data.createOneDepartment.record.teamLead.lastName).toEqual(users[0].lastName)
         departmentId = res.body.data.createOneDepartment.record._id
       })
       .expect(200)
@@ -97,7 +101,9 @@ describe('department team lead', () => {
               name: true,
               teamLead: {
                 _id: true,
-                firstName: true
+                firstName: true,
+                middleName: true,
+                lastName: true
               }
             }
           }
@@ -107,6 +113,8 @@ describe('department team lead', () => {
       .expect(res => {
         expect(res.body).toHaveProperty('data.updateDepartmentById.record')
         expect(res.body.data.updateDepartmentById.record.teamLead.firstName).toEqual(users[1].firstName)
+        expect(res.body.data.updateDepartmentById.record.teamLead.middleName).toEqual(users[1].middleName)
+        expect(res.body.data.updateDepartmentById.record.teamLead.lastName).toEqual(users[1].lastName)
       })
       .expect(200)
   })

@@ -39,6 +39,8 @@ describe('Category team lead', () => {
               teamLead: {
                 _id: true,
                 firstName: true,
+                middleName: true,
+                lastName: true,
                 email: true
               }
             }
@@ -50,6 +52,9 @@ describe('Category team lead', () => {
         // check if the user is assigned to the category
         expect(res.body).toHaveProperty('data.createOneCategory.record')
         expect(res.body.data.createOneCategory.record.teamLead.firstName).toEqual(users[0].firstName)
+        expect(res.body.data.createOneCategory.record.teamLead.middleName).toEqual(users[0].middleName)
+        expect(res.body.data.createOneCategory.record.teamLead.lastName).toEqual(users[0].lastName)
+
         categoryId = res.body.data.createOneCategory.record._id
       })
       .expect(200)
