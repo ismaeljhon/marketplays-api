@@ -25,12 +25,14 @@ describe('updating user password', () => {
         }
       `
     })
-      .expect(res => {
+      .expect((res) => {
         expect(res.body).toHaveProperty('data.updateUserById.record')
 
         // let's just check for the email response for now
         // and have the password verified by doing a login request later
-        expect(res.body.data.updateUserById.record.email).toStrictEqual(user.email)
+        expect(res.body.data.updateUserById.record.email).toStrictEqual(
+          user.email
+        )
       })
       .expect(200)
   })

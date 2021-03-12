@@ -4,18 +4,24 @@ const { UserFactory } = require('../../utils/factories/')
 
 describe('SignupUser', () => {
   const fakeUser = UserFactory.generate()
+  const fakeUser2 = UserFactory.generate()
 
   it('should create a new user', () => {
     return request({
       query: `
         mutation {
           SignupUser(record: {
-              fullName: "${fakeUser.fullName}",
+              firstName :"${fakeUser.firstName}",
+              middleName :"${fakeUser.middleName}",
+              lastName: "${fakeUser.lastName}",
               email: "${fakeUser.email}",
-              password: "${fakeUser.password}"
-          }) {
+              password: "${fakeUser.password}",
+              access : "${fakeUser.access}",
+            }) {
             record {
-              fullName
+              firstName,
+              middleName,
+              lastName,
               email
             }
           }
@@ -34,12 +40,17 @@ describe('SignupUser', () => {
       query: `
         mutation {
           SignupUser(record: {
-              fullName: "${fakeUser.fullName}",
-              email: "${fakeUser.email}",
-              password: "${fakeUser.password}"
+            firstName :"${fakeUser.firstName}",
+            middleName :"${fakeUser.middleName}",
+            lastName: "${fakeUser.lastName}",
+            email: "${fakeUser.email}",
+            password: "${fakeUser.password}",
+            access : "${fakeUser.access}",
           }) {
             record {
-              fullName
+              firstName,
+              middleName,
+              lastName,
               email
             }
           }
@@ -53,16 +64,31 @@ describe('SignupUser', () => {
       .expect(200)
   })
 
-  /* username **
-    should be unique
-    not null
-     */
-
-  /*
-    Password **
-    should be able to check if password should not be null
-    should be strong contains alphanumeric chars;
-    confirm password and password should be equal;
-
-  */
+  it('should create a new user with access Access Type', () => {
+    return request({
+      query: `
+        mutation {
+          SignupUser(record: {
+            firstName :"${fakeUser2.firstName}",
+            middleName :"${fakeUser2.middleName}",
+            lastName: "${fakeUser2.lastName}",
+            email: "${fakeUser2.email}",
+            password: "${fakeUser2.password}",
+            access : "${fakeUser2.access}",
+          }) {
+            record {
+              firstName
+              email
+              access
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.SignupUser.record')
+        expect(res.body.data.SignupUser.record.access).toStrictEqual(fakeUser2.access)
+      })
+      .expect(200)
+  })
 })

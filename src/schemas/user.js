@@ -4,9 +4,20 @@ const faker = require('faker')
 const uniqueValidator = require('mongoose-unique-validator')
 
 const userSchema = new mongoose.Schema({
-  fullName: {
+  firstName: {
     type: String,
-    required: true
+    required: true,
+    default: ''
+  },
+  middleName: {
+    type: String,
+    required: true,
+    default: ''
+  },
+  lastName: {
+    type: String,
+    required: true,
+    default: ''
   },
   email: {
     type: String,
@@ -51,6 +62,10 @@ const userSchema = new mongoose.Schema({
   emailVerified: {
     type: Boolean,
     default: false
+  },
+  access: {
+    type: String,
+    default: ''
   }
 })
 

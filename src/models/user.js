@@ -11,16 +11,22 @@ const SALT_ROUNDS = 12
  * Also applies hash to the password automatically
  *
  * @param {Object} payload User payload data
- * @param {String} payload.fullName Full name of the user
+ * @param {String} payload.firstName first name of the user
+ * @param {String} payload.middleName middle name of the user
+ * @param {String} payload.lastName lastname name of the user
  * @param {String} payload.email Unique email address of the user
- * @param {String} payload.fullName Raw password of the user
+ * @param {String} payload.password Raw password of the user
+ * @param {String} payload.access Raw password of the user
  *
  * @return {mongoose.model} Resulting user
  */
 userSchema.statics.SignupUser = async ({
-  fullName,
+  firstName,
+  middleName,
+  lastName,
   email,
-  password
+  password,
+  access
 }) => {
   try {
     // make sure email is unique
@@ -34,9 +40,12 @@ userSchema.statics.SignupUser = async ({
     // apply hash
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
     const user = await User.create({
-      fullName: fullName,
+      firstName: firstName,
+      middleName: middleName,
+      lastName: lastName,
       email: email,
-      hashedPassword: hashedPassword
+      hashedPassword: hashedPassword,
+      access: access
     })
     return user
   } catch (error) {
