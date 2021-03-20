@@ -9,7 +9,7 @@ const {
 describe('Shop Owner', () => {
   const shop = ShopFactory.generate()
 
-  // create dummy users that will be team leads
+  // create dummy users that will be shop
   let users = []
   before(async () => {
     for (let x = 0; x <= 1; x++) {
