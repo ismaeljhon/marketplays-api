@@ -15,6 +15,7 @@ describe('category pluralize testing', () => {
     expect(directory).toEqual('categories')
   })
 })
+
 describe('category services', () => {
   const fakeCategory = CategoryFactory.generate()
 
