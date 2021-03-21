@@ -39,7 +39,6 @@ const userSchema = new mongoose.Schema({
   lastActive: {
     type: Date
   },
-
   teamLeadOf: {
     type: [Schema.Types.ObjectId], // department
     default: []
@@ -66,7 +65,23 @@ const userSchema = new mongoose.Schema({
   access: {
     type: String,
     default: ''
+  },
+  verifyTime: {
+    type: Date
+  },
+  idPic: {
+    type: String,
+    default: '' // path of image
+  },
+  selfiePic: {
+    type: String,
+    default: '' // path of image
+  },
+  shops: {
+    type: [Schema.Types.ObjectId], // shops
+    default: []
   }
+
 })
 
 // plugins
