@@ -22,7 +22,7 @@ module.exports = {
       host: 'staging.marketplays.app',
       ref: 'origin/staging',
       repo: 'https://github.com/ismaeljhon/marketplays-api.git',
-      path: '/home/marketplays/public_html/staging/backend',
+      path: '/home/marketplaysstage/public_html/staging/backend',
       'pre-deploy-local': '',
       'post-deploy':
         'git pull origin staging && npm install && pm2 startOrReload ecosystem.config.js --env staging --update-env',
