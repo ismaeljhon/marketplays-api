@@ -41,6 +41,7 @@
     "lodash": "^4.17.20",
     "mongoose": "^5.10.9",
     "mongoose-autopopulate": "^0.12.2",
+    "mongoose-schema-extend": "^0.2.2",
     "mongoose-unique-validator": "^2.0.3",
     "nanoid": "^3.1.16",
     "pluralize": "^8.0.0",

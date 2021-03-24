@@ -4,11 +4,12 @@ const CustomerFactory = {
   generate: () => {
     const firstName = faker.name.firstName()
     const lastName = faker.name.lastName()
-    const address = faker.fake('{{address.streetAddress}}, {{address.city}}, {{address.state}}, {{address.country}}')
     return {
-      name: `${firstName} ${lastName}`,
-      address: address,
-      email: faker.internet.email(firstName, lastName, faker.internet.domainName)
+      firstName: firstName,
+      middleName: faker.name.lastName(),
+      lastName: lastName,
+      email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
+      password: faker.internet.password(20)
     }
   }
 }

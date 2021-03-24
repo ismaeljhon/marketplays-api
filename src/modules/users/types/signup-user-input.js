@@ -8,7 +8,62 @@ schemaComposer.createInputTC({
     middleName: 'String!',
     lastName: 'String!',
     email: 'String!',
+    password: 'String!'
+
+  }
+})
+
+schemaComposer.createInputTC({
+  name: 'SignupAdminUserInput',
+  fields: {
+    firstName: 'String!',
+    middleName: 'String!',
+    lastName: 'String!',
+    email: 'String!',
+    password: 'String!'
+
+  }
+})
+
+schemaComposer.createInputTC({
+  name: 'SignupVendorUserInput',
+  fields: {
+    firstName: 'String!',
+    middleName: 'String!',
+    lastName: 'String!',
+    email: 'String!',
     password: 'String!',
-    access: 'String!'
+    contactNumber: 'String!',
+    businessName: 'String!',
+    street: 'String!',
+    city: 'String!',
+    state: 'String!',
+    countryCode: 'String!',
+    zipCode: 'String!',
+    timeAvailability: 'String!',
+    validId: 'String!',
+    validIdWithSelfie: 'String!'
+  }
+})
+
+schemaComposer.createInputTC({
+  name: 'SignupTFPUserInput',
+  fields: {
+    firstName: 'String!',
+    middleName: 'String!',
+    lastName: 'String!',
+    email: 'String!',
+    password: 'String!'
+  }
+})
+
+schemaComposer.createInputTC({
+  name: 'SignupCustomerUserInput',
+  fields: {
+    firstName: 'String!',
+    middleName: 'String!',
+    lastName: 'String!',
+    email: 'String!',
+    password: 'String!'
   }
 })

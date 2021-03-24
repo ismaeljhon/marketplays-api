@@ -25,9 +25,8 @@ userSchema.statics.SignupUser = async ({
   middleName,
   lastName,
   email,
-  password,
-  access
-}) => {
+  password
+}, userType) => {
   try {
     // make sure email is unique
     const existingUser = await User.findOne({
@@ -45,7 +44,7 @@ userSchema.statics.SignupUser = async ({
       lastName: lastName,
       email: email,
       hashedPassword: hashedPassword,
-      access: access
+      UserType: userType // Admin,Customer,FTPUser,Vendor
     })
     return user
   } catch (error) {

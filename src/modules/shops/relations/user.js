@@ -1,10 +1,10 @@
 const { schemaComposer } = require('graphql-compose')
 
 const ShopTC = schemaComposer.getOTC('Shop')
-const UserTC = schemaComposer.getOTC('User')
+const VendorTC = schemaComposer.getOTC('Vendor')
 
 ShopTC.addRelation('ownBy', {
-  resolver: () => UserTC.getResolver('findById'),
+  resolver: () => VendorTC.getResolver('findById'),
   prepareArgs: {
     _id: (source) => source.ownBy
   },

@@ -10,9 +10,7 @@ const pluralize = require('pluralize')
  *
  * @returns {MongooseModel}
  */
-const generateModel = (name, schema, {
-  baseModel // @TODO - update to instead receive a string of base model name, then let these method instantiate it
-} = {}) => {
+const generateModel = (name, schema, { baseModel } = {}) => {
   // apply any hooks defined for this model
   try {
     let directory = pluralize(name.charAt(0).toLowerCase() + name.slice(1))
