@@ -5,7 +5,8 @@ const uniqueValidator = require('mongoose-unique-validator')
 
 // Admin,Vendor,TFP,Customer
 const baseOptions = {
-  discriminatorKey: 'UserType'
+  discriminatorKey: 'UserType',
+  collection: 'users'
 }
 
 const userSchema = new mongoose.Schema({
@@ -31,7 +32,7 @@ const userSchema = new mongoose.Schema({
   },
   hashedPassword: {
     type: String,
-    required: true
+    required: false
   },
   created: {
     type: Date,

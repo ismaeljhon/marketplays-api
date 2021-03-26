@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+/* const mongoose = require('mongoose')
 
 const hooks = {
   post: {
@@ -30,3 +30,4 @@ const hooks = {
 }
 
 module.exports = hooks
+*/

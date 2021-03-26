@@ -3,7 +3,7 @@ const { schemaComposer } = require('graphql-compose')
 const UserTC = schemaComposer.getOTC('User')
 const DepartmentTC = schemaComposer.getOTC('Department')
 const CategoryTC = schemaComposer.getOTC('Category')
-
+// todo move in admin;
 UserTC.addRelation('teamLeadOf', {
   resolver: () => DepartmentTC.getResolver('dataLoaderMany'),
   prepareArgs: {

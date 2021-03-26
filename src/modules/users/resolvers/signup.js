@@ -1,6 +1,7 @@
 const { schemaComposer } = require('graphql-compose')
 const User = require('../../../models/user')
-const Shop = require('../../../models/shop')
+// todo add other sign up
+
 const UserTC = schemaComposer.getOTC('User')
 
 // remove create user and replace with signup
@@ -13,7 +14,7 @@ UserTC.addResolver({
   },
   description: 'Registers a user',
   resolve: async ({ source, args }) => {
-    const user = await User.SignupUser(args.record, 'Admin')
+    const user = await User.SignupUser(args.record)
     return {
       recordId: user._id,
       record: {
@@ -30,6 +31,7 @@ UserTC.addResolver({
 schemaComposer.Mutation.addFields({
   SignupUser: UserTC.getResolver('SignupUser')
 })
+/*
 
 UserTC.addResolver({
   name: 'SignupAdminUser',
@@ -39,7 +41,7 @@ UserTC.addResolver({
   },
   description: 'Registers a user',
   resolve: async ({ source, args }) => {
-    const user = await User.SignupUser(args.record, 'Admin')
+    const user = await User.SignupUser(args.record)
     return {
       recordId: user._id,
       record: {
@@ -65,7 +67,7 @@ UserTC.addResolver({
   },
   description: 'Registers a user',
   resolve: async ({ source, args }) => {
-    const user = await User.SignupUser(args.record, 'Vendor')
+    const user = await User.SignupUser(args.record)
 
     // also add shop info
     Shop.create({
@@ -103,7 +105,7 @@ UserTC.addResolver({
   },
   description: 'Registers a user',
   resolve: async ({ source, args }) => {
-    const user = await User.SignupUser(args.record, 'TFP')
+    const user = await User.SignupUser(args.record)
     return {
       recordId: user._id,
       record: {
@@ -121,28 +123,4 @@ schemaComposer.Mutation.addFields({
   SignupTFPUser: UserTC.getResolver('SignupTFPUser')
 })
 
-UserTC.addResolver({
-  name: 'SignupCustomerUser',
-  type: 'CustomerUserSignupPayload',
-  args: {
-    record: 'SignupCustomerUserInput!'
-  },
-  description: 'Registers a user',
-  resolve: async ({ source, args }) => {
-    const user = await User.SignupUser(args.record, 'Customer')
-    return {
-      recordId: user._id,
-      record: {
-        _id: user._id,
-        firstName: user.firstName,
-        middleName: user.middleName,
-        lastName: user.lastName,
-        email: user.email,
-        verificationCode: user.verificationCode
-      }
-    }
-  }
-})
-schemaComposer.Mutation.addFields({
-  SignupCustomerUser: UserTC.getResolver('SignupCustomerUser')
-})
+*/

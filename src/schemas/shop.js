@@ -4,7 +4,7 @@ const uniqueValidator = require('mongoose-unique-validator')
 
 const shopSchema = new mongoose.Schema({
 
-  name: {
+  businessName: {
     type: String,
     required: true,
     default: ''

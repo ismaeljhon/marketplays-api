@@ -1,12 +1,11 @@
 const { schemaComposer } = require('graphql-compose')
-
-const UserTC = schemaComposer.getOTC('User')
+const VendorTC = schemaComposer.getOTC('Vendor')
 const ShopTC = schemaComposer.getOTC('Shop')
 
-UserTC.addRelation('shops', {
+VendorTC.addRelation('shop', {
   resolver: () => ShopTC.getResolver('dataLoaderMany'),
   prepareArgs: {
-    _ids: (source) => source.shops
+    _ids: (source) => source.shop
   },
-  projection: { shops: true }
+  projection: { shop: true }
 })

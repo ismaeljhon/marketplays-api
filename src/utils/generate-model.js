@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const pluralize = require('pluralize')
+
 /**
  * Generates a mongoose model out of the schema and name provided
  * Adds deifned hooks for all models

@@ -1,8 +1,9 @@
 
-const mongoose = require('mongoose')
 const Schema = require('mongoose')
+const extendSchema = require('../utils/extendSchema')
+const userSchema = require('../schemas/user')
 
-const adminSchema = new mongoose.Schema({
+const adminSchema = extendSchema(userSchema, {
 
   teamLeadOf: {
     type: [Schema.Types.ObjectId], // department

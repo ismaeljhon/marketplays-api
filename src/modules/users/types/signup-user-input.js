@@ -12,6 +12,7 @@ schemaComposer.createInputTC({
 
   }
 })
+/*
 
 schemaComposer.createInputTC({
   name: 'SignupAdminUserInput',
@@ -26,27 +27,6 @@ schemaComposer.createInputTC({
 })
 
 schemaComposer.createInputTC({
-  name: 'SignupVendorUserInput',
-  fields: {
-    firstName: 'String!',
-    middleName: 'String!',
-    lastName: 'String!',
-    email: 'String!',
-    password: 'String!',
-    contactNumber: 'String!',
-    businessName: 'String!',
-    street: 'String!',
-    city: 'String!',
-    state: 'String!',
-    countryCode: 'String!',
-    zipCode: 'String!',
-    timeAvailability: 'String!',
-    validId: 'String!',
-    validIdWithSelfie: 'String!'
-  }
-})
-
-schemaComposer.createInputTC({
   name: 'SignupTFPUserInput',
   fields: {
     firstName: 'String!',
@@ -57,13 +37,4 @@ schemaComposer.createInputTC({
   }
 })
 
-schemaComposer.createInputTC({
-  name: 'SignupCustomerUserInput',
-  fields: {
-    firstName: 'String!',
-    middleName: 'String!',
-    lastName: 'String!',
-    email: 'String!',
-    password: 'String!'
-  }
-})
+*/
