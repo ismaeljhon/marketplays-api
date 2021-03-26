@@ -1,4 +1,4 @@
-
+const expect = require('expect')
 const { request } = require('../../utils/test')
 const Vendor = require('../../models/vendor')
 
@@ -9,13 +9,13 @@ describe('Shop Owner', () => {
   // create dummy users that will be shop
   let users = []
   before(async () => {
-    for (let x = 0; x <= 1; x++) {
+    for (let x = 0; x <= 5; x++) {
       const vendor = VendorFactory.generate()
       users.push(await Vendor.SignupUser(vendor))
     }
   })
 
-  it('should also add the shop against the user', () => {
+  it('should also vendor with shop', () => {
     return request({
       query: jsonToGraphQLQuery({
         query: {
@@ -24,7 +24,7 @@ describe('Shop Owner', () => {
               _id: `${users[0]._id}`
             },
             _id: true,
-            shop: {
+            shops: {
               _id: true,
               businessName: true
             }
@@ -33,14 +33,8 @@ describe('Shop Owner', () => {
       })
     })
       .expect(res => {
-        //   expect(res.body).toHaveProperty('data.vendor.shop')
-        // expect(res.body.data.vendor.shop).toEqual(
-        //   expect.arrayContaining([
-        //     expect.objectContaining({
-        //       _id: shopId
-        //     })
-        //   ])
-        // )
+        expect(res.body).toHaveProperty('data.vendor.shops')
+        expect(res.body.data.vendor.shop)
       })
   })
 })

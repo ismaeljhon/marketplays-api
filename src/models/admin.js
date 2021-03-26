@@ -88,6 +88,5 @@ adminchema.statics.verifyUser = async ({
   }
 }
 
-const Admin = generateModel('Admin', adminchema, User)
-
+const Admin = generateModel('Admin', adminchema)
 module.exports = Admin

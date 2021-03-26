@@ -4,7 +4,7 @@ const extendSchema = require('../utils/extendSchema')
 const userSchema = require('../schemas/user')
 
 const vendorUserSchema = extendSchema(userSchema, {
-  shop: {
+  shops: {
     type: [Schema.Types.ObjectId], // shops
     ref: 'Shop',
     default: []
