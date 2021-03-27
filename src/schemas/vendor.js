@@ -8,7 +8,19 @@ const vendorUserSchema = extendSchema(userSchema, {
     type: [Schema.Types.ObjectId], // shops
     ref: 'Shop',
     default: []
+  },
+  verifyTime: {
+    type: Date
+  },
+  idPic: {
+    type: String,
+    default: '' // path of image
+  },
+  selfiePic: {
+    type: String,
+    default: '' // path of image
   }
+
 })
 
 module.exports = vendorUserSchema

@@ -1,10 +1,10 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
-const { UserFactory } = require('../../utils/factories/')
+const { CustomerFactory } = require('../../utils/factories/')
 const { jsonToGraphQLQuery } = require('json-to-graphql-query')
 
 describe('Create Customer', () => {
-  const fakeUser = UserFactory.generate()
+  const fakeUser = CustomerFactory.generate()
 
   it('should create a new Customer', () => {
     return request({

@@ -25,7 +25,8 @@ userSchema.statics.SignupUser = async ({
   middleName,
   lastName,
   email,
-  password
+  password,
+  contactNumber
 }, userType) => {
   try {
     // make sure email is unique
@@ -44,7 +45,7 @@ userSchema.statics.SignupUser = async ({
       lastName: lastName,
       email: email,
       hashedPassword: hashedPassword,
-      UserType: userType // Admin,Customer,FTPUser,Vendor
+      contactNumber: contactNumber
     })
     return user
   } catch (error) {

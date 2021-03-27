@@ -21,6 +21,7 @@ CustomerTC.addResolver({
         lastName: user.lastName,
         email: user.email,
         verificationCode: user.verificationCode
+
       }
     }
   }

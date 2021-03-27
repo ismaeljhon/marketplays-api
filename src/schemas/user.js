@@ -53,7 +53,6 @@ const userSchema = new mongoose.Schema({
     type: [Schema.Types.ObjectId], // category
     default: []
   },
-
   projectManagerOf: {
     type: [Schema.Types.ObjectId], // service
     default: []
@@ -68,18 +67,12 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  verifyTime: {
-    type: Date
-  },
-  idPic: {
-    type: String,
-    default: '' // path of image
-  },
-  selfiePic: {
-    type: String,
-    default: '' // path of image
-  }
 
+  contactNumber: {
+    type: String,
+    required: true,
+    default: ''
+  }
 }, baseOptions)
 
 // plugins

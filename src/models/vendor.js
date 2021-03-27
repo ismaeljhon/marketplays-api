@@ -28,8 +28,9 @@ vendorSchema.statics.SignupUser = async ({
   lastName,
   email,
   password,
-  businessName,
   contactNumber,
+  businessName,
+  businessContactNumber,
   street,
   city,
   state,
@@ -52,20 +53,22 @@ vendorSchema.statics.SignupUser = async ({
       middleName: middleName,
       lastName: lastName,
       email: email,
-      hashedPassword: hashedPassword
-
+      hashedPassword: hashedPassword,
+      contactNumber: contactNumber
     })
 
-    await Shop.create({
-      businessName: businessName,
-      contactNumber: contactNumber,
-      street: street,
-      city: city,
-      state: state,
-      countryCode: countryCode,
-      zipCode: zipCode,
-      ownBy: user.id
-    })
+    if (user) {
+      await Shop.create({
+        businessName: businessName,
+        contactNumber: contactNumber,
+        street: street,
+        city: city,
+        state: state,
+        countryCode: countryCode,
+        zipCode: zipCode,
+        ownBy: user.id
+      })
+    }
 
     return user
   } catch (error) {

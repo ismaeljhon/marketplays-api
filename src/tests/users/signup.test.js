@@ -14,7 +14,8 @@ describe('SignupUser', () => {
               middleName :"${fakeUser.middleName}",
               lastName: "${fakeUser.lastName}",
               email: "${fakeUser.email}",
-              password: "${fakeUser.password}"
+              password: "${fakeUser.password}",
+              contactNumber: "${fakeUser.contactNumber}",
             }) {
             record {
               firstName,
@@ -42,7 +43,8 @@ describe('SignupUser', () => {
             middleName :"${fakeUser.middleName}",
             lastName: "${fakeUser.lastName}",
             email: "${fakeUser.email}",
-            password: "${fakeUser.password}"
+            password: "${fakeUser.password}",
+            contactNumber: "${fakeUser.contactNumber}",
           }) {
             record {
               firstName,
