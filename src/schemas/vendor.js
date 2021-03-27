@@ -9,7 +9,7 @@ const vendorUserSchema = extendSchema(userSchema, {
     ref: 'Shop',
     default: []
   },
-  verifyTime: {
+  dateTimeForVerification: {
     type: Date
   },
   idPic: {
