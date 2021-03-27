@@ -60,7 +60,7 @@ vendorSchema.statics.SignupUser = async ({
     if (user) {
       await Shop.create({
         businessName: businessName,
-        contactNumber: contactNumber,
+        contactNumber: businessContactNumber,
         street: street,
         city: city,
         state: state,
