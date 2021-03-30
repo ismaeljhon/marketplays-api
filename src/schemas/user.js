@@ -71,7 +71,7 @@ const userSchema = new mongoose.Schema({
   contactNumber: {
     type: String,
     required: true,
-    default: ''
+    default: ' '
   }
 }, baseOptions)
 

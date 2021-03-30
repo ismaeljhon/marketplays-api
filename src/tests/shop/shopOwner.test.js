@@ -1,3 +1,6 @@
+/*
+ -- do not implement for now
+
 const expect = require('expect')
 const { request } = require('../../utils/test')
 const Vendor = require('../../models/vendor')
@@ -38,3 +41,4 @@ describe('Shop Owner', () => {
       })
   })
 })
+*/

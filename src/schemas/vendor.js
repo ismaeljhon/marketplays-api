@@ -1,26 +1,42 @@
 
-const Schema = require('mongoose')
 const extendSchema = require('../utils/extendSchema')
 const userSchema = require('../schemas/user')
 
 const vendorUserSchema = extendSchema(userSchema, {
-  shops: {
-    type: [Schema.Types.ObjectId], // shops
-    ref: 'Shop',
-    default: []
+
+  businessName: {
+    type: String,
+    required: true,
+    default: ''
+  },
+  businessAddress: {
+    type: String,
+    required: true,
+    default: ''
+  },
+  phoneNumber: {
+    type: String,
+    required: true,
+    default: ''
   },
   dateTimeForVerification: {
-    type: Date
+    type: Date,
+    required: true,
+    default: ''
   },
-  idPic: {
+  validId: {
     type: String,
     default: '' // path of image
   },
-  selfiePic: {
+  validIdWithSelfie: {
     type: String,
     default: '' // path of image
+  },
+  hasExistingMarketplaysPlatform: {
+    type: Boolean,
+    require: true,
+    default: false
   }
-
 })
 
 module.exports = vendorUserSchema

@@ -4,21 +4,28 @@ const VendorFactory = {
   generate: () => {
     const firstName = faker.name.firstName()
     const lastName = faker.name.lastName()
+
+    const address = [
+      faker.address.streetAddress(),
+      faker.address.city(),
+      faker.address.state(),
+      faker.address.countryCode(),
+      faker.address.zipCode()
+    ].join(' ')
+
     return {
       firstName: firstName,
       middleName: faker.name.lastName(),
       lastName: lastName,
       email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
       password: faker.internet.password(20),
-      contactNumber: faker.phone.phoneNumber(),
+      phoneNumber: faker.phone.phoneNumber(),
       businessName: faker.company.companyName(),
-      businessContactNumber: faker.phone.phoneNumber(),
-      street: faker.address.streetAddress(),
-      city: faker.address.city(),
-      state: faker.address.state(),
-      countryCode: faker.address.countryCode(),
-      zipCode: faker.address.zipCode(),
-      active: faker.random.boolean()
+      businessAddress: address,
+      dateTimeForVerification: faker.date.future().toLocaleDateString(),
+      validId: faker.image.imageUrl(),
+      validIdWithSelfie: faker.image.imageUrl(),
+      hasExistingMarketplaysPlatform: faker.random.boolean()
     }
   }
 }

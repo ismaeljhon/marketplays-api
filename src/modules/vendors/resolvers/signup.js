@@ -11,7 +11,7 @@ VendorTC.addResolver({
   },
   description: 'Registers a user',
   resolve: async ({ source, args }) => {
-    const user = await Vendor.SignupUser(args.record)
+    const user = await Vendor.SignupVendorUser(args.record)
 
     return {
       recordId: user._id,

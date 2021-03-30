@@ -4,7 +4,7 @@ const User = require('../models/user')
 
 const bcrypt = require('bcrypt')
 const { UserInputError } = require('apollo-server-express')
-const Shop = require('./shop')
+
 const SALT_ROUNDS = 12
 
 // statics
@@ -18,24 +18,27 @@ const SALT_ROUNDS = 12
  * @param {String} payload.lastName lastname name of the user
  * @param {String} payload.email Unique email address of the user
  * @param {String} payload.password Raw password of the user
- * @param {String} payload.access Raw password of the user
+ * @param {String} payload.phoneNumber Raw phoneNumber of the user
+ * @param {String} payload.businessName Raw businessName of the user
+ * @param {String} payload.businessAddress Raw password of the user
+ * @param {String} payload.dateTimeForVerification Raw dateTimeForVerification of the user
+ * @param {String} payload.hasExistingMarketplaysPlatform Raw hasExistingMarketplaysPlatform of the user
  *
  * @return {mongoose.model} Resulting user
  */
-vendorSchema.statics.SignupUser = async ({
+vendorSchema.statics.SignupVendorUser = async ({
   firstName,
   middleName,
   lastName,
   email,
   password,
-  contactNumber,
+  phoneNumber,
   businessName,
-  businessContactNumber,
-  street,
-  city,
-  state,
-  countryCode,
-  zipCode
+  businessAddress,
+  dateTimeForVerification,
+  hasExistingMarketplaysPlatform,
+  validId,
+  validIdWithSelfie
 }) => {
   try {
     // make sure email is unique
@@ -54,21 +57,14 @@ vendorSchema.statics.SignupUser = async ({
       lastName: lastName,
       email: email,
       hashedPassword: hashedPassword,
-      contactNumber: contactNumber
+      phoneNumber: phoneNumber,
+      businessName: businessName,
+      businessAddress: businessAddress,
+      dateTimeForVerification: dateTimeForVerification,
+      validId: validId,
+      validIdWithSelfie: validIdWithSelfie,
+      hasExistingMarketplaysPlatform: hasExistingMarketplaysPlatform
     })
-
-    if (user) {
-      await Shop.create({
-        businessName: businessName,
-        contactNumber: businessContactNumber,
-        street: street,
-        city: city,
-        state: state,
-        countryCode: countryCode,
-        zipCode: zipCode,
-        ownBy: user.id
-      })
-    }
 
     return user
   } catch (error) {
@@ -83,7 +79,7 @@ vendorSchema.statics.SignupUser = async ({
  *
  * @return {Object} email and verification status of the user
  */
-vendorSchema.statics.verifyUser = async ({
+vendorSchema.statics.verifyVendorUser = async ({
   code
 } = {}) => {
   if (!code) {

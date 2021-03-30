@@ -1,3 +1,5 @@
+/*
+-- do not implement for now--
 const { schemaComposer } = require('graphql-compose')
 
 const ShopTC = schemaComposer.getOTC('Shop')
@@ -10,3 +12,4 @@ ShopTC.addRelation('ownBy', {
   },
   projection: { ownBy: true }
 })
+*/

@@ -10,7 +10,8 @@ const customerSchema = extendSchema(userSchema, {
   },
   address: {
     type: String,
-    required: true
+    required: true,
+    default: ''
   },
   interestedIn: {
     type: [String],

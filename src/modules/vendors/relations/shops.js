@@ -1,3 +1,5 @@
+/*
+ -- do not implement for now --
 const { schemaComposer } = require('graphql-compose')
 const VendorTC = schemaComposer.getOTC('Vendor')
 const ShopTC = schemaComposer.getOTC('Shop')
@@ -9,3 +11,5 @@ VendorTC.addRelation('shops', {
   },
   projection: { shops: true }
 })
+
+*/

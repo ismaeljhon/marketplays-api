@@ -1,3 +1,4 @@
+/* -- do not implement for now --
 const mongoose = require('mongoose')
 
 const hooks = {
@@ -30,3 +31,4 @@ const hooks = {
 }
 
 module.exports = hooks
+**/
