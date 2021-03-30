@@ -7,6 +7,14 @@ const customerSchema = extendSchema(userSchema, {
   orders: {
     type: [Schema.Types.ObjectId],
     default: []
+  },
+  address: {
+    type: String,
+    required: true
+  },
+  interestedIn: {
+    type: [String],
+    default: []
   }
 })
 

@@ -8,6 +8,8 @@ schemaComposer.createInputTC({
     lastName: 'String!',
     email: 'String!',
     password: 'String!',
-    contactNumber: 'String!'
+    contactNumber: 'String!',
+    address: 'String!',
+    interestedIn: '[String]'
   }
 })

@@ -26,7 +26,9 @@ customerSchema.statics.SignupCustomerUser = async ({
   lastName,
   email,
   password,
-  contactNumber
+  contactNumber,
+  address,
+  interestedIn
 }) => {
   try {
     // make sure email is unique
@@ -45,7 +47,9 @@ customerSchema.statics.SignupCustomerUser = async ({
       lastName: lastName,
       email: email,
       hashedPassword: hashedPassword,
-      contactNumber: contactNumber
+      contactNumber: contactNumber,
+      address: address,
+      interestedIn: interestedIn
     })
     return user
   } catch (error) {
