@@ -1,8 +1,8 @@
-const userSchema = require('../schemas/user')
+const adminchema = require('../schemas/admin')
+const User = require('../models/user')
+const generateModel = require('../utils/generate-model')
 const bcrypt = require('bcrypt')
 const { UserInputError } = require('apollo-server-express')
-const generateModel = require('../utils/generate-model')
-
 const SALT_ROUNDS = 12
 
 // statics
@@ -20,17 +20,17 @@ const SALT_ROUNDS = 12
  *
  * @return {mongoose.model} Resulting user
  */
-userSchema.statics.SignupUser = async ({
+adminchema.statics.SignupUser = async ({
   firstName,
   middleName,
   lastName,
   email,
   password,
   contactNumber
-}, userType) => {
+}) => {
   try {
     // make sure email is unique
-    const existingUser = await User.findOne({
+    const existingUser = await Admin.findOne({
       email: email
     })
     if (existingUser) {
@@ -60,7 +60,7 @@ userSchema.statics.SignupUser = async ({
  *
  * @return {Object} email and verification status of the user
  */
-userSchema.statics.verifyUser = async ({
+adminchema.statics.verifyUser = async ({
   code
 } = {}) => {
   if (!code) {
@@ -68,7 +68,7 @@ userSchema.statics.verifyUser = async ({
   }
 
   // mark user, of verification code, as verified
-  const user = await User.findOneAndUpdate(
+  const user = await Admin.findOneAndUpdate(
     {
       verificationCode: code,
       emailVerified: false // only verify ones that are not
@@ -88,5 +88,6 @@ userSchema.statics.verifyUser = async ({
     emailVerified: user.emailVerified
   }
 }
-const User = generateModel('User', userSchema)
-module.exports = User
+
+const Admin = generateModel('Admin', adminchema)
+module.exports = Admin

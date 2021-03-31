@@ -1,19 +1,20 @@
-const mongoose = require('mongoose')
-const Schema = require('mongoose')
 
-const customerSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  address: {
-    type: String // @TODO: define an address type?
-  },
-  email: {
-    type: String
-  },
+const Schema = require('mongoose')
+const extendSchema = require('../utils/extendSchema')
+const userSchema = require('../schemas/user')
+
+const customerSchema = extendSchema(userSchema, {
   orders: {
     type: [Schema.Types.ObjectId],
+    default: []
+  },
+  address: {
+    type: String,
+    required: true,
+    default: ''
+  },
+  interestedIn: {
+    type: [String],
     default: []
   }
 })

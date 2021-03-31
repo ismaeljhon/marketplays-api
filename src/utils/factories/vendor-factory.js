@@ -1,6 +1,6 @@
 const faker = require('faker')
 
-const CustomerFactory = {
+const VendorFactory = {
   generate: () => {
     const firstName = faker.name.firstName()
     const lastName = faker.name.lastName()
@@ -19,13 +19,17 @@ const CustomerFactory = {
       lastName: lastName,
       email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
       password: faker.internet.password(20),
-      contactNumber: faker.phone.phoneNumber(),
-      address: address,
-      interestedIn: faker.random.words(6).split(' ')
+      phoneNumber: faker.phone.phoneNumber(),
+      businessName: faker.company.companyName(),
+      businessAddress: address,
+      dateTimeForVerification: faker.date.future().toLocaleDateString(),
+      validId: faker.image.imageUrl(),
+      validIdWithSelfie: faker.image.imageUrl(),
+      hasExistingMarketplaysPlatform: faker.random.boolean()
     }
   }
 }
 
 module.exports = {
-  CustomerFactory: CustomerFactory
+  VendorFactory: VendorFactory
 }

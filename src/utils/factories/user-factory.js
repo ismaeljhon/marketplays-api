@@ -1,5 +1,4 @@
 const faker = require('faker')
-const generateFakeAccess = require('../../utils/generate-fake-accessType')
 
 const UserFactory = {
   generate: () => {
@@ -12,7 +11,7 @@ const UserFactory = {
       lastName: lastName,
       email: faker.internet.email(firstName, lastName, faker.internet.domainName()),
       password: faker.internet.password(20),
-      access: generateFakeAccess()
+      contactNumber: faker.phone.phoneNumber()
     }
   }
 }

@@ -9,6 +9,33 @@ schemaComposer.createInputTC({
     lastName: 'String!',
     email: 'String!',
     password: 'String!',
-    access: 'String!'
+    contactNumber: 'String!'
+
   }
 })
+/*
+
+schemaComposer.createInputTC({
+  name: 'SignupAdminUserInput',
+  fields: {
+    firstName: 'String!',
+    middleName: 'String!',
+    lastName: 'String!',
+    email: 'String!',
+    password: 'String!'
+
+  }
+})
+
+schemaComposer.createInputTC({
+  name: 'SignupTFPUserInput',
+  fields: {
+    firstName: 'String!',
+    middleName: 'String!',
+    lastName: 'String!',
+    email: 'String!',
+    password: 'String!'
+  }
+})
+
+*/

@@ -1,7 +1,9 @@
-const userSchema = require('../schemas/user')
+const vendorSchema = require('../schemas/vendor')
+const generateModel = require('../utils/generate-model')
+const User = require('../models/user')
+
 const bcrypt = require('bcrypt')
 const { UserInputError } = require('apollo-server-express')
-const generateModel = require('../utils/generate-model')
 
 const SALT_ROUNDS = 12
 
@@ -16,21 +18,31 @@ const SALT_ROUNDS = 12
  * @param {String} payload.lastName lastname name of the user
  * @param {String} payload.email Unique email address of the user
  * @param {String} payload.password Raw password of the user
- * @param {String} payload.access Raw password of the user
+ * @param {String} payload.phoneNumber Raw phoneNumber of the user
+ * @param {String} payload.businessName Raw businessName of the user
+ * @param {String} payload.businessAddress Raw password of the user
+ * @param {String} payload.dateTimeForVerification Raw dateTimeForVerification of the user
+ * @param {String} payload.hasExistingMarketplaysPlatform Raw hasExistingMarketplaysPlatform of the user
  *
  * @return {mongoose.model} Resulting user
  */
-userSchema.statics.SignupUser = async ({
+vendorSchema.statics.SignupVendorUser = async ({
   firstName,
   middleName,
   lastName,
   email,
   password,
-  contactNumber
-}, userType) => {
+  phoneNumber,
+  businessName,
+  businessAddress,
+  dateTimeForVerification,
+  hasExistingMarketplaysPlatform,
+  validId,
+  validIdWithSelfie
+}) => {
   try {
     // make sure email is unique
-    const existingUser = await User.findOne({
+    const existingUser = await Vendor.findOne({
       email: email
     })
     if (existingUser) {
@@ -39,14 +51,21 @@ userSchema.statics.SignupUser = async ({
 
     // apply hash
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
-    const user = await User.create({
+    const user = await Vendor.create({
       firstName: firstName,
       middleName: middleName,
       lastName: lastName,
       email: email,
       hashedPassword: hashedPassword,
-      contactNumber: contactNumber
+      phoneNumber: phoneNumber,
+      businessName: businessName,
+      businessAddress: businessAddress,
+      dateTimeForVerification: dateTimeForVerification,
+      validId: validId,
+      validIdWithSelfie: validIdWithSelfie,
+      hasExistingMarketplaysPlatform: hasExistingMarketplaysPlatform
     })
+
     return user
   } catch (error) {
     throw error
@@ -60,7 +79,7 @@ userSchema.statics.SignupUser = async ({
  *
  * @return {Object} email and verification status of the user
  */
-userSchema.statics.verifyUser = async ({
+vendorSchema.statics.verifyVendorUser = async ({
   code
 } = {}) => {
   if (!code) {
@@ -68,7 +87,7 @@ userSchema.statics.verifyUser = async ({
   }
 
   // mark user, of verification code, as verified
-  const user = await User.findOneAndUpdate(
+  const user = await Vendor.findOneAndUpdate(
     {
       verificationCode: code,
       emailVerified: false // only verify ones that are not
@@ -88,5 +107,7 @@ userSchema.statics.verifyUser = async ({
     emailVerified: user.emailVerified
   }
 }
-const User = generateModel('User', userSchema)
-module.exports = User
+
+const Vendor = generateModel('Vendor', vendorSchema, User)
+
+module.exports = Vendor

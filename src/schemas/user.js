@@ -3,6 +3,12 @@ const Schema = require('mongoose')
 const faker = require('faker')
 const uniqueValidator = require('mongoose-unique-validator')
 
+// Admin,Vendor,TFP,Customer
+const baseOptions = {
+  discriminatorKey: 'UserType',
+  collection: 'users'
+}
+
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -26,7 +32,7 @@ const userSchema = new mongoose.Schema({
   },
   hashedPassword: {
     type: String,
-    required: true
+    required: false
   },
   created: {
     type: Date,
@@ -47,7 +53,6 @@ const userSchema = new mongoose.Schema({
     type: [Schema.Types.ObjectId], // category
     default: []
   },
-
   projectManagerOf: {
     type: [Schema.Types.ObjectId], // service
     default: []
@@ -62,27 +67,13 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  access: {
-    type: String,
-    default: ''
-  },
-  verifyTime: {
-    type: Date
-  },
-  idPic: {
-    type: String,
-    default: '' // path of image
-  },
-  selfiePic: {
-    type: String,
-    default: '' // path of image
-  },
-  shops: {
-    type: [Schema.Types.ObjectId], // shops
-    default: []
-  }
 
-})
+  contactNumber: {
+    type: String,
+    required: true,
+    default: ' '
+  }
+}, baseOptions)
 
 // plugins
 userSchema.plugin(uniqueValidator)

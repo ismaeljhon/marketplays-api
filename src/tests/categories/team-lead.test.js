@@ -1,6 +1,6 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
-const User = require('../../models/user')
+const User = require('../../models/admin')
 const { CategoryFactory, UserFactory } = require('../../utils/factories/')
 const {
   jsonToGraphQLQuery

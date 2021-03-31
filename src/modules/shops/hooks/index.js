@@ -1,10 +1,11 @@
+/* -- do not implement for now --
 const mongoose = require('mongoose')
 
 const hooks = {
   post: {
     save: async (shop, next) => {
-      const User = mongoose.models['User']
-      await User.updateOne(
+      const Vendor = mongoose.models['Vendor']
+      await Vendor.updateOne(
         { _id: shop.ownBy },
         { $push: { shops: shop._id } }
       )
@@ -14,11 +15,11 @@ const hooks = {
   pre: {
     save: async function (next) {
       const Shop = mongoose.models['Shop']
-      const User = mongoose.models['User']
+      const Vendor = mongoose.models['Vendor']
       const shop = await Shop.findById(this._id)
       if (shop) {
         if (shop.ownBy) {
-          await User.updateOne(
+          await Vendor.updateOne(
             { _id: shop.ownBy._id },
             { $pull: { shops: shop._id } }
           )
@@ -30,3 +31,4 @@ const hooks = {
 }
 
 module.exports = hooks
+**/
