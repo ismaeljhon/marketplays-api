@@ -1,9 +1,8 @@
 
 const Schema = require('mongoose')
-const extendSchema = require('../utils/extendSchema')
-const userSchema = require('../schemas/user')
+const mongoose = require('mongoose')
 
-const customerSchema = extendSchema(userSchema, {
+const customerSchema = new mongoose.Schema({
   orders: {
     type: [Schema.Types.ObjectId],
     default: []

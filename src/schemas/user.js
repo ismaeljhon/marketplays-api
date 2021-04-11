@@ -5,7 +5,7 @@ const uniqueValidator = require('mongoose-unique-validator')
 
 // Admin,Vendor,TFP,Customer
 const baseOptions = {
-  discriminatorKey: 'UserType',
+  discriminatorKey: 'kind',
   collection: 'users'
 }
 

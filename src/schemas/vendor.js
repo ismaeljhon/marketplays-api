@@ -1,8 +1,8 @@
 
-const extendSchema = require('../utils/extendSchema')
-const userSchema = require('../schemas/user')
+const Schema = require('mongoose')
+const mongoose = require('mongoose')
 
-const vendorUserSchema = extendSchema(userSchema, {
+const vendorUserSchema = new mongoose.Schema({
 
   businessName: {
     type: String,
@@ -36,6 +36,10 @@ const vendorUserSchema = extendSchema(userSchema, {
     type: Boolean,
     require: true,
     default: false
+  },
+  stores: {
+    type: [Schema.Types.ObjectId], // Store
+    default: []
   }
 })
 
