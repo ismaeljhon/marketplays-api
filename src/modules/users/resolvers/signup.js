@@ -31,96 +31,25 @@ UserTC.addResolver({
 schemaComposer.Mutation.addFields({
   SignupUser: UserTC.getResolver('SignupUser')
 })
-/*
 
 UserTC.addResolver({
-  name: 'SignupAdminUser',
-  type: 'UserSignupPayload',
+  name: 'LoginUser',
+  type: 'LoginUserPayload',
   args: {
-    record: 'SignupAdminUserInput!'
+    record: 'LoginUserInput!'
   },
-  description: 'Registers a user',
+  description: 'Login User',
   resolve: async ({ source, args }) => {
-    const user = await User.SignupUser(args.record)
+    const user = await User.LoginUser(args.record)
     return {
       recordId: user._id,
       record: {
-        _id: user._id,
-        firstName: user.firstName,
-        middleName: user.middleName,
-        lastName: user.lastName,
         email: user.email,
-        verificationCode: user.verificationCode
+        _id: user._id
       }
     }
   }
 })
 schemaComposer.Mutation.addFields({
-  SignupAdminUser: UserTC.getResolver('SignupAdminUser')
+  LoginUser: UserTC.getResolver('LoginUser')
 })
-
-UserTC.addResolver({
-  name: 'SignupVendorUser',
-  type: 'VendorUserSignupPayload',
-  args: {
-    record: 'SignupVendorUserInput!'
-  },
-  description: 'Registers a user',
-  resolve: async ({ source, args }) => {
-    const user = await User.SignupUser(args.record)
-
-    // also add shop info
-    Shop.create({
-      name: args.record.businessName,
-      contactNumber: args.record.contactNumber,
-      street: args.record.street,
-      city: args.record.city,
-      state: args.record.state,
-      countryCode: args.record.countryCode,
-      zipCode: args.record.zipCode
-    })
-
-    return {
-      recordId: user._id,
-      record: {
-        _id: user._id,
-        firstName: user.firstName,
-        middleName: user.middleName,
-        lastName: user.lastName,
-        email: user.email,
-        verificationCode: user.verificationCode
-      }
-    }
-  }
-})
-schemaComposer.Mutation.addFields({
-  SignupVendorUser: UserTC.getResolver('SignupVendorUser')
-})
-
-UserTC.addResolver({
-  name: 'SignupTFPUser',
-  type: 'TFPUserSignupPayload',
-  args: {
-    record: 'SignupTFPUserInput!'
-  },
-  description: 'Registers a user',
-  resolve: async ({ source, args }) => {
-    const user = await User.SignupUser(args.record)
-    return {
-      recordId: user._id,
-      record: {
-        _id: user._id,
-        firstName: user.firstName,
-        middleName: user.middleName,
-        lastName: user.lastName,
-        email: user.email,
-        verificationCode: user.verificationCode
-      }
-    }
-  }
-})
-schemaComposer.Mutation.addFields({
-  SignupTFPUser: UserTC.getResolver('SignupTFPUser')
-})
-
-*/

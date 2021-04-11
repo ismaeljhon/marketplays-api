@@ -88,5 +88,29 @@ userSchema.statics.verifyUser = async ({
     emailVerified: user.emailVerified
   }
 }
+
+userSchema.statics.LoginUser = async ({
+  email,
+  password
+} = {}) => {
+  if (!password || !email) {
+    throw new UserInputError('Email and Password is both required.')
+  }
+
+  // mark user, of verification code, as verified
+
+  const user = await User.findOne({ email: email })
+  if (!user) {
+    throw new UserInputError('User validation failed')
+  }
+  const match = await bcrypt.compare(password, user.hashedPassword)
+
+  if (!match) {
+    // just throw a generic error message for security reasons
+    throw new UserInputError('User validation failed')
+  }
+  return user
+}
+
 const User = generateModel('User', userSchema)
 module.exports = User

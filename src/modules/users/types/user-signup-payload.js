@@ -9,6 +9,15 @@ schemaComposer.createObjectTC({
 })
 
 schemaComposer.createObjectTC({
+  name: 'LoginUserPayload',
+  fields: {
+    recordId: 'MongoID',
+    record: 'User',
+    error: 'ErrorInterface'
+  }
+})
+
+schemaComposer.createObjectTC({
   name: 'AdminUserSignupPayload',
   fields: {
     recordId: 'MongoID',

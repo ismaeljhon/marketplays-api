@@ -13,6 +13,16 @@ schemaComposer.createInputTC({
 
   }
 })
+
+// add types for login
+schemaComposer.createInputTC({
+  name: 'LoginUserInput',
+  fields: {
+    email: 'String!',
+    password: 'String!'
+  }
+})
+
 /*
 
 schemaComposer.createInputTC({
