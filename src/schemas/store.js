@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
-const shopSchema = new mongoose.Schema({
+const storeSchema = new mongoose.Schema({
 
   businessName: {
     type: String,
@@ -54,6 +54,6 @@ const shopSchema = new mongoose.Schema({
 })
 
 // plugins
-shopSchema.plugin(uniqueValidator)
+storeSchema.plugin(uniqueValidator)
 
-module.exports = shopSchema
+module.exports = storeSchema

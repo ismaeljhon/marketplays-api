@@ -4,6 +4,7 @@ const generateModel = require('../utils/generate-model')
 const bcrypt = require('bcrypt')
 const { UserInputError } = require('apollo-server-express')
 const SALT_ROUNDS = 12
+const getModel = require('../utils/get-model')
 
 // statics
 /**
@@ -89,5 +90,7 @@ adminchema.statics.verifyUser = async ({
   }
 }
 
-const Admin = generateModel('Admin', adminchema)
+const Admin = generateModel('Admin', adminchema, {
+  baseModel: getModel('User') // configure discriminator
+})
 module.exports = Admin

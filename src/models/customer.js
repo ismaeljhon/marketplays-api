@@ -1,8 +1,9 @@
 const customerSchema = require('../schemas/customer')
-const User = require('../models/user')
+
 const generateModel = require('../utils/generate-model')
 const bcrypt = require('bcrypt')
 const { UserInputError } = require('apollo-server-express')
+const getModel = require('../utils/get-model')
 const SALT_ROUNDS = 12
 
 // statics
@@ -92,7 +93,7 @@ customerSchema.statics.verifyCustomerUser = async ({
     emailVerified: user.emailVerified
   }
 }
-
-const Customer = generateModel('Customer', customerSchema, User)
-
+const Customer = generateModel('Customer', customerSchema, {
+  baseModel: getModel('User') // configure discriminator
+})
 module.exports = Customer

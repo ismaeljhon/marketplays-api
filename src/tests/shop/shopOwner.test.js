@@ -1,6 +1,4 @@
-/*
- -- do not implement for now
-
+/* donot implement for now
 const expect = require('expect')
 const { request } = require('../../utils/test')
 const Vendor = require('../../models/vendor')
@@ -18,7 +16,7 @@ describe('Shop Owner', () => {
     }
   })
 
-  it('should also vendor with shop', () => {
+  it('should also vendor with store', () => {
     return request({
       query: jsonToGraphQLQuery({
         query: {
@@ -27,7 +25,7 @@ describe('Shop Owner', () => {
               _id: `${users[0]._id}`
             },
             _id: true,
-            shops: {
+            stores: {
               _id: true,
               businessName: true
             }
@@ -37,8 +35,9 @@ describe('Shop Owner', () => {
     })
       .expect(res => {
         expect(res.body).toHaveProperty('data.vendor.shops')
-        expect(res.body.data.vendor.shop)
+        expect(res.body.data.vendor.stores)
       })
   })
 })
+
 */

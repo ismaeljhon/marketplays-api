@@ -4,7 +4,6 @@
 
 describe('Login User', () => {
   it('Should be able to login user via email', () => {
-    // todo
-    //
+
   })
 })

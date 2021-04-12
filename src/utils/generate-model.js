@@ -39,6 +39,7 @@ const generateModel = (name, schema, { baseModel } = {}) => {
   let model = null
   if (baseModel) {
     // instantiate the model using the base model using discriminator
+
     model = baseModel.discriminator(name, schema)
   } else {
     model = mongoose.model(name, schema)

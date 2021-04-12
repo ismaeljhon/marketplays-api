@@ -1,7 +1,6 @@
 const vendorSchema = require('../schemas/vendor')
 const generateModel = require('../utils/generate-model')
-const User = require('../models/user')
-
+const getModel = require('../utils/get-model')
 const bcrypt = require('bcrypt')
 const { UserInputError } = require('apollo-server-express')
 
@@ -108,6 +107,7 @@ vendorSchema.statics.verifyVendorUser = async ({
   }
 }
 
-const Vendor = generateModel('Vendor', vendorSchema, User)
-
+const Vendor = generateModel('Vendor', vendorSchema, {
+  baseModel: getModel('User') // configure discriminator
+})
 module.exports = Vendor
