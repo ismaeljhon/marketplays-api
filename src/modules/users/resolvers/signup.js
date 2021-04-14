@@ -50,6 +50,30 @@ UserTC.addResolver({
     }
   }
 })
+
 schemaComposer.Mutation.addFields({
   LoginUser: UserTC.getResolver('LoginUser')
+})
+
+UserTC.addResolver({
+  name: 'LoginViaGmail',
+  type: 'LoginViaGmailPayload',
+  args: {
+    record: 'LoginViaGmailInput!'
+  },
+  description: 'Login User',
+  resolve: async ({ source, args }) => {
+    const user = await User.LoginViaGmail(args.record)
+    return {
+      recordId: user._id,
+      record: {
+        email: user.email,
+        _id: user._id
+      }
+    }
+  }
+})
+
+schemaComposer.Mutation.addFields({
+  LoginViaGmail: UserTC.getResolver('LoginViaGmail')
 })

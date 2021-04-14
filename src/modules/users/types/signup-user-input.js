@@ -23,6 +23,18 @@ schemaComposer.createInputTC({
   }
 })
 
+schemaComposer.createInputTC({
+  name: 'LoginViaGmailInput',
+  fields: {
+    fullName: 'String!',
+    givenName: 'String!',
+    familyName: 'String!',
+    imageURL: 'String!',
+    email: 'String!',
+    idToken: 'String!'
+  }
+})
+
 /*
 
 schemaComposer.createInputTC({

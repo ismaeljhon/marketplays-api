@@ -112,5 +112,29 @@ userSchema.statics.LoginUser = async ({
   return user
 }
 
+userSchema.statics.LoginViaGmail = async ({
+  fullName,
+  givenName,
+  familyName,
+  imageURL,
+  email,
+  idToken
+} = {}) => {
+  const user = await User.findOne({ email: email })
+  if (!user) {
+    // user is not yet add. add;
+    const newUser = await User.create({
+      gmailFullName: fullName,
+      firstName: givenName,
+      lastName: familyName,
+      email: email,
+      ImageURL: imageURL,
+      gmailTokenId: idToken
+    })
+    return newUser
+  }
+  return user
+}
+
 const User = generateModel('User', userSchema)
 module.exports = User

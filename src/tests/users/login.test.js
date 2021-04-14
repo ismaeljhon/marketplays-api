@@ -1,6 +1,6 @@
 const expect = require('expect')
 const { request } = require('../../utils/test')
-const { UserFactory } = require('../../utils/factories/')
+const { UserFactory, GmailUserFactory } = require('../../utils/factories/')
 
 describe('Login User', () => {
   const fakeUser = UserFactory.generate()
@@ -54,6 +54,38 @@ describe('Login User', () => {
       .expect(res => {
         expect(res.body).toHaveProperty('data.LoginUser.record')
         expect(res.body.data.LoginUser.record.email).toStrictEqual(fakeUser.email)
+      })
+      .expect(200)
+  })
+
+  it('Should be able to login user via gmail', () => {
+    // create user;
+
+    const gmailUser = GmailUserFactory.generate()
+
+    return request({
+      query: `
+        mutation {
+          LoginViaGmail(record: {
+
+            fullName :"${gmailUser.firstName}",
+            givenName:"${gmailUser.givenName}",
+            familyName:"${gmailUser.familyName}",
+            imageURL:"${gmailUser.imageURL}",
+            email:"${gmailUser.email}",
+            idToken: "${gmailUser.idToken}",
+            }) {
+            record {
+              _id,
+              email
+            }
+          }
+        }
+      `
+    })
+      .expect(res => {
+        expect(res.body).toHaveProperty('data.LoginViaGmail.record')
+        expect(res.body.data.LoginViaGmail.record.email).toStrictEqual(gmailUser.email)
       })
       .expect(200)
   })
