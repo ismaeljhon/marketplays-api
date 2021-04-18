@@ -26,7 +26,9 @@
   },
   "dependencies": {
     "apollo-server-express": "^2.18.2",
+    "app-module-path": "^2.2.0",
     "bcrypt": "^5.0.0",
+    "chai-http": "^4.3.0",
     "cross-env": "^5.2.0",
     "deepmerge": "^3.3.0",
     "dotenv": "^6.2.0",
@@ -43,6 +45,8 @@
     "mongoose-autopopulate": "^0.12.2",
     "mongoose-schema-extend": "^0.2.2",
     "mongoose-unique-validator": "^2.0.3",
+    "multer": "^1.4.2",
+    "mz": "^2.7.0",
     "nanoid": "^3.1.16",
     "pluralize": "^8.0.0",
     "slugify": "^1.4.6",
