@@ -23,22 +23,21 @@ describe('POST Upload file', () => {
       var encodedFile = file.toString('base64')
       const buf = Buffer.from(encodedFile, 'base64')
 
-      const res = await request(app)
+      return request(app)
         .post('/uploadFile')
-        .attach('file', buf, fileName)
-      const { success, message } = res.body
-      expect(success).toBeTruthy()
-      expect(message).toBe('Uploaded successfully')
-      // store file data for following tests
-    })
-  })
+        .attach('file', buf, fileName).then((res) => {
+          const { success, message } = res.body
+          expect(success).toBeTruthy()
+          expect(message).toBe('Uploaded successfully')
+          // store file data for following tests
 
-  it('should delete files in upload directory', () => {
-    const path = './uploads/'
-    fs.readdirSync(path).forEach(file => {
-      // eslint-disable-next-line no-console
-      var curPath = path + '/' + file
-      fs.unlinkSync(curPath)
+          const path = './uploads/'
+          fs.readdirSync(path).forEach(file => {
+            // eslint-disable-next-line no-console
+            var curPath = path + '/' + file
+            fs.unlinkSync(curPath)
+          })
+        })
     })
   })
 })

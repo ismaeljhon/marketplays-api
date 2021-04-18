@@ -59,8 +59,8 @@
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-standard": "^4.1.0",
     "expect": "^24.9.0",
     "faker": "^5.1.0",
     "husky": "^1.3.1",
@@ -69,5 +69,18 @@
     "nodemon": "^2.0.4",
     "sinon": "^7.2.3",
     "supertest": "^3.4.2"
-  }
+  },
+  "description": "```shell\r cp .env.sample .env\r npm install\r npm run dev\r ```",
+  "main": "ecosystem.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ismaeljhon/marketplays-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ismaeljhon/marketplays-api/issues"
+  },
+  "homepage": "https://github.com/ismaeljhon/marketplays-api#readme"
 }
