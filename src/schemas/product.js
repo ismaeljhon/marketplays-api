@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = require('mongoose')
 
 const productSchema = new mongoose.Schema({
   sku: {
@@ -13,6 +14,10 @@ const productSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: true
+  },
+  images: {
+    type: [Schema.Types.ObjectId],
+    default: null
   }
 })
 
