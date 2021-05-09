@@ -96,6 +96,25 @@ app.post('/uploadFiles', upload.array('files', 100), (req, res, next) => {
   })
 })
 
+// get file:name
+app.get('/files/:name', (req, res, next) => {
+  const fileName = req.params.name
+
+  var options = {
+    root: './uploads',
+    dotfiles: 'deny',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
+  }
+  res.sendFile(fileName, options, function (err) {
+    if (err) {
+      next(err)
+    }
+  })
+})
+
 server.applyMiddleware({
   path: '/',
   app
