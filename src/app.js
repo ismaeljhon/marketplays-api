@@ -34,6 +34,7 @@ const app = express()
 app.use(cors())
 app.use(express.urlencoded())
 app.use(express.json())
+app.options('*', cors())
 
 // add file upload handler;
 app.post('/uploadFile', upload.single('file'), (req, res, next) => {
