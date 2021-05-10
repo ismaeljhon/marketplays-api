@@ -49,7 +49,7 @@ const serviceSchema = new mongoose.Schema({
   currency: {
     type: String
   },
-  images: {
+  files: {
     type: [Schema.Types.ObjectId],
     default: null
   },

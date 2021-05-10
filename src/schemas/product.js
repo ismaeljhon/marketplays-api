@@ -15,7 +15,7 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  images: {
+  files: {
     type: [Schema.Types.ObjectId],
     default: null
   }
