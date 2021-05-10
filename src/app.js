@@ -7,6 +7,7 @@ const path = require('path')
 const mongoose = require('mongoose')
 const File = mongoose.models['File']
 const fs = require('fs')
+const cors = require('cors')
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -30,7 +31,7 @@ const server = new ApolloServer({
 })
 
 const app = express()
-
+app.use(cors())
 app.use(express.urlencoded())
 app.use(express.json())
 
