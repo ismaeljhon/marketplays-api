@@ -31,10 +31,11 @@ const server = new ApolloServer({
 })
 
 const app = express()
-app.use(cors())
-app.use(express.urlencoded())
+
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.options('*', cors())
+app.use(cors())
 
 // add file upload handler;
 app.post('/uploadFile', upload.single('file'), (req, res, next) => {
@@ -61,7 +62,7 @@ app.post('/uploadFile', upload.single('file'), (req, res, next) => {
   })
   res.send({
     success: true,
-    file: file,
+    file: reqFile,
     message: 'Uploaded successfully'
   })
 })
@@ -75,14 +76,15 @@ app.post('/uploadFiles', upload.array('files', 100), (req, res, next) => {
     error.httpStatusCode = 400
     return next(error)
   }
+
   req.files.forEach(element => {
-    var file = fs.readFileSync(element.file.path)
+    var file = fs.readFileSync(element.path)
     var encodedFile = file.toString('base64')
     const buf = Buffer.from(encodedFile, 'base64')
 
     File.create({
-      contentType: req.file.mimetype,
-      path: req.file.path,
+      contentType: element.mimetype,
+      path: element.path,
       file: buf
     }, function (err, _file) {
       if (err) {
