@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const Schema = require('mongoose')
 
 const productSchema = new mongoose.Schema({
   sku: {
@@ -16,8 +15,7 @@ const productSchema = new mongoose.Schema({
     required: true
   },
   files: {
-    type: [Schema.Types.ObjectId],
-    default: null
+    type: [String]// file paths
   }
 })
 

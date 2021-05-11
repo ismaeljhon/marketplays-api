@@ -50,8 +50,7 @@ const serviceSchema = new mongoose.Schema({
     type: String
   },
   files: {
-    type: [Schema.Types.ObjectId],
-    default: null
+    type: [String]// file path
   },
   department: {
     type: Schema.Types.ObjectId,
