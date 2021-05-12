@@ -7,6 +7,7 @@ const path = require('path')
 const mongoose = require('mongoose')
 const File = mongoose.models['File']
 const fs = require('fs')
+const cors = require('cors')
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -31,8 +32,10 @@ const server = new ApolloServer({
 
 const app = express()
 
-app.use(express.urlencoded())
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.options('*', cors())
+app.use(cors())
 
 // add file upload handler;
 app.post('/uploadFile', upload.single('file'), (req, res, next) => {
@@ -59,7 +62,7 @@ app.post('/uploadFile', upload.single('file'), (req, res, next) => {
   })
   res.send({
     success: true,
-    file: file,
+    file: reqFile,
     message: 'Uploaded successfully'
   })
 })
@@ -73,14 +76,15 @@ app.post('/uploadFiles', upload.array('files', 100), (req, res, next) => {
     error.httpStatusCode = 400
     return next(error)
   }
+
   req.files.forEach(element => {
-    var file = fs.readFileSync(element.file.path)
+    var file = fs.readFileSync(element.path)
     var encodedFile = file.toString('base64')
     const buf = Buffer.from(encodedFile, 'base64')
 
     File.create({
-      contentType: req.file.mimetype,
-      path: req.file.path,
+      contentType: element.mimetype,
+      path: element.path,
       file: buf
     }, function (err, _file) {
       if (err) {
@@ -93,6 +97,25 @@ app.post('/uploadFiles', upload.array('files', 100), (req, res, next) => {
     success: true,
     files: files,
     message: 'Uploaded successfully'
+  })
+})
+
+// get file:name
+app.get('/files/:name', (req, res, next) => {
+  const fileName = req.params.name
+
+  var options = {
+    root: './uploads',
+    dotfiles: 'deny',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
+  }
+  res.sendFile(fileName, options, function (err) {
+    if (err) {
+      next(err)
+    }
   })
 })
 

@@ -49,9 +49,8 @@ const serviceSchema = new mongoose.Schema({
   currency: {
     type: String
   },
-  images: {
-    type: [Schema.Types.ObjectId],
-    default: null
+  files: {
+    type: [String]// file path
   },
   department: {
     type: Schema.Types.ObjectId,
