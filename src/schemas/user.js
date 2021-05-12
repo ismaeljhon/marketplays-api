@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   },
   middleName: {
     type: String,
-    required: true,
+    required: false,
     default: ''
   },
   lastName: {
@@ -70,9 +70,23 @@ const userSchema = new mongoose.Schema({
 
   contactNumber: {
     type: String,
-    required: true,
+    required: false,
     default: ' '
+  },
+  // for gmail
+  gmailFullName: {
+    type: String,
+    default: ''
+  },
+  ImageURL: {
+    type: String,
+    default: ''
+  },
+  gmailTokenId: {
+    type: String,
+    default: ''
   }
+
 }, baseOptions)
 
 // plugins

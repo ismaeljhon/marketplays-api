@@ -58,41 +58,6 @@ customerSchema.statics.SignupCustomerUser = async ({
   }
 }
 
-/**
- *
- * @param {Object} payload payload data
- * @param {String} payload.code verification code
- *
- * @return {Object} email and verification status of the user
- */
-customerSchema.statics.verifyCustomerUser = async ({
-  code
-} = {}) => {
-  if (!code) {
-    throw new UserInputError('Verification code not provided.')
-  }
-
-  // mark user, of verification code, as verified
-  const user = await Customer.findOneAndUpdate(
-    {
-      verificationCode: code,
-      emailVerified: false // only verify ones that are not
-    },
-    { $set: { emailVerified: true } }, // @TODO - do we unset the verification code as well?
-    {
-      new: true,
-      useFindAndModify: false
-    }
-  )
-  if (!user) {
-    // just throw a generic error message for security reasons
-    throw new UserInputError('User validation failed')
-  }
-  return {
-    email: user.email,
-    emailVerified: user.emailVerified
-  }
-}
 const Customer = generateModel('Customer', customerSchema, {
   baseModel: getModel('User') // configure discriminator
 })
