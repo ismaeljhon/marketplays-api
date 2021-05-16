@@ -1,5 +1,4 @@
 const adminchema = require('../schemas/admin')
-const User = require('../models/user')
 const generateModel = require('../utils/generate-model')
 const bcrypt = require('bcrypt')
 const { UserInputError } = require('apollo-server-express')
@@ -40,7 +39,7 @@ adminchema.statics.SignupUser = async ({
 
     // apply hash
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
-    const user = await User.create({
+    const user = await Admin.create({
       firstName: firstName,
       middleName: middleName,
       lastName: lastName,
