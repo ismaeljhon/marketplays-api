@@ -8,11 +8,6 @@ const adminSchema = new mongoose.Schema({
     type: [Schema.Types.ObjectId], // department
     default: []
   },
-  catTeamLeadOf: {
-    type: [Schema.Types.ObjectId], // category
-    default: []
-  },
-
   projectManagerOf: {
     type: [Schema.Types.ObjectId], // service
     default: []
