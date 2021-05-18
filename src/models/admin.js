@@ -26,7 +26,9 @@ adminchema.statics.SignupUser = async ({
   lastName,
   email,
   password,
-  contactNumber
+  contactNumber,
+  teamLeadOf,
+  projectManagerOf
 }) => {
   try {
     // make sure email is unique
@@ -45,7 +47,9 @@ adminchema.statics.SignupUser = async ({
       lastName: lastName,
       email: email,
       hashedPassword: hashedPassword,
-      contactNumber: contactNumber
+      contactNumber: contactNumber,
+      teamLeadOf: teamLeadOf,
+      projectManagerOf: projectManagerOf
     })
     return user
   } catch (error) {
