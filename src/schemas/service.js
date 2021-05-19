@@ -50,7 +50,7 @@ const serviceSchema = new mongoose.Schema({
     type: String
   },
   files: {
-    type: [Object]// image
+    type: [Object]// image //
   },
   department: {
     type: Schema.Types.ObjectId,
