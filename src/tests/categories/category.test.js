@@ -12,6 +12,7 @@ describe('category pluralize testing', () => {
     const name = 'category'
     let directory = pluralize(name.charAt(0).toLowerCase() + name.slice(1))
 
+    
     expect(directory).toEqual('categories')
   })
 })
