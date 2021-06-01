@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-
+const slugify = require('slugify')
+const { isEmpty } = require('lodash')
 const hooks = {
   post: {
     save: async (service, next) => {
@@ -41,6 +42,12 @@ const hooks = {
           { $set: { service: service._id } }
         )
       }
+
+      // fix issue slug;
+      if (isEmpty(service.slug)) {
+        service.slug = slugify(service.name)
+      }
+
       next()
     }
   },
@@ -49,7 +56,7 @@ const hooks = {
       // check if department of project manager is set
       // (including null)
       if (typeof this.department !== 'undefined' ||
-          typeof this.projectManager !== 'undefined') {
+        typeof this.projectManager !== 'undefined') {
         const Department = mongoose.models['Department']
         const Category = mongoose.models['Category']
         const Service = mongoose.models['Service']

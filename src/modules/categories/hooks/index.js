@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const slugify = require('slugify')
+const { isEmpty } = require('lodash')
 
 const hooks = {
   post: {
@@ -21,6 +23,11 @@ const hooks = {
           { $set: { category: category._id } }
         )
       })
+
+      // fix issue slug;
+      if (isEmpty(category.slug)) {
+        category.slug = slugify(category.name)
+      }
       next()
     }
   },
