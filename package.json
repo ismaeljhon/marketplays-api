@@ -33,7 +33,7 @@
     "cross-env": "^5.2.0",
     "deepmerge": "^3.3.0",
     "dotenv": "^6.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "fast-cartesian": "^5.0.0",
     "glob": "^7.1.6",
     "graph-fs": "^0.0.7",
