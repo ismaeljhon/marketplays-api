@@ -41,7 +41,7 @@
     "graphql-compose": "^7.22.1",
     "graphql-compose-mongoose": "^9.0.0",
     "json-to-graphql-query": "^2.0.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.20",
     "mongoose": "^5.12.3",
     "mongoose-autopopulate": "^0.12.2",
